@@ -17,6 +17,7 @@ function getPasswordInputHtml() {
     return `
         <input name="username" type="text"
                class="input-control"
+               data-i18n="[placeholder]dialog.user"
                placeholder=${placeholder} autofocus>
         <input name="password" type="password"
                class="input-control"
@@ -249,6 +250,23 @@ export default {
                 if (submitValue === 'authNow') {
                     onAuthNow();
                 }
+            }
+        );
+    },
+
+    showUserWaitingDialog(room) {
+        const msg = APP.translation.generateTranslationHTML(
+            '[html]dialog.WaitForHostMsg',
+            { room }
+        );
+
+        return APP.UI.messageHandler.openDialog(
+            'dialog.WaitingForHost',
+            msg,
+            true,
+            (e) => {
+                // Do not close the dialog yet.
+                e.preventDefault();
             }
         );
     }

@@ -1,4 +1,4 @@
-/* global APP, $, config, interfaceConfig */
+/* global APP, $, config */
 
 
 const UI = {};
@@ -143,9 +143,7 @@ UI.start = function() {
     $.prompt.setDefaults({ persistent: false });
 
     VideoLayout.init(eventEmitter);
-    if (!interfaceConfig.filmStripOnly) {
-        VideoLayout.initLargeVideo();
-    }
+    VideoLayout.initLargeVideo();
 
     // Do not animate the video area on UI start (second argument passed into
     // resizeVideoArea) because the animation is not visible anyway. Plus with
@@ -161,10 +159,7 @@ UI.start = function() {
         $('body').addClass('desktop-browser');
     }
 
-    if (interfaceConfig.filmStripOnly) {
-        $('body').addClass('filmstrip-only');
-        APP.store.dispatch(setNotificationsEnabled(false));
-    } else if (config.iAmRecorder) {
+    if (config.iAmRecorder) {
         // in case of iAmSipGateway keep local video visible
         if (!config.iAmSipGateway) {
             VideoLayout.setLocalVideoVisible(false);
@@ -324,6 +319,7 @@ UI.showLoginPopup = function(callback) {
     const message
         = `<input name="username" type="text"
                 placeholder="user@domain.net"
+                data-i18n="[placeholder]dialog.user"
                 class="input-control" autofocus>
          <input name="password" type="password"
                 data-i18n="[placeholder]dialog.userPassword"
@@ -348,16 +344,11 @@ UI.showLoginPopup = function(callback) {
     });
 };
 
-UI.askForNickname = function() {
-    // eslint-disable-next-line no-alert
-    return window.prompt('Your nickname (optional)');
-};
-
 /**
  * Sets muted audio state for participant
  */
-UI.setAudioMuted = function(id, muted) {
-    VideoLayout.onAudioMute(id, muted);
+UI.setAudioMuted = function(id) {
+    // FIXME: Maybe this can be removed!
     if (APP.conference.isLocalId(id)) {
         APP.conference.updateAudioIconEnabled();
     }
@@ -366,8 +357,8 @@ UI.setAudioMuted = function(id, muted) {
 /**
  * Sets muted video state for participant
  */
-UI.setVideoMuted = function(id, muted) {
-    VideoLayout.onVideoMute(id, muted);
+UI.setVideoMuted = function(id) {
+    VideoLayout.onVideoMute(id);
     if (APP.conference.isLocalId(id)) {
         APP.conference.updateVideoIconEnabled();
     }
