@@ -3,8 +3,8 @@ import {
     FillScreen,
     dialogWidth,
     dialogHeight,
-    // PositionerAbsolute,
-    // PositionerRelative
+    PositionerAbsolute,
+    PositionerRelative,
 } from "@atlaskit/modal-dialog/dist/es2019/styled/Modal.js";
 import { N0, DN50 } from "@atlaskit/theme/colors";
 import { themed } from "@atlaskit/theme/components";
@@ -32,5 +32,6 @@ export {
     FillScreen,
     dialogWidth,
     dialogHeight,
-    // PositionerAbsolute, PositionerRelative
+    PositionerAbsolute,
+    PositionerRelative,
 };
