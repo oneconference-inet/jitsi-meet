@@ -1,4 +1,4 @@
-/* global APP, config, JitsiMeetJS, Promise */
+// @flow
 
 import Logger from "jitsi-meet-logger";
 
@@ -13,10 +13,10 @@ import authXmpp from "../../../authXmpp";
 
 import LoginDialog from "./LoginDialog";
 
-const logger = Logger.getLogger(__filename);
-
 let externalAuthWindow;
-let authRequiredDialog;
+declare var APP: Object;
+
+const logger = Logger.getLogger(__filename);
 
 const isTokenAuthEnabled =
     typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
@@ -33,16 +33,21 @@ const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
  * @param {string} [lockPassword] password to use if the conference is locked
  */
 function doExternalAuth(room, lockPassword) {
+    const config = APP.store.getState()["features/base/config"];
+
     if (externalAuthWindow) {
         externalAuthWindow.focus();
 
         return;
     }
+
     if (room.isJoined()) {
         let getUrl;
 
-        if (isTokenAuthEnabled) {
-            getUrl = Promise.resolve(getTokenAuthUrl(room.getName(), true));
+        if (isTokenAuthEnabled(config)) {
+            getUrl = Promise.resolve(
+                getTokenAuthUrl(config)(room.getName(), true)
+            );
             initJWTTokenListener(room);
         } else {
             getUrl = room.getExternalAuthUrl(true);
@@ -55,7 +60,7 @@ function doExternalAuth(room, lockPassword) {
                 }
             });
         });
-    } else if (isTokenAuthEnabled) {
+    } else if (isTokenAuthEnabled(config)) {
         redirectToTokenAuthService(room.getName());
     } else {
         room.getExternalAuthUrl().then(UIUtil.redirect);
@@ -64,20 +69,22 @@ function doExternalAuth(room, lockPassword) {
 
 /**
  * Redirect the user to the token authentication service for the login to be
- * performed. Once complete it is expected that the service wil bring the user
+ * performed. Once complete it is expected that the service will bring the user
  * back with "?jwt={the JWT token}" query parameter added.
  * @param {string} [roomName] the name of the conference room.
  */
-function redirectToTokenAuthService(roomName) {
+export function redirectToTokenAuthService(roomName: string) {
+    const config = APP.store.getState()["features/base/config"];
+
     // FIXME: This method will not preserve the other URL params that were
     // originally passed.
-    UIUtil.redirect(getTokenAuthUrl(roomName, false));
+    UIUtil.redirect(getTokenAuthUrl(config)(roomName, false));
 }
 
 /**
  * Initializes 'message' listener that will wait for a JWT token to be received
  * from the token authentication service opened in a popup window.
- * @param room the name fo the conference room.
+ * @param room the name of the conference room.
  */
 function initJWTTokenListener(room) {
     /**
@@ -172,7 +179,8 @@ function initJWTTokenListener(room) {
 }
 
 /**
- * Authenticate on the server.
+ * Authenticate for the conference.
+ * Uses external service for auth if conference supports that.
  * @param {JitsiConference} room
  * @param {string} [lockPassword] password to use if the conference is locked
  */
@@ -218,8 +226,7 @@ function doXmppAuth(room, lockPassword) {
 }
 
 /**
- * Authenticate for the conference.
- * Uses external service for auth if conference supports that.
+ * Notify user that authentication is required to create the conference.
  * @param {JitsiConference} room
  * @param {string} [lockPassword] password to use if the conference is locked
  */
@@ -239,6 +246,13 @@ function authenticate(room, lockPassword) {
     } else {
         logger.warn("Waiting For Room Owner.");
     }
+
+    APP.store.dispatch(
+        openAuthDialog(
+            room.getName(),
+            authenticate.bind(null, room, lockPassword)
+        )
+    );
 }
 
 /**

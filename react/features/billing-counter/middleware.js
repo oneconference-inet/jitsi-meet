@@ -3,7 +3,6 @@ import { CONFERENCE_JOINED } from '../base/conference/actionTypes';
 import { PARTICIPANT_JOINED } from '../base/participants/actionTypes';
 import { MiddlewareRegistry } from '../base/redux';
 
-import { SET_BILLING_ID } from './actionTypes';
 import { countEndpoint } from './actions';
 import { isVpaasMeeting, extractVpaasTenantFromPath, setBillingId } from './functions';
 

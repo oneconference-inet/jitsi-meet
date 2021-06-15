@@ -3,10 +3,13 @@
 import React, { PureComponent } from "react";
 import type { Dispatch } from "redux";
 
-import { openDialog } from "../../../base/dialog";
-import { getParticipantCount } from "../../../base/participants";
-import { connect } from "../../../base/redux";
-import { SpeakerStats } from "../../../speaker-stats";
+import { openDialog } from '../../../base/dialog';
+import { IconUserGroups } from '../../../base/icons';
+import { Label } from '../../../base/label';
+import { getParticipantCount } from '../../../base/participants';
+import { connect } from '../../../base/redux';
+import { SpeakerStats } from '../../../speaker-stats';
+
 
 /**
  * The type of the React {@code Component} props of {@link ParticipantsCount}.
@@ -70,11 +73,13 @@ class ParticipantsCount extends PureComponent<Props> {
 
     render() {
         return (
-            <div className="participants-count" onClick={this._onClick}>
-                <span className="participants-count-number">
-                    {this.props.count}
-                </span>
-                <span className="participants-count-icon" />
+            <div
+                className = 'participants-count'
+                onClick = { this._onClick }>
+                <Label
+                    className = 'label--white'
+                    icon = { IconUserGroups }
+                    text = { this.props.count } />
             </div>
         );
     }

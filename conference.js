@@ -1,11 +1,13 @@
 /* global APP, JitsiMeetJS, config, interfaceConfig */
 
+import { jitsiLocalStorage } from '@jitsi/js-utils';
 import EventEmitter from "events";
 import Logger from "jitsi-meet-logger";
 
 import * as JitsiMeetConferenceEvents from "./ConferenceEvents";
 import { openConnection } from "./connection";
 import { ENDPOINT_TEXT_MESSAGE_NAME } from "./modules/API/constants";
+import { AUDIO_ONLY_SCREEN_SHARE_NO_TRACK } from './modules/UI/UIErrors';
 import AuthHandler from "./modules/UI/authentication/AuthHandler";
 import UIUtil from "./modules/UI/util/UIUtil";
 import mediaDeviceHelper from "./modules/devices/mediaDeviceHelper";
@@ -34,6 +36,7 @@ import {
   conferenceLeft,
   conferenceSubjectChanged,
   conferenceTimestampChanged,
+  conferenceUniqueIdSet,
   conferenceWillJoin,
   conferenceWillLeave,
   dataChannelOpened,
@@ -89,6 +92,7 @@ import {
   participantPresenceChanged,
   participantRoleChanged,
   participantUpdated,
+  updateRemoteParticipantFeatures
 } from "./react/features/base/participants";
 import {
   getUserSelectedCameraDeviceId,
@@ -100,6 +104,7 @@ import {
   destroyLocalTracks,
   getLocalJitsiAudioTrack,
   getLocalJitsiVideoTrack,
+  getLocalTracks,
   isLocalCameraTrackMuted,
   isLocalTrackMuted,
   isUserInteractionRequiredForUnmute,
@@ -124,6 +129,8 @@ import {
   isPrejoinPageVisible,
   makePrecallTest,
 } from "./react/features/prejoin";
+import { disableReceiver, stopReceiver } from './react/features/remote-control';
+import { setScreenAudioShareState, isScreenAudioShared } from './react/features/screen-share/';
 import { toggleScreenshotCaptureEffect } from "./react/features/screenshot-capture";
 import { setSharedVideoStatus } from "./react/features/shared-video";
 import { AudioMixerEffect } from "./react/features/stream-effects/audio-mixer/AudioMixerEffect";
@@ -175,11 +182,11 @@ window.JitsiMeetScreenObtainer = {
  * Known custom conference commands.
  */
 const commands = {
-  AVATAR_URL: AVATAR_URL_COMMAND,
-  CUSTOM_ROLE: "custom-role",
-  EMAIL: EMAIL_COMMAND,
-  ETHERPAD: "etherpad",
-  SHARED_VIDEO: "shared-video",
+    AVATAR_URL: AVATAR_URL_COMMAND,
+    CUSTOM_ROLE: 'custom-role',
+    EMAIL: EMAIL_COMMAND,
+    ETHERPAD: 'etherpad',
+    SHARED_VIDEO: 'shared-video'
 };
 
 /**

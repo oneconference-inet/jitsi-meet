@@ -1,8 +1,6 @@
 /* application specific logic */
 
 import 'jquery';
-import 'jquery-contextmenu';
-import 'jQuery-Impromptu';
 
 import 'olm';
 
@@ -19,7 +17,6 @@ import conference from './conference';
 import API from './modules/API';
 import UI from './modules/UI/UI';
 import keyboardshortcut from './modules/keyboardshortcut/keyboardshortcut';
-import remoteControl from './modules/remotecontrol/RemoteControl';
 import translation from './modules/translation/translation';
 
 // Initialize Olm as early as possible.
@@ -51,7 +48,6 @@ window.APP = {
     },
 
     keyboardshortcut,
-    remoteControl,
     translation,
     UI
 };

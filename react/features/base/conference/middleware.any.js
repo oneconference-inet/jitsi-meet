@@ -7,6 +7,7 @@ import {
     createPinnedEvent,
     sendAnalytics,
 } from "../../analytics";
+import { reloadNow } from "../../app/actions";
 import { openDisplayNamePrompt } from "../../display-name";
 import { showErrorNotification } from "../../notifications";
 import {
@@ -14,6 +15,7 @@ import {
     CONNECTION_FAILED,
     connectionDisconnected,
 } from "../connection";
+import { validateJwt } from "../jwt";
 import { JitsiConferenceErrors } from "../lib-jitsi-meet";
 import { MEDIA_TYPE } from "../media";
 import {
@@ -551,9 +553,8 @@ function _updateLocalParticipantInConference(
             "role" in participant &&
             participant.role === PARTICIPANT_ROLE.MODERATOR
         ) {
-            const { pendingSubjectChange, subject } = getState()[
-                "features/base/conference"
-            ];
+            const { pendingSubjectChange, subject } =
+                getState()["features/base/conference"];
 
             // When the local user role is updated to moderator and we have a pending subject change
             // which was not reflected we need to set it (the first time we tried was before becoming moderator).

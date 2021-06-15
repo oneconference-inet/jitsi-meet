@@ -45,8 +45,6 @@ class Notification extends AbstractNotification<Props> {
         const {
             appearance,
             hideErrorSupportLink,
-            isDismissAllowed,
-            onDismissed,
             t,
             title,
             titleArguments,
@@ -60,16 +58,13 @@ class Notification extends AbstractNotification<Props> {
 
         return (
             <Flag
-                actions={this._mapAppearanceToButtons(hideErrorSupportLink)}
-                appearance={appearance}
-                description={this._renderDescription()}
-                icon={this._mapAppearanceToIcon()}
-                id={uid}
-                isDismissAllowed={isDismissAllowed}
-                onDismissed={onDismissed}
-                testId={titleKey}
-                title={title || t(titleKey, titleArguments)}
-            />
+                actions = { this._mapAppearanceToButtons(hideErrorSupportLink) }
+                appearance = { appearance }
+                description = { this._renderDescription() }
+                icon = { this._mapAppearanceToIcon() }
+                id = { uid }
+                testId = { titleKey }
+                title = { title || t(titleKey, titleArguments) } />
         );
     }
 

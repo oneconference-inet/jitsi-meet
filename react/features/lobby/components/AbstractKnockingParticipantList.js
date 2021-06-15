@@ -12,6 +12,8 @@ import socketIOClient from 'socket.io-client';
 import Logger from 'jitsi-meet-logger';
 
 const logger = Logger.getLogger(__filename);
+import { setKnockingParticipantApproval } from '../actions';
+import { getLobbyState } from '../functions';
 
 export type Props = {
 
@@ -91,7 +93,7 @@ export default class AbstractKnockingParticipantList<P: Props = Props> extends P
  * @returns {Props}
  */
 export function mapStateToProps(state: Object): $Shape<Props> {
-    const { knockingParticipants } = state['features/lobby'];
+    const { knockingParticipants, lobbyEnabled } = getLobbyState(state);
 
     return {
         _participants: knockingParticipants,
