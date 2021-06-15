@@ -4,7 +4,7 @@ import { PARTICIPANT_JOINED } from '../base/participants/actionTypes';
 import { MiddlewareRegistry } from '../base/redux';
 
 import { countEndpoint } from './actions';
-import { isVpaasMeeting, extractVpaasTenantFromPath, setBillingId } from './functions';
+import { isVpaasMeeting, extractVpaasTenantFromPath } from './functions';
 
 /**
  * The redux middleware for billing counter.
@@ -17,11 +17,6 @@ MiddlewareRegistry.register(store => next => async action => {
     switch (action.type) {
     case CONFERENCE_JOINED: {
         _maybeTrackVpaasConferenceJoin(store.getState());
-
-        break;
-    }
-    case SET_BILLING_ID: {
-        setBillingId(action.value);
 
         break;
     }
