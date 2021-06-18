@@ -309,12 +309,9 @@ UI.setAudioMuted = function(id) {
  * Sets muted video state for participant
  */
 UI.setVideoMuted = function(id) {
-<<<<<<< HEAD
-    VideoLayout.onVideoMute(id);
-=======
+    // VideoLayout.onVideoMute(id);
     VideoLayout._updateLargeVideoIfDisplayed(id, true);
 
->>>>>>> stable-5870
     if (APP.conference.isLocalId(id)) {
         APP.conference.updateVideoIconEnabled();
     }

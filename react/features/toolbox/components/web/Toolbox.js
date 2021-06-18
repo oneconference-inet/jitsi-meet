@@ -46,7 +46,6 @@ import { EmbedMeetingDialog } from '../../../embed-meeting';
 import { SharedDocumentButton } from '../../../etherpad';
 import { openFeedbackDialog } from '../../../feedback';
 import { openKeyboardShortcutsDialog } from '../../../keyboard-shortcuts';
-import { LocalRecordingInfoDialog } from '../../../local-recording';
 import {
     LocalRecordingButton,
     LocalRecordingInfoDialog

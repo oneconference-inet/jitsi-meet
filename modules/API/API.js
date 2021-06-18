@@ -15,7 +15,6 @@ import {
 import { overwriteConfig, getWhitelistedJSON } from '../../react/features/base/config';
 import { parseJWTFromURLParams } from '../../react/features/base/jwt';
 import JitsiMeetJS, { JitsiRecordingConstants } from '../../react/features/base/lib-jitsi-meet';
-import { pinParticipant } from '../../react/features/base/participants';
 import { MEDIA_TYPE } from '../../react/features/base/media';
 import {
     getLocalParticipant,

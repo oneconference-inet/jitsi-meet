@@ -12,14 +12,9 @@ import { i18next } from '../../../react/features/base/i18n';
 import {
     JitsiParticipantConnectionStatus
 } from '../../../react/features/base/lib-jitsi-meet';
-<<<<<<< HEAD
-import { VIDEO_TYPE } from '../../../react/features/base/media';
-import { getParticipantById } from '../../../react/features/base/participants';
-=======
 import { MEDIA_TYPE, VIDEO_TYPE } from '../../../react/features/base/media';
 import { getParticipantById } from '../../../react/features/base/participants';
 import { getTrackByMediaTypeAndParticipant } from '../../../react/features/base/tracks';
->>>>>>> stable-5870
 import { CHAT_SIZE } from '../../../react/features/chat';
 import {
     updateKnownLargeVideoResolution
@@ -225,20 +220,12 @@ export default class LargeVideoManager {
             this.updateAvatar();
 
             const isVideoMuted = !stream || stream.isMuted();
-<<<<<<< HEAD
-            const participant = getParticipantById(APP.store.getState(), id);
-            const connectionStatus = participant?.connectionStatus;
-            const isVideoRenderable = !isVideoMuted
-                && (APP.conference.isLocalId(id) || connectionStatus === JitsiParticipantConnectionStatus.ACTIVE);
-
-=======
             const state = APP.store.getState();
             const participant = getParticipantById(state, id);
             const connectionStatus = participant?.connectionStatus;
             const isVideoRenderable = !isVideoMuted
                 && (APP.conference.isLocalId(id) || connectionStatus === JitsiParticipantConnectionStatus.ACTIVE);
             const isAudioOnly = APP.conference.isAudioOnly();
->>>>>>> stable-5870
             const showAvatar
                 = isVideoContainer
                     && ((isAudioOnly && videoType !== VIDEO_TYPE.DESKTOP) || !isVideoRenderable);
@@ -381,17 +368,6 @@ export default class LargeVideoManager {
         }
 
         let widthToUse = this.preferredWidth || window.innerWidth;
-<<<<<<< HEAD
-        // const { isOpen } = APP.store.getState()['features/chat'];
-
-        // if (isOpen) {
-        //     /**
-        //      * If chat state is open, we re-compute the container width
-        //      * by subtracting the default width of the chat.
-        //      */
-        //     widthToUse -= CHAT_SIZE;
-        // }
-=======
         const state = APP.store.getState();
         const { isOpen } = state['features/chat'];
         const isParticipantsPaneOpen = getParticipantsPaneOpen(state);
@@ -407,7 +383,6 @@ export default class LargeVideoManager {
              */
             widthToUse -= CHAT_SIZE;
         }
->>>>>>> stable-5870
 
         this.width = widthToUse;
         this.height = this.preferredHeight || window.innerHeight;

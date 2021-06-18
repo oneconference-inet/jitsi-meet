@@ -137,7 +137,7 @@ import { AudioMixerEffect } from "./react/features/stream-effects/audio-mixer/Au
 import { createPresenterEffect } from "./react/features/stream-effects/presenter";
 import { endpointMessageReceived } from "./react/features/subtitles";
 import UIEvents from "./service/UI/UIEvents";
-import * as RemoteControlEvents from "./service/remotecontrol/RemoteControlEvents";
+// import * as RemoteControlEvents from "./service/remotecontrol/RemoteControlEvents";
 
 import infoConf from "./infoConference";
 import infoUser from "./infoUser";

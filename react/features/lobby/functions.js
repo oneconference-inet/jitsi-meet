@@ -33,7 +33,7 @@ export function onSocketReqJoin(meetingId, endpoint, props) {
         logger.log("Incoming-Join: ", incoming)
         dispatch(participantIsKnockingOrUpdated(incoming));
     })
-
+}
 /**
  * Selector to return lobby state.
  *

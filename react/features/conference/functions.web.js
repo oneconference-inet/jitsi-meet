@@ -6,7 +6,7 @@ import { toState } from '../base/redux';
 import { getBackendSafePath, getJitsiMeetGlobalNS } from '../base/util';
 import { getVpaasBillingId } from '../billing-counter/functions';
 import { showWarningNotification } from '../notifications';
-import { createRnnoiseProcessorPromise } from '../rnnoise';
+// import { createRnnoiseProcessorPromise } from '../rnnoise';
 import UIEvents from '../../../service/UI/UIEvents';
 
 export * from './functions.any';
