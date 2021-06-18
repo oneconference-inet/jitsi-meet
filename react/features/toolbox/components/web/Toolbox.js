@@ -39,7 +39,7 @@ import { connect } from '../../../base/redux';
 import { OverflowMenuItem } from '../../../base/toolbox/components';
 import { getLocalVideoTrack, toggleScreensharing } from '../../../base/tracks';
 import { isVpaasMeeting } from '../../../billing-counter/functions';
-import { VideoBlurButton } from '../../../blur';
+// import { VideoBlurButton } from '../../../blur';
 import { CHAT_SIZE, ChatCounter, toggleChat } from '../../../chat';
 import { toggleNote } from '../../../note';
 import { EmbedMeetingDialog } from '../../../embed-meeting';
