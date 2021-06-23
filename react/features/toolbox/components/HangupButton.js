@@ -12,7 +12,7 @@ import type { AbstractButtonProps } from "../../base/toolbox/components";
 import { getLocalParticipant, PARTICIPANT_ROLE } from "../../base/participants";
 import { getActiveSession } from "../../recording/functions";
 import { JitsiRecordingConstants } from "../../base/lib-jitsi-meet";
-import { EndMeetingDialog } from "../../video-menu";
+import EndMeetingDialog from "../../video-menu/components/web/EndMeetingDialog";
 import { openDialog } from "../../base/dialog";
 
 import axios from "axios";
@@ -89,7 +89,7 @@ class HangupButton extends AbstractHangupButton<Props, *> {
                         })
                     );
                 } else {
-                    _endJoin()
+                    _endJoin();
                 }
             }
         };

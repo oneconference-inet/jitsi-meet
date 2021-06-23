@@ -1,20 +1,22 @@
 // @flow
-import { createToolbarEvent, sendAnalytics } from '../../analytics';
-import { openDialog } from '../../base/dialog';
-import { translate } from '../../base/i18n';
-import { IconEndCall } from '../../base/icons';
-import { getLocalParticipant, PARTICIPANT_ROLE } from '../../base/participants';
-import { connect } from '../../base/redux';
-import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
-import { EndMeetingDialog } from '../../video-menu';
+import { createToolbarEvent, sendAnalytics } from "../../analytics";
+import { openDialog } from "../../base/dialog";
+import { translate } from "../../base/i18n";
+import { IconEndCall } from "../../base/icons";
+import { getLocalParticipant, PARTICIPANT_ROLE } from "../../base/participants";
+import { connect } from "../../base/redux";
+import {
+    AbstractButton,
+    type AbstractButtonProps,
+} from "../../base/toolbox/components";
+import EndMeetingDialog from "../../video-menu/components/web/EndMeetingDialog";
 
-import { JitsiRecordingConstants } from '../../base/lib-jitsi-meet';
-import { getActiveSession } from '../../recording/functions';
+import { JitsiRecordingConstants } from "../../base/lib-jitsi-meet";
+import { getActiveSession } from "../../recording/functions";
 
 declare var APP: Object;
 
 type Props = AbstractButtonProps & {
-
     /**
      * The Redux dispatch function.
      */
@@ -28,7 +30,7 @@ type Props = AbstractButtonProps & {
     /**
      * The ID of the local participant.
      */
-    localParticipantId: string
+    localParticipantId: string,
 };
 
 /**
@@ -36,10 +38,10 @@ type Props = AbstractButtonProps & {
  * every participant (except the local one)
  */
 class EndMeetingButton extends AbstractButton<Props, *> {
-    accessibilityLabel = 'toolbar.accessibilityLabel.endmeeting';
+    accessibilityLabel = "toolbar.accessibilityLabel.endmeeting";
     icon = IconEndCall;
-    label = 'toolbar.endmeeting';
-    tooltip = 'toolbar.endmeeting';
+    label = "toolbar.endmeeting";
+    tooltip = "toolbar.endmeeting";
 
     /**
      * Handles clicking / pressing the button, and opens a confirmation dialog.
@@ -49,19 +51,26 @@ class EndMeetingButton extends AbstractButton<Props, *> {
      */
     _handleClick() {
         const { dispatch, localParticipantId } = this.props;
-        var state = APP.store.getState()
-        const _fileRecordingSessionOn = Boolean(getActiveSession(state, JitsiRecordingConstants.mode.FILE));
+        var state = APP.store.getState();
+        const _fileRecordingSessionOn = Boolean(
+            getActiveSession(state, JitsiRecordingConstants.mode.FILE)
+        );
 
         if (_fileRecordingSessionOn) {
-            const _conference = state['features/base/conference'].conference;
-            const _fileRecordingSession = getActiveSession(state, JitsiRecordingConstants.mode.FILE);
+            const _conference = state["features/base/conference"].conference;
+            const _fileRecordingSession = getActiveSession(
+                state,
+                JitsiRecordingConstants.mode.FILE
+            );
             _conference.stopRecording(_fileRecordingSession.id);
         }
 
-        sendAnalytics(createToolbarEvent('endmeeting.pressed'));
-        dispatch(openDialog(EndMeetingDialog, {
-            exclude: [ localParticipantId ]
-        }));
+        sendAnalytics(createToolbarEvent("endmeeting.pressed"));
+        dispatch(
+            openDialog(EndMeetingDialog, {
+                exclude: [localParticipantId],
+            })
+        );
     }
 }
 
@@ -76,12 +85,12 @@ function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
     const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
     const { visible } = ownProps;
-    const { disableRemoteMute } = state['features/base/config'];
+    const { disableRemoteMute } = state["features/base/config"];
 
     return {
         isModerator,
         localParticipantId: localParticipant.id,
-        visible: visible && isModerator && !disableRemoteMute
+        visible: visible && isModerator && !disableRemoteMute,
     };
 }
 
