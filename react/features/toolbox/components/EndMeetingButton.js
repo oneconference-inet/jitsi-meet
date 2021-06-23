@@ -6,7 +6,7 @@ import { IconEndCall } from '../../base/icons';
 import { getLocalParticipant, PARTICIPANT_ROLE } from '../../base/participants';
 import { connect } from '../../base/redux';
 import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
-import { EndMeetingDialog } from '../../remote-video-menu/components';
+import { EndMeetingDialog } from '../../video-menu/components';
 
 import { JitsiRecordingConstants } from '../../base/lib-jitsi-meet';
 import { getActiveSession } from '../../recording/functions';

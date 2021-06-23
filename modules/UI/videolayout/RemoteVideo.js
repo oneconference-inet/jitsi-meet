@@ -23,7 +23,7 @@ import { PresenceLabel } from '../../../react/features/presence-status';
 import {
     REMOTE_CONTROL_MENU_STATES,
     RemoteVideoMenuTriggerButton
-} from '../../../react/features/remote-video-menu';
+} from '../../../react/features/video-menu';
 import { LAYOUTS, getCurrentLayout } from '../../../react/features/video-layout';
 /* eslint-enable no-unused-vars */
 import UIUtils from '../util/UIUtil';
