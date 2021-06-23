@@ -93,3 +93,23 @@ export function muteAllParticipants(exclude: Array<string>, mediaType: MEDIA_TYP
         /* eslint-enable no-confusing-arrow */
     };
 }
+
+/////////////////////////// End Meeting - Kick all PARTICIPANT //////////////////////////////////////
+
+export function endAllParticipants(exclude: Array<string>) {
+    return (dispatch: Dispatch<any>, getState: Function) => {
+        const state = getState();
+        const participantIds = state["features/base/participants"].map(
+            (p) => p.id
+        );
+
+        /* eslint-disable no-confusing-arrow */
+        const setParticipants = participantIds.filter(
+            (id) => !exclude.includes(id)
+        );
+
+        setParticipants.map((person) => {
+            dispatch(kickParticipant(person));
+        });
+    };
+}
