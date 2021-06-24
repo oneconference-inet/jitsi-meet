@@ -292,7 +292,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
         }
     } else {
         console.error("Error URL is not defind!!");
-        APP.store.dispatch(redirectToStaticPage("static/errorURL.html"));
+        // APP.store.dispatch(redirectToStaticPage("static/errorURL.html"));
     }
     document.title = "ONECONFERENCE-MEET";
     const host = locationURL ? locationURL.host : "";
