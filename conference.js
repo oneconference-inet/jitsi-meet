@@ -533,6 +533,8 @@ export default {
 
         let tryCreateLocalTracks;
 
+        const timeout = browser.isElectron() ? 15000 : 60000;
+
         // FIXME is there any simpler way to rewrite this spaghetti below ?
         if (options.startScreenSharing) {
             tryCreateLocalTracks = this._createDesktopTrack()
