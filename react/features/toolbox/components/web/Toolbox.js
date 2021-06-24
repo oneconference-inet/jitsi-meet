@@ -6,8 +6,7 @@ import {
     ACTION_SHORTCUT_TRIGGERED,
     createShortcutEvent,
     createToolbarEvent,
-    sendAnalytics,
-    createRecordingEvent
+    sendAnalytics
 } from '../../../analytics';
 import { getToolbarButtons } from '../../../base/config';
 import { openDialog, toggleDialog } from '../../../base/dialog';
@@ -24,33 +23,25 @@ import {
     IconPresentation,
     IconRaisedHand,
     IconRec,
-    IconShareDesktop,
-    IconShareVideo,
-    IconNote
+    IconShareAudio,
+    IconShareDesktop
 } from '../../../base/icons';
 import JitsiMeetJS from '../../../base/lib-jitsi-meet';
 import {
     getLocalParticipant,
     getParticipants,
-    participantUpdated,
-    localParticipantRoleChanged
+    participantUpdated
 } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { OverflowMenuItem } from '../../../base/toolbox/components';
 import { getLocalVideoTrack, toggleScreensharing } from '../../../base/tracks';
 import { isVpaasMeeting } from '../../../billing-counter/functions';
-// import { VideoBlurButton } from '../../../blur';
-import { CHAT_SIZE, ChatCounter, toggleChat } from '../../../chat';
-import { toggleNote } from '../../../note';
+import { ChatCounter, toggleChat } from '../../../chat';
 import { EmbedMeetingDialog } from '../../../embed-meeting';
 import { SharedDocumentButton } from '../../../etherpad';
 import { openFeedbackDialog } from '../../../feedback';
 import { openKeyboardShortcutsDialog } from '../../../keyboard-shortcuts';
-import {
-    LocalRecordingButton,
-    LocalRecordingInfoDialog
-} from '../../../local-recording';
-import { PollCreateButton } from '../../../polls/components/';
+import { LocalRecordingInfoDialog } from '../../../local-recording';
 import {
     close as closeParticipantsPane,
     open as openParticipantsPane
@@ -94,7 +85,6 @@ import DownloadButton from '../DownloadButton';
 import HangupButton from '../HangupButton';
 import HelpButton from '../HelpButton';
 import MuteEveryoneButton from '../MuteEveryoneButton';
-import EndMeetingButton from '../EndMeetingButton';
 import MuteEveryonesVideoButton from '../MuteEveryonesVideoButton';
 
 import AudioSettingsButton from './AudioSettingsButton';
@@ -104,24 +94,11 @@ import ToggleCameraButton from './ToggleCameraButton';
 import ToolbarButton from './ToolbarButton';
 import VideoSettingsButton from './VideoSettingsButton';
 
-import Logger from 'jitsi-meet-logger';
-
-import { setAudioMutedAll } from '../../../base/media';
-import { onSocketReqJoin, setLobbyModeEnabled, knockingParticipantLeft } from '../../../lobby';
-import infoConf from '../../../../../infoConference';
-import socketIOClient from 'socket.io-client';
-import axios from 'axios';
-
-import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
-import { RECORDING_TYPES } from '../../../recording/constants';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
 type Props = {
-
-
-    _noteOpen: boolean,
 
     /**
      * Whether or not the chat feature is currently displayed.
@@ -247,13 +224,6 @@ type Props = {
 };
 
 declare var APP: Object;
-declare var interfaceConfig: Object;
-
-const logger = Logger.getLogger(__filename);
-
-// XXX: We are not currently using state here, but in the future, when
-// interfaceConfig is part of redux we will. This will have to be retrieved from the store.
-const visibleButtons = new Set(interfaceConfig.TOOLBAR_BUTTONS);
 
 /**
  * Implements the conference toolbox on React/Web.
@@ -289,7 +259,6 @@ class Toolbox extends Component<Props> {
         this._onToolbarOpenEmbedMeeting = this._onToolbarOpenEmbedMeeting.bind(this);
         this._onToolbarOpenVideoQuality = this._onToolbarOpenVideoQuality.bind(this);
         this._onToolbarToggleChat = this._onToolbarToggleChat.bind(this);
-        this._onToolbarToggleNote = this._onToolbarToggleNote.bind(this);
         this._onToolbarToggleFullScreen = this._onToolbarToggleFullScreen.bind(this);
         this._onToolbarToggleProfile = this._onToolbarToggleProfile.bind(this);
         this._onToolbarToggleRaiseHand = this._onToolbarToggleRaiseHand.bind(this);
@@ -297,88 +266,6 @@ class Toolbox extends Component<Props> {
         this._onToolbarToggleShareAudio = this._onToolbarToggleShareAudio.bind(this);
         this._onToolbarOpenLocalRecordingInfoDialog = this._onToolbarOpenLocalRecordingInfoDialog.bind(this);
         this._onShortcutToggleTileView = this._onShortcutToggleTileView.bind(this);
-
-        this.state = {
-            meetingid: '',
-            roomname: '',
-            name: '',
-            checkPlatform: '',
-            endpoint: interfaceConfig.SOCKET_NODE || '',
-            windowWidth: window.innerWidth
-        };
-    }
-
-    async onSocketHost(state) {
-        const { meetingid, roomname, name, checkPlatform, endpoint } = state
-        const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || []
-        const socket = socketIOClient(endpoint)
-        // Get approve incomming conference
-        let getApprove
-        if (services_check.includes(checkPlatform)) {
-            if(checkPlatform !== 'onemail_dga') {
-                getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
-            } else {
-                'Room is not defined function approve!!!'
-            }
-            // console.log("Approve: ", getApprove)
-            if (getApprove.data.approve) {
-                logger.log('Room is require approve to join.')
-                APP.store.dispatch(setLobbyModeEnabled(true));
-                onSocketReqJoin(meetingid, endpoint, this.props);
-            } else {
-                logger.warn('Room is not defined function approve!!!')
-            }
-        }
-        // On socket for Host
-        logger.log('Moderator ONE-Conference On Socket-for-Feature')
-        socket.emit('createRoom', { meetingId: meetingid, roomname: roomname, name: name });
-        socket.on(meetingid, (payload) => {
-            switch(payload.eventName) {
-                case 'pollResponse':
-                    console.log("pollResponse-Payload: ", payload)
-                    break;
-                case 'handleApprove':
-                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
-                    APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
-                    break;
-                default:
-                    logger.warn('Event coming is not defined!!')
-              }
-        });
-
-    }
-
-    async onAttendee(state) {
-        const { meetingid, roomname, name, checkPlatform, endpoint } = state
-        const socket = socketIOClient(endpoint)
-        logger.log('Attendee ONE-Conference On Socket-for-Feature')
-        socket.on(meetingid, async(payload) => {
-            logger.log("Socket-payload: ", payload);
-            switch(payload.eventName) {
-                case 'trackMute':
-                    logger.log("trackMute-Payload: ", payload)
-                    // attendee.setLockMute(payload.mute) //true or false
-                    this.props.dispatch(setAudioMutedAll(payload.mute)) // Lock is button Audio
-                    break;
-                case 'coHost':
-                    logger.log("coHost Payload: ", payload)
-                    APP.store.dispatch(localParticipantRoleChanged('moderator'));
-                    APP.API.notifyUserRoleChanged(payload.participantID, 'moderator');
-
-                    let getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
-                    if (getApprove.data.approve) {
-                        onSocketReqJoin(meetingid, endpoint, this.props);
-                    }
-
-                    break;
-                case 'handleApprove':
-                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
-                    APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
-                    break;
-                default:
-                    logger.warn('Event coming is not defined!!')
-                }
-        });
     }
 
     /**
@@ -388,38 +275,6 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     componentDidMount() {
-        const isModerator = infoConf.getIsModerator();
-        const checkPlatform = infoConf.getService();
-        this.setState({
-            meetingid: infoConf.getMeetingId(),
-            roomname: infoConf.getRoomName(),
-            name: infoConf.getNameJoin(),
-            checkPlatform: infoConf.getService(),
-        },() => {
-            if (isModerator) {
-                
-                if (checkPlatform === "manageAi" || checkPlatform === "followup" || checkPlatform === "onedental" || checkPlatform === "jmc" || checkPlatform === "telemedicine") {
-                    //Recording when start conference
-                    let appData = JSON.stringify({
-                        'file_recording_metadata': {
-                            'share': this.state.sharingEnabled
-                        }
-                    });
-
-                    setTimeout(() => {
-                        this.props._conference.startRecording({
-                            mode: JitsiRecordingConstants.mode.FILE,
-                            appData
-                        });
-                    }, 5000);
-                }
-                else{
-                    this.onSocketHost(this.state);
-                }
-            } else {
-                this.onAttendee(this.state);
-            }
-        });
         const KEYBOARD_SHORTCUTS = [
             this._shouldShowButton('videoquality') && {
                 character: 'A',
@@ -507,8 +362,6 @@ class Toolbox extends Component<Props> {
      */
     render() {
         const { _chatOpen, _visible, _visibleButtons } = this.props;
-        // const rootClassNames = `new-toolbox ${_visible ? 'visible' : ''} ${
-        //     _visibleButtons.size ? '' : 'no-buttons'} ${_chatOpen ? 'shift-right' : ''}`;
         const rootClassNames = `new-toolbox ${_visible ? 'visible' : ''} ${
             _visibleButtons.length ? '' : 'no-buttons'} ${_chatOpen ? 'shift-right' : ''}`;
 
@@ -595,10 +448,6 @@ class Toolbox extends Component<Props> {
      */
     _doToggleChat() {
         this.props.dispatch(toggleChat());
-    }
-
-    _doToggleNote() {
-        this.props.dispatch(toggleNote());
     }
 
     /**
@@ -704,28 +553,6 @@ class Toolbox extends Component<Props> {
      */
     _onMouseOver() {
         this.props.dispatch(setToolbarHovered(true));
-    }
-
-    _onResize: () => void;
-
-    /**
-     * A window resize handler used to calculate the number of buttons we can
-     * fit in the toolbar.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onResize() {
-        let widthToUse = window.innerWidth;
-
-        // Take chat size into account when resizing toolbox.
-        // if (this.props._chatOpen) {
-        //     widthToUse -= CHAT_SIZE;
-        // }
-
-        if (this.state.windowWidth !== widthToUse) {
-            this.setState({ windowWidth: widthToUse });
-        }
     }
 
 
@@ -993,33 +820,8 @@ class Toolbox extends Component<Props> {
             {
                 enable: !this.props._chatOpen
             }));
-        
-        if (APP.store.getState()['features/note'].isOpen) {
-            this._doToggleNote();
-        }
+        this._closeOverflowMenuIfOpen();
         this._doToggleChat();
-    }
-
-    _onToolbarToggleNote: () => void;
-
-    /**
-     * Creates an analytics toolbar event and dispatches an action for toggling
-     * the display of chat.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onToolbarToggleNote() {
-        sendAnalytics(createToolbarEvent(
-            'toggle.note',
-            {
-                enable: !this.props._noteOpen
-            }));
-        
-        if (APP.store.getState()['features/chat'].isOpen) {
-            this._doToggleChat();
-        }
-        this._doToggleNote();
     }
 
     _onToolbarToggleFullScreen: () => void;
@@ -1337,7 +1139,6 @@ class Toolbox extends Component<Props> {
     _getAdditionalButtons(buttons) {
         const {
             _chatOpen,
-            _noteOpen,
             _desktopSharingEnabled,
             _desktopSharingDisabledTooltipKey,
             _raisedHand,
@@ -1476,8 +1277,6 @@ class Toolbox extends Component<Props> {
      */
     _renderToolboxContent() {
         const {
-            _chatOpen,
-            _noteOpen,
             _clientWidth,
             _isMobile,
             _overflowMenuVisible,
@@ -1577,7 +1376,6 @@ function _mapStateToProps(state) {
 
     return {
         _chatOpen: state['features/chat'].isOpen,
-        _noteOpen: state['features/note'].isOpen,
         _clientWidth: clientWidth,
         _conference: conference,
         _desktopSharingEnabled: desktopSharingEnabled,
@@ -1597,8 +1395,7 @@ function _mapStateToProps(state) {
         _raisedHand: localParticipant.raisedHand,
         _screensharing: (localVideo && localVideo.videoType === 'desktop') || isScreenAudioShared(state),
         _visible: isToolboxVisible(state),
-        _visibleButtons: visibleButtons.equals(buttons) ? visibleButtons : buttons,
-        _conference: state['features/base/conference'].conference,
+        _visibleButtons: getToolbarButtons(state)
     };
 }
 
