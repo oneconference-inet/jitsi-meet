@@ -16,6 +16,17 @@ import { getJitsiMeetGlobalNS, loadScript, parseURIString } from '../base/util';
 import { AmplitudeHandler, MatomoHandler } from './handlers';
 import logger from './logger';
 
+import infoConf from "../../../infoConference";
+import infoUser from "../../../infoUser";
+import authXmpp from "../../../authXmpp";
+
+import { redirectToStaticPage } from "../app/actions";
+import CryptoJS from "crypto-js";
+import axios from "axios";
+
+declare var APP: Object;
+declare var interfaceConfig: Object;
+
 /**
  * Sends an event through the lib-jitsi-meet AnalyticsAdapter interface.
  *
