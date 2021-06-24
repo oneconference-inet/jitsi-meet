@@ -736,25 +736,29 @@ export default {
                 // the reverse order where the screensharing dialog will
                 // sometimes be closing the microphone alert ($.prompt.close();
                 // is called). Need to figure out dialogs chaining to fix that.
-                if (screenSharingError) {
-                    this._handleScreenSharingError(screenSharingError);
-                }
-                if (audioAndVideoError || audioOnlyError) {
-                    if (audioOnlyError || videoOnlyError) {
-                        // If both requests for 'audio' + 'video' and 'audio'
-                        // only failed, we assume that there are some problems
-                        // with user's microphone and show corresponding dialog.
-                        APP.store.dispatch(notifyMicError(audioOnlyError));
-                        APP.store.dispatch(notifyCameraError(videoOnlyError));
-                    } else {
-                        // If request for 'audio' + 'video' failed, but request
-                        // for 'audio' only was OK, we assume that we had
-                        // problems with camera and show corresponding dialog.
-                        APP.store.dispatch(
-                            notifyCameraError(audioAndVideoError)
-                        );
-                    }
-                }
+
+                // if (screenSharingError) {
+                //     this._handleScreenSharingError(screenSharingError);
+                // }
+                // if (audioAndVideoError || audioOnlyError) {
+                //     if (audioOnlyError || videoOnlyError) {
+                //         // If both requests for 'audio' + 'video' and 'audio'
+                //         // only failed, we assume that there are some problems
+                //         // with user's microphone and show corresponding dialog.
+                //         APP.store.dispatch(notifyMicError(audioOnlyError));
+                //         APP.store.dispatch(notifyCameraError(videoOnlyError));
+                //     } else {
+                //         // If request for 'audio' + 'video' failed, but request
+                //         // for 'audio' only was OK, we assume that we had
+                //         // problems with camera and show corresponding dialog.
+                //         APP.store.dispatch(
+                //             notifyCameraError(audioAndVideoError)
+                //         );
+                //     }
+                // }
+
+                // return [tracks, con];
+                this._displayErrorsForCreateInitialLocalTracks(errors);
 
                 return [tracks, con];
             }
