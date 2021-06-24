@@ -92,6 +92,7 @@ function decode(data, checkReload) {
             );
             resultData = bytes.toString(CryptoJS.enc.Utf8);
         }
+        console.log("resultData: ", resultData);
         return JSON.parse(resultData);
     } catch (error) {
         console.error(error);

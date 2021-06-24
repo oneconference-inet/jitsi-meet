@@ -1597,7 +1597,7 @@ function _mapStateToProps(state) {
         _raisedHand: localParticipant.raisedHand,
         _screensharing: (localVideo && localVideo.videoType === 'desktop') || isScreenAudioShared(state),
         _visible: isToolboxVisible(state),
-        _visibleButtons: equals(visibleButtons, buttons) ? visibleButtons : buttons,
+        _visibleButtons: visibleButtons.equals(buttons) ? visibleButtons : buttons,
         _conference: state['features/base/conference'].conference,
     };
 }
