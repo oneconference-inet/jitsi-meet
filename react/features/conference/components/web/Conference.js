@@ -28,6 +28,8 @@ import {
 } from "../AbstractConference";
 import type { AbstractProps } from "../AbstractConference";
 
+import Labels from './Labels';
+
 import ConferenceInfo from "./ConferenceInfo";
 import { default as Notice } from "./Notice";
 
