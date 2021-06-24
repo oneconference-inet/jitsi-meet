@@ -2,11 +2,10 @@
 
 import {
     PageReloadOverlay,
+    SlowGUMOverlay,
     SuspendedOverlay,
-    UserMediaPermissionsOverlay
-} from './components/web';
-
-declare var interfaceConfig: Object;
+    UserMediaPermissionsOverlay,
+} from "./components/web";
 
 /**
  * Returns the list of available platform specific overlays.
@@ -18,6 +17,6 @@ export function getOverlays(): Array<Object> {
         PageReloadOverlay,
         SuspendedOverlay,
         UserMediaPermissionsOverlay,
-        SlowGUMOverlay
+        SlowGUMOverlay,
     ];
 }
