@@ -246,13 +246,6 @@ function authenticate(room, lockPassword) {
     } else {
         logger.warn("Waiting For Room Owner.");
     }
-
-    APP.store.dispatch(
-        openAuthDialog(
-            room.getName(),
-            authenticate.bind(null, room, lockPassword)
-        )
-    );
 }
 
 /**
