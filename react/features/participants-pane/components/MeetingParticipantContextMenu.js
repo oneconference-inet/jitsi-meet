@@ -17,6 +17,7 @@ import { getIsParticipantVideoMuted } from '../../base/tracks';
 import { openChat } from '../../chat/actions';
 import { GrantModeratorDialog, KickRemoteParticipantDialog, MuteEveryoneDialog } from '../../video-menu';
 import MuteRemoteParticipantsVideoDialog from '../../video-menu/components/web/MuteRemoteParticipantsVideoDialog';
+import MuteRemoteParticipantDialog from '../../video-menu/components/web/MuteRemoteParticipantDialog';
 import { getComputedOuterHeight } from '../functions';
 
 import {
@@ -102,7 +103,7 @@ export const MeetingParticipantContextMenu = ({
     }, [ dispatch, participant ]);
 
     const muteEveryoneElse = useCallback(() => {
-        dispatch(openDialog(MuteEveryoneDialog, {
+        dispatch(openDialog(MuteRemoteParticipantDialog, {
             exclude: [ participant.id ]
         }));
     }, [ dispatch, participant ]);
