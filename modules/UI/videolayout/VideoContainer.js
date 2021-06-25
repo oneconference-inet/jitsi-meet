@@ -605,7 +605,7 @@ export class VideoContainer extends LargeContainer {
         // explicitly disabled.
         if (interfaceConfig.DISABLE_VIDEO_BACKGROUND
                 || browser.isFirefox()
-                || browser.isWebKitBased()) {
+                || browser.isSafari()) {
             return;
         }
 
