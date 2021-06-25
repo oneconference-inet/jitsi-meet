@@ -288,7 +288,6 @@ function _mapStateToProps(state, ownProps) {
     }
 
     return {
-        _isAudioMuted: isRemoteTrackMuted(tracks, MEDIA_TYPE.AUDIO, participantID) || false,
         _isModerator: Boolean(localParticipant?.role === PARTICIPANT_ROLE.MODERATOR),
         _disableKick: Boolean(disableKick),
         _disableRemoteMute: Boolean(disableRemoteMute),
