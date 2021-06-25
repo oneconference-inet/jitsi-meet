@@ -2385,7 +2385,7 @@ export default {
                             interfaceConfig.DEFAULT_REMOTE_DISPLAY_NAME
                     ),
                 });
-                APP.UI.changeDisplayName(id, formattedDisplayName);
+                // APP.UI.changeDisplayName(id, formattedDisplayName);
             }
         );
         room.on(JitsiConferenceEvents.BOT_TYPE_CHANGED, (id, botType) => {
@@ -2843,7 +2843,7 @@ export default {
         const displayName =
             APP.store.getState()["features/base/settings"].displayName;
 
-        APP.UI.changeDisplayName("localVideoContainer", displayName);
+        // APP.UI.changeDisplayName("localVideoContainer", displayName);
     },
 
     /**
@@ -3405,9 +3405,9 @@ export default {
             })
         );
 
-        if (room) {
-            APP.UI.changeDisplayName(id, formattedNickname);
-        }
+        // if (room) {
+        //     APP.UI.changeDisplayName(id, formattedNickname);
+        // }
     },
 
     /**
