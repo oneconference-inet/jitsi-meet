@@ -266,6 +266,15 @@ class Toolbox extends Component<Props> {
         this._onToolbarToggleShareAudio = this._onToolbarToggleShareAudio.bind(this);
         this._onToolbarOpenLocalRecordingInfoDialog = this._onToolbarOpenLocalRecordingInfoDialog.bind(this);
         this._onShortcutToggleTileView = this._onShortcutToggleTileView.bind(this);
+
+        this.state = {
+            meetingid: '',
+            roomname: '',
+            name: '',
+            checkPlatform: '',
+            endpoint: interfaceConfig.SOCKET_NODE || '',
+            windowWidth: window.innerWidth
+        };
     }
 
     /**
@@ -274,7 +283,112 @@ class Toolbox extends Component<Props> {
      * @inheritdoc
      * @returns {void}
      */
+     async onSocketHost(state) {
+        const { meetingid, roomname, name, checkPlatform, endpoint } = state
+        const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || []
+        const socket = socketIOClient(endpoint)
+        // Get approve incomming conference
+        let getApprove
+        if (services_check.includes(checkPlatform)) {
+            if(checkPlatform !== 'onemail_dga') {
+                getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
+            } else {
+                'Room is not defined function approve!!!'
+            }
+            // console.log("Approve: ", getApprove)
+            if (getApprove.data.approve) {
+                logger.log('Room is require approve to join.')
+                APP.store.dispatch(setLobbyModeEnabled(true));
+                onSocketReqJoin(meetingid, endpoint, this.props);
+            } else {
+                logger.warn('Room is not defined function approve!!!')
+            }
+        }
+        // On socket for Host
+        logger.log('Moderator ONE-Conference On Socket-for-Feature')
+        socket.emit('createRoom', { meetingId: meetingid, roomname: roomname, name: name });
+        socket.on(meetingid, (payload) => {
+            switch(payload.eventName) {
+                case 'pollResponse':
+                    console.log("pollResponse-Payload: ", payload)
+                    break;
+                case 'handleApprove':
+                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
+                    APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
+                    break;
+                default:
+                    logger.warn('Event coming is not defined!!')
+              }
+        });
+
+    }
+
+    async onAttendee(state) {
+        const { meetingid, roomname, name, checkPlatform, endpoint } = state
+        const socket = socketIOClient(endpoint)
+        logger.log('Attendee ONE-Conference On Socket-for-Feature')
+        socket.on(meetingid, async(payload) => {
+            logger.log("Socket-payload: ", payload);
+            switch(payload.eventName) {
+                case 'trackMute':
+                    logger.log("trackMute-Payload: ", payload)
+                    // attendee.setLockMute(payload.mute) //true or false
+                    this.props.dispatch(setAudioMutedAll(payload.mute)) // Lock is button Audio
+                    break;
+                case 'coHost':
+                    logger.log("coHost Payload: ", payload)
+                    APP.store.dispatch(participantRoleChanged(payload.participantID, 'moderator'));
+                    APP.API.notifyUserRoleChanged(payload.participantID, 'moderator');
+
+                    let getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
+                    if (getApprove.data.approve) {
+                        onSocketReqJoin(meetingid, endpoint, this.props);
+                    }
+
+                    break;
+                case 'handleApprove':
+                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
+                    APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
+                    break;
+                default:
+                    logger.warn('Event coming is not defined!!')
+                }
+        });
+    }
+
     componentDidMount() {
+        const isModerator = infoConf.getIsModerator();
+        const checkPlatform = infoConf.getService();
+        this.setState({
+            meetingid: infoConf.getMeetingId(),
+            roomname: infoConf.getRoomName(),
+            name: infoConf.getNameJoin(),
+            checkPlatform: infoConf.getService(),
+        },() => {
+            if (isModerator) {
+                
+                if (checkPlatform === "manageAi" || checkPlatform === "followup" || checkPlatform === "onedental" || checkPlatform === "jmc" || checkPlatform === "telemedicine" || checkPlatform === "emeeting" || checkPlatform === "onebinar" || checkPlatform === "education") {
+                    //Recording when start conference
+                    let appData = JSON.stringify({
+                        'file_recording_metadata': {
+                            'share': this.state.sharingEnabled
+                        }
+                    });
+
+                    setTimeout(() => {
+                        this.props._conference.startRecording({
+                            mode: JitsiRecordingConstants.mode.FILE,
+                            appData
+                        });
+                    }, 5000);
+                }
+                else{
+                    this.onSocketHost(this.state);
+                }
+            } else {
+                this.onAttendee(this.state);
+            }
+        });
         const KEYBOARD_SHORTCUTS = [
             this._shouldShowButton('videoquality') && {
                 character: 'A',
