@@ -497,19 +497,43 @@ export default {
      */
     createInitialLocalTracks(options = {}) {
         const errors = {};
-        const initialDevices = ["audio"];
-        const requestedAudio = true;
+        // const initialDevices = ["audio"];
+        // const requestedAudio = true;
+        // let requestedVideo = false;
+
+        // // Always get a handle on the audio input device so that we have statistics even if the user joins the
+        // // conference muted. Previous implementation would only acquire the handle when the user first unmuted,
+        // // which would results in statistics ( such as "No audio input" or "Are you trying to speak?") being available
+        // // only after that point.
+        // if (options.startWithAudioMuted) {
+        //     this.muteAudio(true, true);
+        // }
+
+        // if (
+        //     !options.startWithVideoMuted &&
+        //     !options.startAudioOnly &&
+        //     !options.startScreenSharing
+        // ) {
+        //     initialDevices.push("video");
+        //     requestedVideo = true;
+        // }
+
+        // JitsiMeetJS.mediaDevices.addEventListener(
+        //     JitsiMediaDevicesEvents.PERMISSION_PROMPT_IS_SHOWN,
+        //     (browserName) =>
+        //         APP.store.dispatch(
+        //             mediaPermissionPromptVisibilityChanged(true, browserName)
+        //         )
+        // );
+        
+        // Always get a handle on the audio input device so that we have statistics (such as "No audio input" or
+        // "Are you trying to speak?" ) even if the user joins the conference muted.
+        const initialDevices = config.disableInitialGUM ? [] : ["audio"];
+        const requestedAudio = !config.disableInitialGUM;
         let requestedVideo = false;
 
-        // Always get a handle on the audio input device so that we have statistics even if the user joins the
-        // conference muted. Previous implementation would only acquire the handle when the user first unmuted,
-        // which would results in statistics ( such as "No audio input" or "Are you trying to speak?") being available
-        // only after that point.
-        if (options.startWithAudioMuted) {
-            this.muteAudio(true, true);
-        }
-
         if (
+            !config.disableInitialGUM &&
             !options.startWithVideoMuted &&
             !options.startAudioOnly &&
             !options.startScreenSharing
@@ -518,13 +542,18 @@ export default {
             requestedVideo = true;
         }
 
-        JitsiMeetJS.mediaDevices.addEventListener(
-            JitsiMediaDevicesEvents.PERMISSION_PROMPT_IS_SHOWN,
-            (browserName) =>
-                APP.store.dispatch(
-                    mediaPermissionPromptVisibilityChanged(true, browserName)
-                )
-        );
+        if (!config.disableInitialGUM) {
+            JitsiMeetJS.mediaDevices.addEventListener(
+                JitsiMediaDevicesEvents.PERMISSION_PROMPT_IS_SHOWN,
+                (browserName) =>
+                    APP.store.dispatch(
+                        mediaPermissionPromptVisibilityChanged(
+                            true,
+                            browserName
+                        )
+                    )
+            );
+        }
 
         JitsiMeetJS.mediaDevices.addEventListener(
             JitsiMediaDevicesEvents.SLOW_GET_USER_MEDIA,
