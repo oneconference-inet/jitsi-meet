@@ -94,6 +94,15 @@ import ToggleCameraButton from './ToggleCameraButton';
 import ToolbarButton from './ToolbarButton';
 import VideoSettingsButton from './VideoSettingsButton';
 
+import Logger from 'jitsi-meet-logger';
+
+import { setAudioMutedAll } from '../../../base/media';
+import { onSocketReqJoin, setLobbyModeEnabled, knockingParticipantLeft } from '../../../lobby';
+import infoConf from '../../../../../infoConference';
+import socketIOClient from 'socket.io-client';
+import axios from 'axios';
+
+import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
@@ -224,6 +233,9 @@ type Props = {
 };
 
 declare var APP: Object;
+declare var interfaceConfig: Object;
+
+const logger = Logger.getLogger(__filename);
 
 /**
  * Implements the conference toolbox on React/Web.
