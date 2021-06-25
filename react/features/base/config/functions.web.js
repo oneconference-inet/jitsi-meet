@@ -42,5 +42,6 @@ export function getDialOutUrl(state: Object): string {
 export function getToolbarButtons(state: Object): Array<string> {
     const { toolbarButtons } = state['features/base/config'];
 
+    console.log("getToolbarButtons: ",state,toolbarButtons);
     return Array.isArray(toolbarButtons) ? toolbarButtons : TOOLBAR_BUTTONS;
 }
