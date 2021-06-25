@@ -20,6 +20,7 @@ import { MiddlewareRegistry, StateListenerRegistry } from '../base/redux';
 import { playSound, registerSound, unregisterSound } from '../base/sounds';
 import { openDisplayNamePrompt } from '../display-name';
 import { showToolbox } from '../toolbox/actions';
+import { isButtonEnabled } from '../toolbox/functions';
 
 import { ADD_MESSAGE, SEND_MESSAGE, OPEN_CHAT, CLOSE_CHAT } from './actionTypes';
 import { addMessage, clearMessages } from './actions';
