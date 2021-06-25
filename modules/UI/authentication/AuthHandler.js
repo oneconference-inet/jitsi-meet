@@ -14,6 +14,8 @@ import authXmpp from "../../../authXmpp";
 import LoginDialog from "./LoginDialog";
 
 let externalAuthWindow;
+let authRequiredDialog;
+
 declare var APP: Object;
 
 const logger = Logger.getLogger(__filename);
