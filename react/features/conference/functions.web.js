@@ -6,12 +6,9 @@ import { toState } from '../base/redux';
 import { getBackendSafePath, getJitsiMeetGlobalNS } from '../base/util';
 import { getVpaasBillingId } from '../billing-counter/functions';
 import { showWarningNotification } from '../notifications';
-// import { createRnnoiseProcessorPromise } from '../rnnoise';
-import UIEvents from '../../../service/UI/UIEvents';
+import { createRnnoiseProcessor } from '../stream-effects/rnnoise';
 
 export * from './functions.any';
-
-declare var APP: Object;
 
 /**
  * Returns the result of getWiFiStats from the global NS or does nothing
