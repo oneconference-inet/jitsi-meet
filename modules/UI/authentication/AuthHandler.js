@@ -354,7 +354,7 @@ function showXmppPasswordPrompt(roomName, connect) {
 
 export default {
     authenticate,
-    requireAuth,,
+    requireAuth,
     requestAuth,
     closeAuth,
     logout,
