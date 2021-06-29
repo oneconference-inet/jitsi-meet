@@ -35,6 +35,8 @@ const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
  * @param {string} [lockPassword] password to use if the conference is locked
  */
 function doExternalAuth(room, lockPassword) {
+    const config = APP.store.getState()["features/base/config"];
+
     if (externalAuthWindow) {
         externalAuthWindow.focus();
 
@@ -44,8 +46,10 @@ function doExternalAuth(room, lockPassword) {
     if (room.isJoined()) {
         let getUrl;
 
-        if (isTokenAuthEnabled) {
-            getUrl = Promise.resolve(getTokenAuthUrl(room.getName(), true));
+        if (isTokenAuthEnabled(config)) {
+            getUrl = Promise.resolve(
+                getTokenAuthUrl(config)(room.getName(), true)
+            );
             initJWTTokenListener(room);
         } else {
             getUrl = room.getExternalAuthUrl(true);
@@ -58,7 +62,7 @@ function doExternalAuth(room, lockPassword) {
                 }
             });
         });
-    } else if (isTokenAuthEnabled) {
+    } else if (isTokenAuthEnabled(config)) {
         redirectToTokenAuthService(room.getName());
     } else {
         room.getExternalAuthUrl().then(UIUtil.redirect);
@@ -72,6 +76,8 @@ function doExternalAuth(room, lockPassword) {
  * @param {string} [roomName] the name of the conference room.
  */
 export function redirectToTokenAuthService(roomName: string) {
+    const config = APP.store.getState()["features/base/config"];
+
     // FIXME: This method will not preserve the other URL params that were
     // originally passed.
     UIUtil.redirect(getTokenAuthUrl(config)(roomName, false));
@@ -332,7 +338,7 @@ function showXmppPasswordPrompt(roomName, connect) {
  * JitsiConnectionErrors.
  * @returns {Promise<JitsiConnection>}
  */
- function requestAuth(roomName, connect) {
+function requestAuth(roomName, connect) {
     if (isTokenAuthEnabled) {
         // This Promise never resolves as user gets redirected to another URL
         return new Promise(() => redirectToTokenAuthService(roomName));
@@ -340,17 +346,6 @@ function showXmppPasswordPrompt(roomName, connect) {
 
     return showXmppPasswordPrompt(roomName, connect);
 }
-
-/**
- * Show Authentication Dialog and try to connect with new credentials.
- * If failed to connect because of PASSWORD_REQUIRED error
- * then ask for password again.
- * @param {string} [roomName] name of the conference room
- * @param {function(id, password, roomName)} [connect] function that returns
- * a Promise which resolves with JitsiConnection or fails with one of
- * JitsiConnectionErrors.
- * @returns {Promise<JitsiConnection>}
- */
 
 export default {
     authenticate,
