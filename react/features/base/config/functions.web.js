@@ -41,7 +41,7 @@ export function getDialOutUrl(state: Object): string {
  * @returns {Array<string>} - The list of enabled toolbar buttons.
  */
 export function getToolbarButtons(state: Object): Array<string> {
-    const { toolbarButtons } = state["features/base/config"];
+    // const { toolbarButtons } = state["features/base/config"];
 
-    return Array.isArray(toolbarButtons) ? toolbarButtons : TOOLBAR_BUTTONS;
+    return TOOLBAR_BUTTONS;
 }
