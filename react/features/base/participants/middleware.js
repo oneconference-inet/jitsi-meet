@@ -96,7 +96,8 @@ MiddlewareRegistry.register(store => next => action => {
 
     case KICK_PARTICIPANT: {
         const { conference } = store.getState()['features/base/conference'];
-
+        /// emit to socket kick event
+        // socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
         conference.kickParticipant(action.id);
         break;
     }
@@ -134,6 +135,7 @@ MiddlewareRegistry.register(store => next => action => {
 
     case PARTICIPANT_UPDATED:
         return _participantJoinedOrUpdated(store, next, action);
+
     }
 
     return next(action);
@@ -283,7 +285,6 @@ function _localParticipantJoined({ getState, dispatch }, next, action) {
     const settings = getState()['features/base/settings'];
 
     dispatch(localParticipantJoined({
-        avatarID: settings.avatarID,
         avatarURL: settings.avatarURL,
         email: settings.email,
         name: settings.displayName
@@ -359,7 +360,8 @@ function _maybePlaySounds({ getState, dispatch }, action) {
  * @private
  * @returns {Object} The value returned by {@code next(action)}.
  */
-function _participantJoinedOrUpdated({ dispatch, getState }, next, action) {
+function _participantJoinedOrUpdated(store, next, action) {
+    const { dispatch, getState } = store;
     const { participant: { avatarURL, e2eeEnabled, email, id, local, name, raisedHand } } = action;
 
     // Send an external update of the local participant's raised hand state
@@ -395,7 +397,7 @@ function _participantJoinedOrUpdated({ dispatch, getState }, next, action) {
         const participantId = !id && local ? getLocalParticipant(getState()).id : id;
         const updatedParticipant = getParticipantById(getState(), participantId);
 
-        getFirstLoadableAvatarUrl(updatedParticipant)
+        getFirstLoadableAvatarUrl(updatedParticipant, store)
             .then(url => {
                 dispatch(setLoadableAvatarUrl(participantId, url));
             });
