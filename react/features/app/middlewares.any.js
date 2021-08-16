@@ -21,6 +21,7 @@ import '../base/user-interaction/middleware';
 import '../billing-counter/middleware';
 import '../calendar-sync/middleware';
 import '../chat/middleware';
+// import '../note/middleware';
 import '../conference/middleware';
 import '../connection-indicator/middleware';
 import '../deep-linking/middleware';
@@ -45,5 +46,7 @@ import '../transcribing/middleware';
 import '../video-layout/middleware';
 import '../video-quality/middleware';
 import '../videosipgw/middleware';
+import '../polls/middleware';
+import '../polls/subscriber';
 
 import './middleware';

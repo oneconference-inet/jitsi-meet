@@ -1,14 +1,32 @@
 #sideToolbarContainer {
+    // background-color: $newToolbarBackgroundColor;
+    // box-sizing: border-box;
+    // color: #FFF;
+    // display: flex;
+    // flex-direction: column;
+    // height: 100%;
+    // left: -$sidebarWidth;
+    // overflow: hidden;
+    // position: absolute;
+    // top: 0;
+    // width: $sidebarWidth;
+    // z-index: $sideToolbarContainerZ;
+
     background-color: $newToolbarBackgroundColor;
     box-sizing: border-box;
     color: #FFF;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    /**
+     * Make the sidebar flush with the top of the toolbar. Take the size of
+     * the toolbar and subtract from 100%.
+     */
+    height: calc(100% - #{$newToolbarSizeWithPadding});
     left: -$sidebarWidth;
     overflow: hidden;
     position: absolute;
     top: 0;
+    transition: left 0.5s;
     width: $sidebarWidth;
     z-index: $sideToolbarContainerZ;
 

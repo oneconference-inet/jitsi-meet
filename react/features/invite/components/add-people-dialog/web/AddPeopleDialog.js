@@ -22,6 +22,7 @@ import Header from './Header';
 import InviteByEmailSection from './InviteByEmailSection';
 import InviteContactsSection from './InviteContactsSection';
 import LiveStreamSection from './LiveStreamSection';
+import infoConf from '../../../../../../infoConference';
 
 declare var interfaceConfig: Object;
 
@@ -155,7 +156,7 @@ function AddPeopleDialog({
             width = { 'small' }>
             <div className = 'invite-more-dialog'>
                 { _inviteContactsVisible && <InviteContactsSection /> }
-                <CopyMeetingLinkSection url = { _inviteUrl } />
+                <CopyMeetingLinkSection url = { infoConf.geturlInvite() } />
                 <InviteByEmailSection
                     inviteSubject = { inviteSubject }
                     inviteText = { invite } />

@@ -1,6 +1,7 @@
 platform :ios, '11.0'
 workspace 'jitsi-meet'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+install! 'cocoapods', :deterministic_uuids => false
 
 target 'jitsi-meet' do
   project 'app/app.xcodeproj'
@@ -66,6 +67,7 @@ target 'JitsiMeet' do
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
   pod 'RNWatch', :path => '../node_modules/react-native-watch-connectivity'
   pod 'RNDefaultPreference', :path => '../node_modules/react-native-default-preference'
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
   # Native pod dependencies
   #

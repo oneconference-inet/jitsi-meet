@@ -6,8 +6,11 @@ import { toState } from '../base/redux';
 import { getBackendSafePath, getJitsiMeetGlobalNS } from '../base/util';
 import { showWarningNotification } from '../notifications';
 import { createRnnoiseProcessorPromise } from '../rnnoise';
+import UIEvents from '../../../service/UI/UIEvents';
 
 export * from './functions.any';
+
+declare var APP: Object;
 
 /**
  * Returns the result of getWiFiStats from the global NS or does nothing
@@ -57,6 +60,7 @@ export function maybeShowSuboptimalExperienceNotification(dispatch, t) {
  * @returns {Object} - Options object.
  */
 export function getConferenceOptions(stateful) {
+
     const state = toState(stateful);
 
     const options = state['features/base/config'];
@@ -77,9 +81,12 @@ export function getConferenceOptions(stateful) {
         options.statisticsId = email;
     }
 
+    if (locationURL) {
+        options.confID = `${locationURL.host}${getBackendSafePath(locationURL.pathname)}`;
+    }
+
     options.applicationName = getName();
     options.getWiFiStatsMethod = getWiFiStatsMethod;
-    options.confID = `${locationURL.host}${getBackendSafePath(locationURL.pathname)}`;
     options.createVADProcessor = createRnnoiseProcessorPromise;
 
     // Disable CallStats, if requessted.

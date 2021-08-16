@@ -29,7 +29,7 @@ MiddlewareRegistry.register(store => next => action => {
         // We need the full update result to be in the store already
         const result = next(action);
 
-        _findLoadableAvatarForKnockingParticipant(store, action.participant);
+        // _findLoadableAvatarForKnockingParticipant(store, action.participant);
 
         return result;
     }
@@ -144,12 +144,13 @@ function _conferenceJoined({ dispatch }, next, action) {
  * @param {Object} participant - The knocking participant.
  * @returns {void}
  */
-function _findLoadableAvatarForKnockingParticipant({ dispatch, getState }, { id }) {
+function _findLoadableAvatarForKnockingParticipant(store, { id }) {
+    const { dispatch, getState } = store;
     const updatedParticipant = getState()['features/lobby'].knockingParticipants.find(p => p.id === id);
     const { disableThirdPartyRequests } = getState()['features/base/config'];
 
     if (!disableThirdPartyRequests && updatedParticipant && !updatedParticipant.loadableAvatarUrl) {
-        getFirstLoadableAvatarUrl(updatedParticipant).then(loadableAvatarUrl => {
+        getFirstLoadableAvatarUrl(updatedParticipant, store).then(loadableAvatarUrl => {
             if (loadableAvatarUrl) {
                 dispatch(participantIsKnockingOrUpdated({
                     loadableAvatarUrl,
