@@ -189,9 +189,10 @@ StateListenerRegistry.register(
  * @returns {void}
  */
 function _addChatMsgListener(conference, store) {
-
-    if (store.getState()['features/base/config'].iAmRecorder) {
-        // We don't register anything on web if we are in iAmRecorder mode
+    if ((typeof APP !== 'undefined' && !isButtonEnabled('chat'))
+        || store.getState()['features/base/config'].iAmRecorder) {
+        // We don't register anything on web if the chat button is not enabled in interfaceConfig
+        // or we are in iAmRecorder mode
         return;
     }
 
@@ -254,9 +255,10 @@ function _handleReceivedMessage({ dispatch, getState }, { id, message, privateMe
     const state = getState();
     const { isOpen: isChatOpen } = state['features/chat'];
 
-    if (!isChatOpen) {
-        dispatch(playSound(INCOMING_MSG_SOUND_ID));
-    }
+    // Notification sound when chat close
+    // if (!isChatOpen) {
+    //     dispatch(playSound(INCOMING_MSG_SOUND_ID));
+    // }
 
     // Provide a default for for the case when a message is being
     // backfilled for a participant that has left the conference.

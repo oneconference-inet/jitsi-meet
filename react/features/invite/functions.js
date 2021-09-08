@@ -9,7 +9,7 @@ import { getLocalParticipant, isLocalParticipantModerator } from '../base/partic
 import { toState } from '../base/redux';
 import { doGetJSON, parseURIString } from '../base/util';
 import { isVpaasMeeting } from '../billing-counter/functions';
-
+import infoConf from '../../../infoConference';
 import { INVITE_TYPES, SIP_ADDRESS_REGEX } from './constants';
 import logger from './logger';
 
@@ -277,7 +277,7 @@ export function getInviteText({
         : t('info.inviteURLFirstPartGeneral');
 
     invite += t('info.inviteURLSecondPart', {
-        url: inviteURL
+        url: infoConf.geturlInvite()
     });
 
     if (liveStreamViewURL) {

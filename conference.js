@@ -134,6 +134,10 @@ import { createPresenterEffect } from './react/features/stream-effects/presenter
 import { endpointMessageReceived } from './react/features/subtitles';
 import UIEvents from './service/UI/UIEvents';
 
+import infoConf from "./infoConference";
+import infoUser from "./infoUser";
+import authXmpp from "./authXmpp";
+
 const logger = Logger.getLogger(__filename);
 
 const eventEmitter = new EventEmitter();
@@ -313,7 +317,9 @@ class ConferenceConnector {
             const { password }
                 = APP.store.getState()['features/base/conference'];
 
-            AuthHandler.requireAuth(room, password);
+            if (!infoConf.getIsModerator()) {
+              AuthHandler.requireAuth(room, password);
+            }
 
             break;
         }
@@ -379,6 +385,7 @@ class ConferenceConnector {
         if (this.reconnectTimeout !== null) {
             clearTimeout(this.reconnectTimeout);
         }
+        AuthHandler.closeAuth();
     }
 
     /**
@@ -481,6 +488,10 @@ export default {
         const initialDevices = config.disableInitialGUM ? [] : [ 'audio' ];
         const requestedAudio = !config.disableInitialGUM;
         let requestedVideo = false;
+
+        if (options.startWithAudioMuted) {
+          this.muteAudio(true, true);
+        }
 
         if (!config.disableInitialGUM
                 && !options.startWithVideoMuted
@@ -727,6 +738,7 @@ export default {
         APP.connection = connection = con;
 
         this._createRoom(tracks);
+        APP.remoteControl.init();
 
         // if user didn't give access to mic or camera or doesn't have
         // them at all, we mark corresponding toolbar buttons as muted,
@@ -741,6 +753,8 @@ export default {
         }
 
         if (config.iAmRecorder) {
+            infoConf.setConfirm();
+            infoUser.setiAmRecord();
             this.recorder = new Recorder();
         }
 
@@ -768,16 +782,40 @@ export default {
      * @returns {Promise}
      */
     async init({ roomName }) {
-        const initialOptions = {
+        // const initialOptions = {
+        //     startAudioOnly: config.startAudioOnly,
+        //     startScreenSharing: config.startScreenSharing,
+        //     startWithAudioMuted: getStartWithAudioMuted(APP.store.getState())
+        //         || config.startSilent
+        //         || isUserInteractionRequiredForUnmute(APP.store.getState()),
+        //     startWithVideoMuted: getStartWithVideoMuted(APP.store.getState())
+        //         || isUserInteractionRequiredForUnmute(APP.store.getState())
+        // };
+        var initialOptions = {};
+        var option = infoUser.getOption()
+        if (!config.iAmRecorder) {
+          // Only Voice
+          initialOptions = {
             startAudioOnly: config.startAudioOnly,
             startScreenSharing: config.startScreenSharing,
-            startWithAudioMuted: getStartWithAudioMuted(APP.store.getState())
-                || config.startSilent
-                || isUserInteractionRequiredForUnmute(APP.store.getState()),
-            startWithVideoMuted: getStartWithVideoMuted(APP.store.getState())
-                || isUserInteractionRequiredForUnmute(APP.store.getState())
-        };
+            startWithAudioMuted: option.muteall? true : option.audio? false : true, // false = open , true = close
+            startWithVideoMuted: option.video? false : true, // false = open , true = close
+          };
+        } else {
+          initialOptions = {
+            // Bot Setting
+            startAudioOnly: true,
+            startScreenSharing: false,
+            startWithAudioMuted: false,
+            startWithVideoMuted: true,
+          };
+        }
 
+        if (option.muteall) {
+          APP.store.dispatch(setAudioMutedAll(option.muteall))
+        }
+        logger.info("Mute All State: ", option.muteall)
+      
         this.roomName = roomName;
 
         try {
@@ -1055,9 +1093,14 @@ export default {
      * @return {boolean} whether the participant is moderator
      */
     isParticipantModerator(id) {
+      const isModerator = infoConf.getIsModerator();
+      if (isModerator) {
         const user = room.getParticipantById(id);
-
         return user && user.isModerator();
+      } else {
+        const user = room.getParticipantById(id);
+        return user;
+      }
     },
 
     /**
@@ -1083,6 +1126,17 @@ export default {
      */
     isCallstatsEnabled() {
         return room && room.isCallstatsEnabled();
+    },
+
+    /**
+     * Sends the given feedback through CallStats if enabled.
+     *
+     * @param overallFeedback an integer between 1 and 5 indicating the
+     * user feedback
+     * @param detailedFeedback detailed feedback from the user. Not yet used
+     */
+    sendFeedback(overallFeedback, detailedFeedback) {
+      return room.sendFeedback(overallFeedback, detailedFeedback);
     },
 
     /**
@@ -1351,6 +1405,11 @@ export default {
     },
 
     _getConferenceOptions() {
+        // set Room By MC API
+        this.changeLocalDisplayName.bind(this);
+        this.changeLocalDisplayName(infoConf.getNameJoin());
+        APP.store.dispatch(setSubject(infoConf.getRoomName()));
+
         return getConferenceOptions(APP.store.getState());
     },
 
@@ -2022,13 +2081,14 @@ export default {
         });
 
         room.on(JitsiConferenceEvents.USER_ROLE_CHANGED, (id, role) => {
-            if (this.isLocalId(id)) {
+            if (this.isLocalId(id) && infoConf.getIsModerator()) {
                 logger.info(`My role changed, new role: ${role}`);
 
                 APP.store.dispatch(localParticipantRoleChanged(role));
                 APP.API.notifyUserRoleChanged(id, role);
             } else {
-                APP.store.dispatch(participantRoleChanged(id, role));
+                // APP.store.dispatch(participantRoleChanged(id, role));
+                logger.info("My role changed, new role: Participant");
             }
         });
 
@@ -2171,6 +2231,26 @@ export default {
             APP.store.dispatch(kickedOut(room, participant));
         });
 
+        APP.remoteControl.on(RemoteControlEvents.ACTIVE_CHANGED, (isActive) => {
+          room.setLocalParticipantProperty("remoteControlSessionStatus", isActive);
+          APP.UI.setLocalRemoteControlActiveChanged();
+        });
+
+        /* eslint-disable max-params */
+        room.on(
+          JitsiConferenceEvents.PARTICIPANT_PROPERTY_CHANGED,
+          (participant, name, oldValue, newValue) => {
+            switch (name) {
+              case "remoteControlSessionStatus":
+                APP.UI.setRemoteControlActiveStatus(participant.getId(), newValue);
+                break;
+              default:
+
+              // ignore
+            }
+          }
+        );
+
         room.on(JitsiConferenceEvents.PARTICIPANT_KICKED, (kicker, kicked) => {
             APP.store.dispatch(participantKicked(kicker, kicked));
         });
@@ -2268,9 +2348,12 @@ export default {
             });
         });
 
-        APP.UI.addListener(UIEvents.AUTH_CLICKED, () => {
-            AuthHandler.authenticate(room);
-        });
+        if (infoConf.getIsModerator() && !config.iAmRecorder) {
+          AuthHandler.authenticate(room);
+        }
+        // APP.UI.addListener(UIEvents.AUTH_CLICKED, () => {
+        //     AuthHandler.authenticate(room);
+        // });
 
         APP.UI.addListener(
             UIEvents.VIDEO_DEVICE_CHANGED,
@@ -2482,6 +2565,11 @@ export default {
         }
 
         APP.store.dispatch(conferenceJoined(room));
+
+        const displayName = APP.store.getState()["features/base/settings"]
+          .displayName;
+
+        APP.UI.changeDisplayName("localVideoContainer", displayName);
     },
 
     /**
@@ -2784,6 +2872,7 @@ export default {
         }
 
         APP.UI.removeAllListeners();
+        APP.remoteControl.removeAllListeners();
 
         let requestFeedbackPromise;
 

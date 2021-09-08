@@ -10,6 +10,8 @@ import { createRnnoiseProcessor } from '../stream-effects/rnnoise';
 
 export * from './functions.any';
 
+declare var APP: Object;
+
 /**
  * Returns the result of getWiFiStats from the global NS or does nothing
 (returns empty result).
@@ -58,6 +60,7 @@ export function maybeShowSuboptimalExperienceNotification(dispatch, t) {
  * @returns {Object} - Options object.
  */
 export function getConferenceOptions(stateful) {
+
     const state = toState(stateful);
 
     const options = state['features/base/config'];

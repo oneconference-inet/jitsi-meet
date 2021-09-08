@@ -73,11 +73,11 @@ class LargeVideo extends Component<Props> {
             _noAutoPlayVideo
         } = this.props;
         const style = this._getCustomSyles();
-        const className = `videocontainer${_isChatOpen ? ' shift-right' : ''}`;
+        // const className = `videocontainer${this.props._isChatOpen ? ' shift-right' : ''}`;
 
         return (
             <div
-                className = { className }
+                className = 'videocontainer'
                 id = 'largeVideoContainer'
                 style = { style }>
                 <SharedVideo />
@@ -154,7 +154,8 @@ class LargeVideo extends Component<Props> {
 function _mapStateToProps(state) {
     const testingConfig = state['features/base/config'].testing;
     const { backgroundColor, backgroundImageUrl } = state['features/dynamic-branding'];
-    const { isOpen: isChatOpen } = state['features/chat'];
+    // const { isOpen: isChatOpen } = state['features/chat'];
+    const isChatOpen = false;
 
     return {
         _backgroundAlpha: state['features/base/config'].backgroundAlpha,

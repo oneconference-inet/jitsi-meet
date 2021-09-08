@@ -1,6 +1,9 @@
 // @flow
 
 import { getCurrentConference } from '../base/conference';
+import { participantIsKnockingOrUpdated } from './actions';
+import socketIOClient from 'socket.io-client';
+import Logger from 'jitsi-meet-logger';
 
 /**
  * Approves (lets in) or rejects a knocking participant.
@@ -22,13 +25,21 @@ export function setKnockingParticipantApproval(getState: Function, id: string, a
     }
 }
 
-
 /**
  * Selector to return lobby state.
  *
  * @param {any} state - State object.
  * @returns {any}
  */
-export function getLobbyState(state: any) {
+ export function getLobbyState(state: any) {
     return state['features/lobby'];
+
+export function onSocketReqJoin(meetingId, endpoint, props) {
+    const { dispatch } = props
+    const logger = Logger.getLogger(__filename);
+    const socket = socketIOClient(endpoint)
+    socket.on(meetingId+'-requestjoin' , (incoming) => {
+        logger.log("Incoming-Join: ", incoming)
+        dispatch(participantIsKnockingOrUpdated(incoming));
+    })
 }

@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import React from "react";
 
 import { Avatar } from '../../../base/avatar';
 import { translate } from '../../../base/i18n';
@@ -9,11 +9,12 @@ import { isToolboxVisible } from '../../../toolbox/functions.web';
 import { HIDDEN_EMAILS } from '../../constants';
 import AbstractKnockingParticipantList, {
     mapStateToProps as abstractMapStateToProps,
-    type Props as AbstractProps
-} from '../AbstractKnockingParticipantList';
+    type Props as AbstractProps,
+} from "../AbstractKnockingParticipantList";
+
+import infoConf from "../../../../../infoConference";
 
 type Props = AbstractProps & {
-
     /**
      * True if the toolbox is visible, so we need to adjust the position.
      */
@@ -38,10 +39,11 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
 
         return (
             <div
-                className = { _toolboxVisible ? 'toolbox-visible' : '' }
-                id = 'knocking-participant-list'>
-                <span className = 'title'>
-                    { t('lobby.knockingParticipantList') }
+                className={_toolboxVisible ? "toolbox-visible" : ""}
+                id="knocking-participant-list"
+            >
+                <span className="title">
+                    {t("lobby.knockingParticipantList")}
                 </span>
                 <ul className = 'knocking-participants-container'>
                     { _participants.map(p => (
@@ -61,30 +63,48 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                                     <span data-testid = 'knockingParticipant.email'>
                                         { p.email }
                                     </span>
-                                ) }
+                                    {p.email && (
+                                        <span data-testid="knockingParticipant.email">
+                                            {p.email}
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    className="primary"
+                                    data-testid="lobby.allow"
+                                    onClick={() =>
+                                        this._onRespondToParticipantSocket(
+                                            p.id,
+                                            p.name,
+                                            true
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {t("lobby.allow")}
+                                </button>
+                                <button
+                                    className="borderLess"
+                                    data-testid="lobby.reject"
+                                    onClick={() =>
+                                        this._onRespondToParticipantSocket(
+                                            p.id,
+                                            p.name,
+                                            false
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {t("lobby.reject")}
+                                </button>
                             </div>
-                            <button
-                                className = 'primary'
-                                data-testid = 'lobby.allow'
-                                onClick = { this._onRespondToParticipant(p.id, true) }
-                                type = 'button'>
-                                { t('lobby.allow') }
-                            </button>
-                            <button
-                                className = 'borderLess'
-                                data-testid = 'lobby.reject'
-                                onClick = { this._onRespondToParticipant(p.id, false) }
-                                type = 'button'>
-                                { t('lobby.reject') }
-                            </button>
+                            
                         </li>
-                    )) }
+                    ))}
                 </ul>
             </div>
         );
     }
-
-    _onRespondToParticipant: (string, boolean) => Function;
 }
 
 /**
@@ -96,7 +116,7 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
 function _mapStateToProps(state: Object): $Shape<Props> {
     return {
         ...abstractMapStateToProps(state),
-        _toolboxVisible: isToolboxVisible(state)
+        _toolboxVisible: isToolboxVisible(state),
     };
 }
 

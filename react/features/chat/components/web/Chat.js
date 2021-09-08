@@ -139,7 +139,7 @@ class Chat extends AbstractChat<Props> {
         );
     }
 
-    _renderPanelContent: () => React$Node | null;
+    _renderPanelContent: (string) => React$Node | null;
 
     /**
      * Renders the contents of the chat panel.

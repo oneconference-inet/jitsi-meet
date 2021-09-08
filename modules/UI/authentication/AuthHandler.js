@@ -1,6 +1,6 @@
 // @flow
 
-import Logger from 'jitsi-meet-logger';
+import Logger from "jitsi-meet-logger";
 
 import { openConnection } from '../../../connection';
 import {
@@ -13,9 +13,13 @@ import {
 } from '../../../react/features/authentication/functions';
 import { isDialogOpen } from '../../../react/features/base/dialog';
 import { setJWT } from '../../../react/features/base/jwt';
+import { toJid } from "../../../react/features/base/connection/functions";
 import UIUtil from '../util/UIUtil';
 
-import LoginDialog from './LoginDialog';
+import infoConf from "../../../infoConference";
+import authXmpp from "../../../authXmpp";
+
+import LoginDialog from "./LoginDialog";
 
 
 let externalAuthWindow;
@@ -23,6 +27,12 @@ declare var APP: Object;
 
 const logger = Logger.getLogger(__filename);
 
+const isTokenAuthEnabled =
+    typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
+const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
+    null,
+    config.tokenAuthUrl
+);
 
 /**
  * Authenticate using external service or just focus
@@ -49,16 +59,13 @@ function doExternalAuth(room, lockPassword) {
         } else {
             getUrl = room.getExternalAuthUrl(true);
         }
-        getUrl.then(url => {
-            externalAuthWindow = LoginDialog.showExternalAuthDialog(
-                url,
-                () => {
-                    externalAuthWindow = null;
-                    if (!isTokenAuthEnabled(config)) {
-                        room.join(lockPassword);
-                    }
+        getUrl.then((url) => {
+            externalAuthWindow = LoginDialog.showExternalAuthDialog(url, () => {
+                externalAuthWindow = null;
+                if (!isTokenAuthEnabled) {
+                    room.join(lockPassword);
                 }
-            );
+            });
         });
     } else if (isTokenAuthEnabled(config)) {
         redirectToTokenAuthService(room.getName());
@@ -92,8 +99,10 @@ function initJWTTokenListener(room) {
      */
     function listener({ data, source }) {
         if (externalAuthWindow !== source) {
-            logger.warn('Ignored message not coming '
-                + 'from external authnetication window');
+            logger.warn(
+                "Ignored message not coming " +
+                    "from external authnetication window"
+            );
 
             return;
         }
@@ -101,7 +110,7 @@ function initJWTTokenListener(room) {
         let jwt;
 
         if (data && (jwt = data.jwtToken)) {
-            logger.info('Received JSON Web Token (JWT):', jwt);
+            logger.info("Received JSON Web Token (JWT):", jwt);
 
             APP.store.dispatch(setJWT(jwt));
 
@@ -128,27 +137,42 @@ function initJWTTokenListener(room) {
                     // to upgrade user's role
                     room.room.moderator.authenticate()
                         .then(() => {
-                            logger.info('User role upgrade done !');
-                            // eslint-disable-line no-use-before-define
-                            unregister();
+                            connection.disconnect();
+
+                            // At this point we'll have session-ID stored in
+                            // the settings. It wil be used in the call below
+                            // to upgrade user's role
+                            room.room.moderator
+                                .authenticate()
+                                .then(() => {
+                                    logger.info("User role upgrade done !");
+                                    // eslint-disable-line no-use-before-define
+                                    unregister();
+                                })
+                                .catch((err, errCode) => {
+                                    logger.error(
+                                        "Authentication failed: ",
+                                        err,
+                                        errCode
+                                    );
+                                    unregister();
+                                });
                         })
-                        .catch((err, errCode) => {
-                            logger.error('Authentication failed: ',
-                                err, errCode);
+                        .catch((error, code) => {
                             unregister();
+                            connection.disconnect();
+                            logger.error(
+                                "Authentication failed on the new connection",
+                                error,
+                                code
+                            );
                         });
-                })
-                .catch((error, code) => {
+                },
+                (err) => {
                     unregister();
-                    connection.disconnect();
-                    logger.error(
-                        'Authentication failed on the new connection',
-                        error, code);
-                });
-            }, err => {
-                unregister();
-                logger.error('Failed to open new connection', err);
-            });
+                    logger.error("Failed to open new connection", err);
+                }
+            );
         }
     }
 
@@ -156,11 +180,11 @@ function initJWTTokenListener(room) {
      *
      */
     function unregister() {
-        window.removeEventListener('message', listener);
+        window.removeEventListener("message", listener);
     }
 
     if (window.addEventListener) {
-        window.addEventListener('message', listener, false);
+        window.addEventListener("message", listener, false);
     }
 }
 
@@ -170,13 +194,21 @@ function initJWTTokenListener(room) {
  * @param {JitsiConference} room
  * @param {string} [lockPassword] password to use if the conference is locked
  */
-function authenticate(room: Object, lockPassword: string) {
-    const config = APP.store.getState()['features/base/config'];
-
-    if (isTokenAuthEnabled(config) || room.isExternalAuthEnabled()) {
+ function authenticate(room, lockPassword) {
+    const isModerator = infoConf.getIsModerator();
+    if (isTokenAuthEnabled || room.isExternalAuthEnabled()) {
         doExternalAuth(room, lockPassword);
+    } else if (isModerator) {
+        const user = toJid(authXmpp.getUserXmpp(), config.hosts);
+        const password = authXmpp.getPassXmpp();
+        room.authenticateAndUpgradeRole({
+            id: user,
+            password: password,
+            roomPassword: lockPassword,
+        });
+        // doXmppAuth(room, lockPassword);
     } else {
-        APP.store.dispatch(openLoginDialog());
+        logger.warn("Waiting For Room Owner.");
     }
 }
 
@@ -206,7 +238,7 @@ function requireAuth(room: Object, lockPassword: string) {
 function logout(room: Object) {
     return new Promise(resolve => {
         room.room.moderator.logout(resolve);
-    }).then(url => {
+    }).then((url) => {
         // de-authenticate conference on the fly
         if (room.isJoined()) {
             room.join();
