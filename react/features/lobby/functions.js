@@ -33,6 +33,8 @@ export function setKnockingParticipantApproval(getState: Function, id: string, a
  */
  export function getLobbyState(state: any) {
     return state['features/lobby'];
+ }
+ 
 
 export function onSocketReqJoin(meetingId, endpoint, props) {
     const { dispatch } = props
