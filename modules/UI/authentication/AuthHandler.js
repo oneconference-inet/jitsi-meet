@@ -30,12 +30,12 @@ const logger = Logger.getLogger(__filename);
 
 let authRequiredDialog;
 
-const isTokenAuthEnabled =
-    typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
-const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
-    null,
-    config.tokenAuthUrl
-);
+// const isTokenAuthEnabled =
+//     typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
+// const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
+//     null,
+//     config.tokenAuthUrl
+// );
 
 
 /**
