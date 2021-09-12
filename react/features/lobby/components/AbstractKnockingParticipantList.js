@@ -92,7 +92,7 @@ export default class AbstractKnockingParticipantList<P: Props = Props> extends P
  * @returns {Props}
  */
 export function mapStateToProps(state: Object): $Shape<Props> {
-    const { knockingParticipants, lobbyEnabled } = getLobbyState(state);
+    const { knockingParticipants } = state['features/lobby'];
 
     return {
         _participants: knockingParticipants,

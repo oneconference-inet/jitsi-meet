@@ -3,20 +3,13 @@
 import React from 'react';
 
 import { Dialog } from '../../base/dialog';
+import { MEDIA_TYPE } from '../../base/media';
 import { getLocalParticipant, getParticipantDisplayName } from '../../base/participants';
 import { muteAllParticipants } from '../actions';
 
 import AbstractMuteRemoteParticipantDialog, {
     type Props as AbstractProps
 } from './AbstractMuteRemoteParticipantDialog';
-
-import axios from "axios";
-import infoConf from '../../../../infoConference';
-import socketIOClient from 'socket.io-client';
-import Logger from "jitsi-meet-logger";
-
-declare var interfaceConfig: Object;
-const logger = Logger.getLogger(__filename);
 
 /**
  * The type of the React {@code Component} props of
@@ -28,13 +21,6 @@ export type Props = AbstractProps & {
     exclude: Array<string>,
     title: string
 };
-
-export type PropsTrack = {
-
-    dialog: String,
-
-    track: boolean
-}
 
 /**
  *
@@ -55,22 +41,21 @@ export default class AbstractMuteEveryoneDialog<P: Props> extends AbstractMuteRe
      * @inheritdoc
      * @returns {ReactElement}
      */
-    // render() {
-    //     const { content, title } = this.props;
-    //     const { track, dialog } = this._trackAudioMute();
+    render() {
+        const { content, title } = this.props;
 
-    //     return (
-    //         <Dialog
-    //             okKey = { dialog }
-    //             onSubmit = { this._onSubmit }
-    //             titleString = { track ? title : 'UnMute everyone except yourself?'}
-    //             width = 'small'>
-    //             <div>
-    //                 { track ? content : 'Unlock Mute everyone this Room.' }
-    //             </div>
-    //         </Dialog>
-    //     );
-    // }
+        return (
+            <Dialog
+                okKey = 'dialog.muteParticipantButton'
+                onSubmit = { this._onSubmit }
+                titleString = { title }
+                width = 'small'>
+                <div>
+                    { content }
+                </div>
+            </Dialog>
+        );
+    }
 
     _onSubmit: () => boolean;
 
@@ -85,67 +70,9 @@ export default class AbstractMuteEveryoneDialog<P: Props> extends AbstractMuteRe
             exclude
         } = this.props;
 
-        const socket = socketIOClient(interfaceConfig.SOCKET_NODE)
-        const { track } = this._trackAudioMute(this.props);
-        const data = {
-            eventName: 'trackMute',
-            meetingId: infoConf.getMeetingId(),
-            mute: track
-        }
-
-        if (track) {
-            dispatch(muteAllParticipants(exclude));
-            socket.emit('trackMute', data)
-            infoConf.setMuteAllState(true)
-            this._apiTrackmute(true);
-        } else {
-            socket.emit('trackMute', data)
-            infoConf.setMuteAllState(false)
-            this._apiTrackmute(false);
-        }
-
-        logger.info("trackMute state: ", track);
-        // dispatch(muteAllParticipants(exclude)); 
+        dispatch(muteAllParticipants(exclude, MEDIA_TYPE.AUDIO));
 
         return true;
-    }
-
-    _trackAudioMute(props): PropsTrack {
-        const { t } = props 
-        const trackMuteAll = infoConf.getMuteAllState();
-
-        return !trackMuteAll ? {
-            dialog: t('dialog.muteParticipantButton'),
-            _title: t('dialog.muteEveryoneTitle'),
-            _content: t('dialog.muteEveryoneDialog'),
-            track: true
-        } : {
-            dialog: t('dialog.unMuteParticipantButton'),
-            _title: t('dialog.trackUnmuteTitle'),
-            _content: t('dialog.trackUnmuteContent'),
-            track: false
-        };
-    }
-
-    async _apiTrackmute(mute) {
-        const meetingId = infoConf.getMeetingId();
-        const service = infoConf.getService();
-        // console.log('------------service mute', service);
-        try {
-            if(service === 'onemail_dga') {
-                await axios.post(interfaceConfig.DOMAIN_ONEMAIL_DGA + "/trackMuteAll", {
-                    meetingId: meetingId,
-                    muteAll: mute,
-                });
-            } else {
-                await axios.post(interfaceConfig.DOMAIN + "/trackMuteAll", {
-                    meetingId: meetingId,
-                    muteAll: mute,
-                });
-            }
-        } catch (error) {
-            logger.error("Error api track mute: ", error);
-        }
     }
 }
 
@@ -157,7 +84,7 @@ export default class AbstractMuteEveryoneDialog<P: Props> extends AbstractMuteRe
  * @returns {Props}
  */
 export function abstractMapStateToProps(state: Object, ownProps: Props) {
-    const { exclude, t } = ownProps;
+    const { exclude = [], t } = ownProps;
 
     const whom = exclude
         // eslint-disable-next-line no-confusing-arrow

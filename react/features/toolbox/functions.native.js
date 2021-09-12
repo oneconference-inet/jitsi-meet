@@ -76,13 +76,3 @@ export function isToolboxVisible(stateful: Object | Function) {
 export function isVideoMuteButtonDisabled(state: Object) {
     return !hasAvailableDevices(state, 'videoInput') || isLocalVideoTrackDesktop(state);
 }
-
-/**
- * Indicates if the video mute button is disabled or not.
- *
- * @param {string} state - The state from the Redux store.
- * @returns {boolean}
- */
-export function isVideoMuteButtonDisabled(state: Object) {
-    return !hasAvailableDevices(state, 'videoInput') || isLocalVideoTrackDesktop(state);
-}

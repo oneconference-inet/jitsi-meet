@@ -105,8 +105,7 @@ MiddlewareRegistry.register(store => next => action => {
 
     case KICK_PARTICIPANT: {
         const { conference } = store.getState()['features/base/conference'];
-        /// emit to socket kick event
-        // socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
+
         conference.kickParticipant(action.id);
         break;
     }
@@ -387,7 +386,7 @@ function _maybePlaySounds({ getState, dispatch }, action) {
  */
 function _participantJoinedOrUpdated(store, next, action) {
     const { dispatch, getState } = store;
-    const { participant: { avatarURL, e2eeEnabled, email, id, local, name, raisedHand } } = action;
+    const { participant: { avatarURL, email, id, local, name, raisedHand } } = action;
 
     // Send an external update of the local participant's raised hand state
     // if a new raised hand state is defined in the action.

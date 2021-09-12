@@ -1,19 +1,21 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 
-import { Avatar } from "../../../base/avatar";
-import { translate } from "../../../base/i18n";
-import { connect } from "../../../base/redux";
-import { isToolboxVisible } from "../../../toolbox/functions.web";
+import { Avatar } from '../../../base/avatar';
+import { translate } from '../../../base/i18n';
+import { connect } from '../../../base/redux';
+import { isToolboxVisible } from '../../../toolbox/functions.web';
+import { HIDDEN_EMAILS } from '../../constants';
 import AbstractKnockingParticipantList, {
     mapStateToProps as abstractMapStateToProps,
-    type Props as AbstractProps,
-} from "../AbstractKnockingParticipantList";
+    type Props as AbstractProps
+} from '../AbstractKnockingParticipantList';
 
-import infoConf from "../../../../../infoConference";
+import infoConf from '../../../../../infoConference';
 
 type Props = AbstractProps & {
+
     /**
      * True if the toolbox is visible, so we need to adjust the position.
      */
@@ -38,15 +40,16 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
 
         return (
             <div
-                className={_toolboxVisible ? "toolbox-visible" : ""}
-                id="knocking-participant-list"
-            >
-                <span className="title">
-                    {t("lobby.knockingParticipantList")}
+                className = { _toolboxVisible ? 'toolbox-visible' : '' }
+                id = 'knocking-participant-list'>
+                <span className = 'title'>
+                    { t('lobby.knockingParticipantList') }
                 </span>
-                <ul>
-                    {_participants.map((p) => (
-                        <li key={p.id}>
+                <ul className = 'knocking-participants-container'>
+                    { _participants.map(p => (
+                        <li
+                            className = 'knocking-participant'
+                            key = { p.id }>
                             {/* <Avatar
                                 displayName = { p.name }
                                 size = { 48 }
@@ -55,53 +58,41 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                             {infoConf.getIsSecretRoom() ? (
                                 <img src={p.image} />
                             ) : null}
-                            <div style={{ display: "flex" }}>
-                                <div className="details">
-                                    <span data-testid="knockingParticipant.name">
-                                        {p.name}
+                            <div style={{ display: 'flex' }}>
+                                <div className = 'details'>
+                                    <span data-testid = 'knockingParticipant.name'>
+                                        { p.name }
                                     </span>
-                                    {p.email && (
-                                        <span data-testid="knockingParticipant.email">
-                                            {p.email}
+                                    { p.email && !HIDDEN_EMAILS.includes(p.email) && (
+                                        <span data-testid = 'knockingParticipant.email'>
+                                            { p.email }
                                         </span>
-                                    )}
+                                    ) }
                                 </div>
                                 <button
-                                    className="primary"
-                                    data-testid="lobby.allow"
-                                    onClick={() =>
-                                        this._onRespondToParticipantSocket(
-                                            p.id,
-                                            p.name,
-                                            true
-                                        )
-                                    }
-                                    type="button"
-                                >
-                                    {t("lobby.allow")}
+                                    className = 'primary'
+                                    data-testid = 'lobby.allow'
+                                    onClick = { this._onRespondToParticipant(p.id, true) }
+                                    type = 'button'>
+                                    { t('lobby.allow') }
                                 </button>
                                 <button
-                                    className="borderLess"
-                                    data-testid="lobby.reject"
-                                    onClick={() =>
-                                        this._onRespondToParticipantSocket(
-                                            p.id,
-                                            p.name,
-                                            false
-                                        )
-                                    }
-                                    type="button"
-                                >
-                                    {t("lobby.reject")}
+                                    className = 'borderLess'
+                                    data-testid = 'lobby.reject'
+                                    onClick = { this._onRespondToParticipant(p.id, false) }
+                                    type = 'button'>
+                                    { t('lobby.reject') }
                                 </button>
                             </div>
                             
                         </li>
-                    ))}
+                    )) }
                 </ul>
             </div>
         );
     }
+
+    _onRespondToParticipant: (string, boolean) => Function;
 }
 
 /**
@@ -113,7 +104,7 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
 function _mapStateToProps(state: Object): $Shape<Props> {
     return {
         ...abstractMapStateToProps(state),
-        _toolboxVisible: isToolboxVisible(state),
+        _toolboxVisible: isToolboxVisible(state)
     };
 }
 

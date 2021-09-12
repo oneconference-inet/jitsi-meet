@@ -1,17 +1,17 @@
 // @flow
 
-import { Component } from "react";
+import { Component } from 'react';
 
 import {
     createRemoteVideoMenuButtonEvent,
-    sendAnalytics,
-} from "../../analytics";
+    sendAnalytics
+} from '../../analytics';
 import {
     grantModerator,
     participantRoleChanged,
-} from "../../base/participants";
-import socketIOClient from "socket.io-client";
-import infoConf from "../../../../infoConference";
+} from '../../base/participants';
+import socketIOClient from 'socket.io-client';
+import infoConf from '../../../../infoConference';
 
 declare var interfaceConfig: Object;
 
@@ -29,7 +29,7 @@ type Props = {
     /**
      * Function to translate i18n labels.
      */
-    t: Function,
+    t: Function
 };
 
 /**
@@ -45,7 +45,7 @@ export default class AbstractGrantModeratorDialog extends Component<Props> {
         super(props);
 
         this.state = {
-            endpoint: interfaceConfig.SOCKET_NODE || "",
+            endpoint: interfaceConfig.SOCKET_NODE || '',
         };
 
         this._onSubmit = this._onSubmit.bind(this);
@@ -65,18 +65,18 @@ export default class AbstractGrantModeratorDialog extends Component<Props> {
         const meetingId = infoConf.getMeetingId();
 
         sendAnalytics(
-            createRemoteVideoMenuButtonEvent("grant.moderator.button", {
+            createRemoteVideoMenuButtonEvent('grant.moderator.button', {
                 participant_id: participantID,
             })
         );
 
         dispatch(grantModerator(participantID));
 
-        socket.emit("coHost", {
+        socket.emit('coHost', {
             meetingId: meetingId,
             participantID: participantID,
         });
-        dispatch(participantRoleChanged(participantID, "moderator"));
+        dispatch(participantRoleChanged(participantID, 'moderator'));
 
         return true;
     }

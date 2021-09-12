@@ -25,9 +25,6 @@ local target_subdomain_pattern = "^"..escaped_muc_domain_prefix..".([^%.]+)%."..
 -- table to store all incoming iqs without roomname in it, like discoinfo to the muc compoent
 local roomless_iqs = {};
 
--- table to store all incoming iqs without roomname in it, like discoinfo to the muc compoent
-local roomless_iqs = {};
-
 -- Utility function to split room JID to include room name and subdomain
 -- (e.g. from room1@conference.foo.example.com/res returns (room1, example.com, res, foo))
 local function room_jid_split_subdomain(room_jid)

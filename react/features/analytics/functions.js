@@ -1,11 +1,11 @@
 // @flow
 
-import { API_ID } from "../../../modules/API/constants";
-import { getName as getAppName } from "../app/functions";
+import { API_ID } from '../../../modules/API/constants';
+import { getName as getAppName } from '../app/functions';
 import {
     checkChromeExtensionsInstalled,
-    isMobileBrowser,
-} from "../base/environment/utils";
+    isMobileBrowser
+} from '../base/environment/utils';
 import JitsiMeetJS, {
     analytics,
     browser,
@@ -13,8 +13,8 @@ import JitsiMeetJS, {
 } from '../base/lib-jitsi-meet';
 import { getJitsiMeetGlobalNS, loadScript, parseURIString } from '../base/util';
 
-import { AmplitudeHandler, MatomoHandler } from "./handlers";
-import logger from "./logger";
+import { AmplitudeHandler, MatomoHandler } from './handlers';
+import logger from './logger';
 
 import infoConf from "../../../infoConference";
 import infoUser from "../../../infoUser";
@@ -26,6 +26,7 @@ import axios from "axios";
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
+
 
 /**
  * Sends an event through the lib-jitsi-meet AnalyticsAdapter interface.
@@ -61,6 +62,7 @@ export function getAmplitudeIdentity() {
 export function resetAnalytics() {
     analytics.reset();
 }
+
 
 // Reload Page With Parameter (Token)
 
@@ -117,15 +119,11 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
         return [];
     }
-    // Test data Encrypto JS
-    // var data = [{id: 1}, {id: 2}]
-    // var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), interfaceConfig.DECODE_TOKEN).toString();
 
-    logger.log("test train oneconf.");
-    
     const state = getState();
-    const config = state["features/base/config"];
-    const { locationURL } = state["features/base/connection"];
+    const config = state['features/base/config'];
+    const { locationURL } = state['features/base/connection'];
+
     const repeatAccess = reloadPage();
     const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
     const tokenDecode = locationURL.href.split("?")[1];
@@ -320,8 +318,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
         APP.store.dispatch(redirectToStaticPage("static/errorURL.html"));
     }
     document.title = "ONECONFERENCE-MEET";
-    const host = locationURL ? locationURL.host : "";
-    const { analytics: analyticsConfig = {}, deploymentInfo } = config;
+    
+    const host = locationURL ? locationURL.host : '';
+    const {
+        analytics: analyticsConfig = {},
+        deploymentInfo
+    } = config;
     const {
         amplitudeAPPKey,
         blackListedEvents,
@@ -329,13 +331,13 @@ export async function createHandlers({ getState }: { getState: Function }) {
         googleAnalyticsTrackingId,
         matomoEndpoint,
         matomoSiteID,
-        whiteListedEvents,
+        whiteListedEvents
     } = analyticsConfig;
-    const { group, user } = state["features/base/jwt"];
+    const { group, user } = state['features/base/jwt'];
     const handlerConstructorOptions = {
         amplitudeAPPKey,
         blackListedEvents,
-        envType: (deploymentInfo && deploymentInfo.envType) || "dev",
+        envType: (deploymentInfo && deploymentInfo.envType) || 'dev',
         googleAnalyticsTrackingId,
         matomoEndpoint,
         matomoSiteID,
@@ -345,7 +347,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
         subproduct: deploymentInfo && deploymentInfo.environment,
         user: user && user.id,
         version: JitsiMeetJS.version,
-        whiteListedEvents,
+        whiteListedEvents
     };
     const handlers = [];
 
@@ -357,7 +359,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
             handlers.push(amplitude);
         } catch (e) {
-            logger.error("Failed to initialize Amplitude handler", e);
+            logger.error('Failed to initialize Amplitude handler', e);
         }
     }
 
@@ -367,7 +369,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
             handlers.push(matomo);
         } catch (e) {
-            logger.error("Failed to initialize Matomo handler", e);
+            logger.error('Failed to initialize Matomo handler', e);
         }
     }
 
@@ -375,13 +377,10 @@ export async function createHandlers({ getState }: { getState: Function }) {
         let externalHandlers;
 
         try {
-            externalHandlers = await _loadHandlers(
-                scriptURLs,
-                handlerConstructorOptions
-            );
+            externalHandlers = await _loadHandlers(scriptURLs, handlerConstructorOptions);
             handlers.push(...externalHandlers);
         } catch (e) {
-            logger.error("Failed to initialize external analytics handlers", e);
+            logger.error('Failed to initialize external analytics handlers', e);
         }
     }
 
@@ -403,17 +402,16 @@ export async function createHandlers({ getState }: { getState: Function }) {
  * @param {Array<Object>} handlers - The analytics handlers.
  * @returns {void}
  */
-export function initAnalytics(
-    { getState }: { getState: Function },
-    handlers: Array<Object>
-) {
+export function initAnalytics({ getState }: { getState: Function }, handlers: Array<Object>) {
     if (!isAnalyticsEnabled(getState) || handlers.length === 0) {
         return;
     }
 
     const state = getState();
     const config = state['features/base/config'];
-    const { deploymentInfo } = config;
+    const {
+        deploymentInfo
+    } = config;
     const { group, server } = state['features/base/jwt'];
     const roomName = state['features/base/conference'].room;
     const { locationURL = {} } = state['features/base/connection'];
@@ -431,12 +429,10 @@ export function initAnalytics(
     permanentProperties.appName = getAppName();
 
     // Report if user is using websocket
-    permanentProperties.websocket =
-        navigator.product !== "ReactNative" &&
-        typeof config.websocket === "string";
+    permanentProperties.websocket = navigator.product !== 'ReactNative' && typeof config.websocket === 'string';
 
     // Report if user is using the external API
-    permanentProperties.externalApi = typeof API_ID === "number";
+    permanentProperties.externalApi = typeof API_ID === 'number';
 
     // Report if we are loaded in iframe
     permanentProperties.inIframe = _inIframe();
@@ -461,19 +457,15 @@ export function initAnalytics(
     analytics.setAnalyticsHandlers(handlers);
 
     if (!isMobileBrowser() && browser.isChrome()) {
-        const bannerCfg = state["features/base/config"].chromeExtensionBanner;
+        const bannerCfg = state['features/base/config'].chromeExtensionBanner;
 
-        checkChromeExtensionsInstalled(bannerCfg).then(
-            (extensionsInstalled) => {
-                if (extensionsInstalled?.length) {
-                    analytics.addPermanentProperties({
-                        hasChromeExtension: extensionsInstalled.some(
-                            (ext) => ext
-                        ),
-                    });
-                }
+        checkChromeExtensionsInstalled(bannerCfg).then(extensionsInstalled => {
+            if (extensionsInstalled?.length) {
+                analytics.addPermanentProperties({
+                    hasChromeExtension: extensionsInstalled.some(ext => ext)
+                });
             }
-        );
+        });
     }
 }
 
@@ -484,7 +476,7 @@ export function initAnalytics(
  * @private
  */
 function _inIframe() {
-    if (navigator.product === "ReactNative") {
+    if (navigator.product === 'ReactNative') {
         return false;
     }
 
@@ -511,22 +503,20 @@ function _loadHandlers(scriptURLs = [], handlerConstructorOptions) {
         promises.push(
             loadScript(url).then(
                 () => {
-                    return { type: "success" };
+                    return { type: 'success' };
                 },
-                (error) => {
+                error => {
                     return {
-                        type: "error",
+                        type: 'error',
                         error,
-                        url,
+                        url
                     };
-                }
-            )
-        );
+                }));
     }
 
-    return Promise.all(promises).then((values) => {
+    return Promise.all(promises).then(values => {
         for (const el of values) {
-            if (el.type === "error") {
+            if (el.type === 'error') {
                 logger.warn(`Failed to load ${el.url}: ${el.error}`);
             }
         }
@@ -536,7 +526,7 @@ function _loadHandlers(scriptURLs = [], handlerConstructorOptions) {
         // check the old location to provide legacy support
         const analyticsHandlers = [
             ...getJitsiMeetGlobalNS().analyticsHandlers,
-            ...window.analyticsHandlers,
+            ...window.analyticsHandlers
         ];
         const handlers = [];
 

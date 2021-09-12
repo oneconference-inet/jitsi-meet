@@ -4,10 +4,10 @@ import { createToolbarEvent, sendAnalytics } from '../../analytics';
 import { openDialog } from '../../base/dialog';
 import { translate } from '../../base/i18n';
 import { IconMuteEveryone } from '../../base/icons';
-import { getLocalParticipant, PARTICIPANT_ROLE } from '../../base/participants';
+import { getLocalParticipant, isLocalParticipantModerator, PARTICIPANT_ROLE } from '../../base/participants';
 import { connect } from '../../base/redux';
 import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
-import { MuteEveryoneDialog } from '../../remote-video-menu/components';
+import { MuteEveryoneDialog } from '../../video-menu/components';
 
 import infoConf from '../../../../infoConference';
 
@@ -17,6 +17,11 @@ type Props = AbstractButtonProps & {
      * The Redux dispatch function.
      */
     dispatch: Function,
+
+    /*
+     ** Whether the local participant is a moderator or not.
+     */
+    isModerator: Boolean,
 
     /**
      * The ID of the local participant.
@@ -60,12 +65,14 @@ class MuteEveryoneButton extends AbstractButton<Props, *> {
  */
 function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
+    const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
     const { disableRemoteMute } = state['features/base/config'];
     const { visible = isLocalParticipantModerator(state) && !disableRemoteMute } = ownProps;
 
     return {
+        isModerator,
         localParticipantId: localParticipant.id,
-        visible
+        visible: visible && isModerator && !disableRemoteMute
     };
 }
 

@@ -189,10 +189,9 @@ StateListenerRegistry.register(
  * @returns {void}
  */
 function _addChatMsgListener(conference, store) {
-    if ((typeof APP !== 'undefined' && !isButtonEnabled('chat'))
-        || store.getState()['features/base/config'].iAmRecorder) {
-        // We don't register anything on web if the chat button is not enabled in interfaceConfig
-        // or we are in iAmRecorder mode
+
+    if (store.getState()['features/base/config'].iAmRecorder) {
+        // We don't register anything on web if we are in iAmRecorder mode
         return;
     }
 

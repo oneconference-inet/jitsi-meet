@@ -91,10 +91,6 @@ UI.initConference = function() {
  * established, false - otherwise (for example in the case of welcome page)
  */
 UI.start = function() {
-    // Set the defaults for prompt dialogs.
-    $.prompt.setDefaults({ persistent: false });
-
-    VideoLayout.init(eventEmitter);
     VideoLayout.initLargeVideo();
 
     // Do not animate the video area on UI start (second argument passed into
@@ -234,50 +230,6 @@ UI.toggleFilmstrip = function() {
     const { visible } = APP.store.getState()['features/filmstrip'];
 
     APP.store.dispatch(setFilmstripVisible(!visible));
-};
-
-/**
- * Toggles the visibility of the chat panel.
- */
-UI.toggleChat = () => APP.store.dispatch(toggleChat());
-
-/**
- * Handle new user display name.
- */
-UI.inputDisplayNameHandler = function(newDisplayName) {
-    eventEmitter.emit(UIEvents.NICKNAME_CHANGED, newDisplayName);
-};
-
-// FIXME check if someone user this
-UI.showLoginPopup = function(callback) {
-    logger.log('password is required');
-
-    const message
-        = `<input name="username" type="text"
-                placeholder="user@domain.net"
-                data-i18n="[placeholder]dialog.user"
-                class="input-control" autofocus>
-         <input name="password" type="password"
-                data-i18n="[placeholder]dialog.userPassword"
-                class="input-control"
-                placeholder="user password">`
-
-    ;
-
-    // eslint-disable-next-line max-params
-    const submitFunction = (e, v, m, f) => {
-        if (v && f.username && f.password) {
-            callback(f.username, f.password);
-        }
-    };
-
-    messageHandler.openTwoButtonDialog({
-        titleKey: 'dialog.passwordRequired',
-        msgString: message,
-        leftButtonKey: 'dialog.Ok',
-        submitFunction,
-        focus: ':input:first'
-    });
 };
 
 /**

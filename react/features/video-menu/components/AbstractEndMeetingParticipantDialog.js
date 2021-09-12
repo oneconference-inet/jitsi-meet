@@ -3,8 +3,8 @@
 import { Component } from 'react';
 
 import UIEvents from '../../../../service/UI/UIEvents';
-import { getActiveSession } from "../../recording/functions";
-import { JitsiRecordingConstants } from "../../base/lib-jitsi-meet";
+import { getActiveSession } from '../../recording/functions';
+import { JitsiRecordingConstants } from '../../base/lib-jitsi-meet';
 
 declare var APP: Object;
 
@@ -61,7 +61,7 @@ export default class AbstractEndMeetingParticipantDialog<P:Props = Props>
 
         if (_fileRecordingSessionOn) {
             const _conference =
-                state["features/base/conference"].conference;
+                state['features/base/conference'].conference;
             const _fileRecordingSession = getActiveSession(
                 state,
                 JitsiRecordingConstants.mode.FILE

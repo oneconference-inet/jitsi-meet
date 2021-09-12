@@ -34,7 +34,7 @@ function _mapStateToProps(state: Object, ownProps: Props) {
     let { visible } = ownProps;
 
     if (typeof visible === 'undefined') {
-        visible = toolbarButtons.includes('livestreaming') && abstractProps.visible && visibleByService;
+        visible = toolbarButtons.includes('livestreaming') && abstractProps.visible;
     }
 
     return {

@@ -1,21 +1,21 @@
 // @flow
 
-import _ from "lodash";
+import _ from 'lodash';
 
-import { createToolbarEvent, sendAnalytics } from "../../analytics";
-import { appNavigate } from "../../app/actions";
-import { disconnect } from "../../base/connection";
-import { translate } from "../../base/i18n";
-import { connect } from "../../base/redux";
-import { AbstractHangupButton } from "../../base/toolbox/components";
-import type { AbstractButtonProps } from "../../base/toolbox/components";
-import { getLocalParticipant, PARTICIPANT_ROLE } from "../../base/participants";
-import { EndMeetingDialog } from "../../remote-video-menu/components";
-import { openDialog } from "../../base/dialog";
+import { createToolbarEvent, sendAnalytics } from '../../analytics';
+import { appNavigate } from '../../app/actions';
+import { disconnect } from '../../base/connection';
+import { translate } from '../../base/i18n';
+import { connect } from '../../base/redux';
+import { AbstractHangupButton } from '../../base/toolbox/components';
+import type { AbstractButtonProps } from '../../base/toolbox/components';
+import { getLocalParticipant, PARTICIPANT_ROLE } from '../../base/participants';
+import { EndMeetingDialog } from '../../remote-video-menu/components';
+import { openDialog } from '../../base/dialog';
 
-import axios from "axios";
-import infoConf from "../../../../infoConference";
-import infoUser from "../../../../infoUser";
+import axios from 'axios';
+import infoConf from '../../../../infoConference';
+import infoUser from '../../../../infoUser';
 
 declare var interfaceConfig: Object;
 declare var APP: Object;
@@ -27,7 +27,7 @@ type Props = AbstractButtonProps & {
     /**
      * The redux {@code dispatch} function.
      */
-    dispatch: Function,
+    dispatch: Function
 };
 
 /**
@@ -38,9 +38,9 @@ type Props = AbstractButtonProps & {
 class HangupButton extends AbstractHangupButton<Props, *> {
     _hangup: Function;
 
-    accessibilityLabel = "toolbar.accessibilityLabel.hangup";
-    label = "toolbar.hangup";
-    tooltip = "toolbar.hangup";
+    accessibilityLabel = 'toolbar.accessibilityLabel.hangup';
+    label = 'toolbar.hangup';
+    tooltip = 'toolbar.hangup';
 
     /**
      * Initializes a new HangupButton instance.
@@ -52,18 +52,18 @@ class HangupButton extends AbstractHangupButton<Props, *> {
         super(props);
 
         this._hangup = () => {
-            // sendAnalytics(createToolbarEvent("hangup"));
+            // sendAnalytics(createToolbarEvent('hangup'));
             // this._endJoin();
 
             // FIXME: these should be unified.
-            if (navigator.product === "ReactNative") {
+            if (navigator.product === 'ReactNative') {
                 this.props.dispatch(appNavigate(undefined));
             } else {
                 const { dispatch, localParticipantId, isModerator } =
                     this.props;
 
                 if (isModerator) {
-                    sendAnalytics(createToolbarEvent("endmeeting.pressed"));
+                    sendAnalytics(createToolbarEvent('endmeeting.pressed'));
                     dispatch(
                         openDialog(EndMeetingDialog, {
                             exclude: [localParticipantId],
@@ -98,7 +98,7 @@ function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
     const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
     // const { visible } = ownProps;
-    // const { disableRemoteMute } = state["features/base/config"];
+    // const { disableRemoteMute } = state['features/base/config'];
 
     return {
         isModerator,
@@ -126,151 +126,151 @@ export async function _endJoin() {
         const secretKeyEmeeting = interfaceConfig.SECRET_KEY_EMEETING;
         const secretKeyEducation = interfaceConfig.SECRET_KEY_EDUCATION;
         
-        if (isModerator && infoConf.getUserRole() == "moderator") {
+        if (isModerator && infoConf.getUserRole() == 'moderator') {
             infoConf.setIsHostHangup();
         }
 
-        if (service == "onechat") {
+        if (service == 'onechat') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "onechat",
+                    tag: 'onechat',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyOnechat,
+                        Authorization: 'Bearer ' + secretKeyOnechat,
                     },
                 }
             );
-        } else if (service == "manageAi") {
+        } else if (service == 'manageAi') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "ManageAi",
+                    tag: 'ManageAi',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyManageAi,
+                        Authorization: 'Bearer ' + secretKeyManageAi,
                     },
                 }
             );
-        } else if (service == "onemail") {
+        } else if (service == 'onemail') {
             if (isModerator) {
                 await axios.post(
                     interfaceConfig.DOMAIN_ONEMAIL +
-                        "/api/v1/oneconf/service/hangup",
+                        '/api/v1/oneconf/service/hangup',
                     {
                         meeting_id: meetingId,
                         user_id: userId,
-                        tag: "onemail",
+                        tag: 'onemail',
                     }
                 );
             } else {
                 await axios.post(
                     interfaceConfig.DOMAIN_ONEMAIL +
-                        "/api/v1/oneconf/service/hangup",
+                        '/api/v1/oneconf/service/hangup',
                     {
                         meeting_id: meetingId,
                         user_id: userId,
-                        tag: "onemail",
+                        tag: 'onemail',
                     }
                 );
             }
-        } else if (service == "onemail_dga") {
-            await axios.post(interfaceConfig.DOMAIN_ONEMAIL_DGA + "/endJoin", {
-                user_id: userId.split("-")[0],
+        } else if (service == 'onemail_dga') {
+            await axios.post(interfaceConfig.DOMAIN_ONEMAIL_DGA + '/endJoin', {
+                user_id: userId.split('-')[0],
                 meeting_id: meetingId,
             });
-        } else if (service == "onedental") {
+        } else if (service == 'onedental') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "onedental",
+                    tag: 'onedental',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyOneDental,
+                        Authorization: 'Bearer ' + secretKeyOneDental,
                     },
                 }
             );
-        } else if (service == "onebinar") {
+        } else if (service == 'onebinar') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "onebinar",
+                    tag: 'onebinar',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyOneBinar,
+                        Authorization: 'Bearer ' + secretKeyOneBinar,
                     },
                 }
             );
-        } else if (service == "jmc") {
+        } else if (service == 'jmc') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "jmc",
+                    tag: 'jmc',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyJmc,
+                        Authorization: 'Bearer ' + secretKeyJmc,
                     },
                 }
             );
-        } else if (service == "telemedicine") {
+        } else if (service == 'telemedicine') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "telemedicine",
+                    tag: 'telemedicine',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyTelemedicine,
+                        Authorization: 'Bearer ' + secretKeyTelemedicine,
                     },
                 }
             );
-        } else if (service == "emeeting") {
+        } else if (service == 'emeeting') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "emeeting",
+                    tag: 'emeeting',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyEmeeting,
+                        Authorization: 'Bearer ' + secretKeyEmeeting,
                     },
                 }
             );
-        } else if (service == "education") {
+        } else if (service == 'education') {
             await axios.post(
-                domainEnd + "/service/endjoin",
+                domainEnd + '/service/endjoin',
                 {
                     meetingid: meetingId,
                     name: nameJoin,
-                    tag: "education",
+                    tag: 'education',
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + secretKeyEducation,
+                        Authorization: 'Bearer ' + secretKeyEducation,
                     },
                 }
             );
         } else {
-            await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
+            await axios.post(interfaceConfig.DOMAIN + '/endJoin', {
                 user_id: userId,
                 meeting_id: meetingId,
             });

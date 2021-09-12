@@ -1,7 +1,7 @@
 // @flow
 
-import React, { PureComponent } from "react";
-import type { Dispatch } from "redux";
+import React, { PureComponent } from 'react';
+import type { Dispatch } from 'redux';
 
 import { openDialog } from '../../../base/dialog';
 import { IconUserGroups } from '../../../base/icons';
@@ -15,6 +15,7 @@ import { SpeakerStats } from '../../../speaker-stats';
  * The type of the React {@code Component} props of {@link ParticipantsCount}.
  */
 type Props = {
+
     /**
      * Number of the conference participants.
      */
@@ -70,7 +71,6 @@ class ParticipantsCount extends PureComponent<Props> {
      * @inheritdoc
      * @returns {ReactElement}
      */
-
     render() {
         return (
             <div
@@ -85,6 +85,7 @@ class ParticipantsCount extends PureComponent<Props> {
     }
 }
 
+
 /**
  * Maps (parts of) the Redux state to the associated props for the
  * {@code ParticipantsCount} component.
@@ -95,8 +96,8 @@ class ParticipantsCount extends PureComponent<Props> {
  */
 function mapStateToProps(state) {
     return {
-        conference: state["features/base/conference"].conference,
-        count: getParticipantCount(state),
+        conference: state['features/base/conference'].conference,
+        count: getParticipantCount(state)
     };
 }
 

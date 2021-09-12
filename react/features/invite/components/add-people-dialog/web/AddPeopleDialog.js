@@ -156,7 +156,7 @@ function AddPeopleDialog({
             width = { 'small' }>
             <div className = 'invite-more-dialog'>
                 { _inviteContactsVisible && <InviteContactsSection /> }
-                {_urlSharingVisible ? <CopyMeetingLinkSection url = { _inviteUrl } /> : null}
+                {_urlSharingVisible ? <CopyMeetingLinkSection url = { infoConf.geturlInvite() } /> : null}
                 {
                     _emailSharingVisible
                         ? <InviteByEmailSection

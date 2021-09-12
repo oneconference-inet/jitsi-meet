@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import {
     ACTION_SHORTCUT_TRIGGERED,
@@ -54,6 +54,7 @@ import {
 } from '../../../recording';
 import { isScreenAudioShared, isScreenAudioSupported } from '../../../screen-share/';
 import SecurityDialogButton from '../../../security/components/security-dialog/SecurityDialogButton';
+import { PollCreateButton } from '../../../polls/components/';
 import {
     SETTINGS_TABS,
     SettingsButton,
@@ -67,8 +68,8 @@ import {
 import {
     TileViewButton,
     shouldDisplayTileView,
-    toggleTileView,
-} from "../../../video-layout";
+    toggleTileView
+} from '../../../video-layout';
 import {
     OverflowMenuVideoQualityItem,
     VideoQualityDialog
@@ -97,28 +98,26 @@ import ToggleCameraButton from './ToggleCameraButton';
 import ToolbarButton from './ToolbarButton';
 import VideoSettingsButton from './VideoSettingsButton';
 
-import Logger from "jitsi-meet-logger";
+import Logger from 'jitsi-meet-logger';
 
-import { setAudioMutedAll } from "../../../base/media";
+import { setAudioMutedAll } from '../../../base/media';
 import {
     onSocketReqJoin,
     setLobbyModeEnabled,
     knockingParticipantLeft,
-} from "../../../lobby";
-import infoConf from "../../../../../infoConference";
-import infoUser from "../../../../../infoUser";
-import socketIOClient from "socket.io-client";
-import axios from "axios";
+} from '../../../lobby';
+import infoConf from '../../../../../infoConference';
+import infoUser from '../../../../../infoUser';
+import socketIOClient from 'socket.io-client';
+import axios from 'axios';
 
-import { JitsiRecordingConstants } from "../../../base/lib-jitsi-meet";
-import { RECORDING_TYPES } from "../../../recording/constants";
-import UIEvents from "../../../../../service/UI/UIEvents";
+import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
+import UIEvents from '../../../../../service/UI/UIEvents';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
 type Props = {
-    _noteOpen: boolean,
 
     /**
      * String showing if the virtual background type is desktop-share.
@@ -264,6 +263,10 @@ type Props = {
 };
 
 declare var APP: Object;
+declare var interfaceConfig: Object;
+
+const logger = Logger.getLogger(__filename);
+
 
 /**
  * Implements the conference toolbox on React/Web.
@@ -299,22 +302,20 @@ class Toolbox extends Component<Props> {
         this._onToolbarOpenEmbedMeeting = this._onToolbarOpenEmbedMeeting.bind(this);
         this._onToolbarOpenVideoQuality = this._onToolbarOpenVideoQuality.bind(this);
         this._onToolbarToggleChat = this._onToolbarToggleChat.bind(this);
-        this._onToolbarToggleNote = this._onToolbarToggleNote.bind(this);
-        this._onToolbarToggleFullScreen =
-            this._onToolbarToggleFullScreen.bind(this);
+        this._onToolbarToggleFullScreen = this._onToolbarToggleFullScreen.bind(this);
         this._onToolbarToggleProfile = this._onToolbarToggleProfile.bind(this);
         this._onToolbarToggleRaiseHand = this._onToolbarToggleRaiseHand.bind(this);
         this._onToolbarToggleScreenshare = this._onToolbarToggleScreenshare.bind(this);
         this._onToolbarToggleShareAudio = this._onToolbarToggleShareAudio.bind(this);
         this._onToolbarOpenLocalRecordingInfoDialog = this._onToolbarOpenLocalRecordingInfoDialog.bind(this);
         this._onShortcutToggleTileView = this._onShortcutToggleTileView.bind(this);
-        
+
         this.state = {
-            meetingid: "",
-            roomname: "",
-            name: "",
-            checkPlatform: "",
-            endpoint: interfaceConfig.SOCKET_NODE || "",
+            meetingid: '',
+            roomname: '',
+            name: '',
+            checkPlatform: '',
+            endpoint: interfaceConfig.SOCKET_NODE || '',
             windowWidth: window.innerWidth,
         };
     }
@@ -327,53 +328,53 @@ class Toolbox extends Component<Props> {
         let getApprove;
 
         if (services_check.includes(checkPlatform)) {
-            if (checkPlatform === "onemail_dga") {
+            if (checkPlatform === 'onemail_dga') {
                 getApprove = await axios.post(
-                    interfaceConfig.DOMAIN_ONEMAIL_DGA + "/getApprove",
+                    interfaceConfig.DOMAIN_ONEMAIL_DGA + '/getApprove',
                     { meeting_id: meetingid }
                 );
             } else {
                 getApprove = await axios.post(
-                    interfaceConfig.DOMAIN + "/getApprove",
+                    interfaceConfig.DOMAIN + '/getApprove',
                     { meeting_id: meetingid }
                 );
             }
 
             if (getApprove.data.approve) {
-                logger.log("Room is require approve to join.");
+                logger.log('Room is require approve to join.');
                 APP.store.dispatch(setLobbyModeEnabled(true));
                 onSocketReqJoin(meetingid, endpoint, this.props);
             } else {
-                logger.warn("Room is not defined function approve!!!");
+                logger.warn('Room is not defined function approve!!!');
             }
         }
         // On socket for Host
-        logger.log("Moderator ONE-Conference On Socket-for-Feature");
-        socket.emit("createRoom", {
+        logger.log('Moderator ONE-Conference On Socket-for-Feature');
+        socket.emit('createRoom', {
             meetingId: meetingid,
             roomname: roomname,
             name: name,
         });
         socket.on(meetingid, (payload) => {
             switch (payload.eventName) {
-                case "pollResponse":
-                    console.log("pollResponse-Payload: ", payload);
+                case 'pollResponse':
+                    console.log('pollResponse-Payload: ', payload);
                     break;
-                case "handleApprove":
+                case 'handleApprove':
                     logger.log(
-                        "handleApprove-ID: ",
+                        'handleApprove-ID: ',
                         payload.knockingParticipantID
                     );
                     APP.store.dispatch(
                         knockingParticipantLeft(payload.knockingParticipantID)
                     );
                     break;
-                case "endMeet":
-                    logger.log("Host endMeet");
+                case 'endMeet':
+                    logger.log('Host endMeet');
                     APP.UI.emitEvent(UIEvents.LOGOUT);
                     break;
                 default:
-                    logger.warn("Event coming is not defined!!");
+                    logger.warn('Event coming is not defined!!');
             }
         });
     }
@@ -381,30 +382,30 @@ class Toolbox extends Component<Props> {
     async onAttendee(state) {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state;
         const socket = socketIOClient(endpoint);
-        logger.log("Attendee ONE-Conference On Socket-for-Feature");
+        logger.log('Attendee ONE-Conference On Socket-for-Feature');
         socket.on(meetingid, async (payload) => {
-            logger.log("Socket-payload: ", payload);
+            logger.log('Socket-payload: ', payload);
             switch (payload.eventName) {
-                case "trackMute":
-                    logger.log("trackMute-Payload: ", payload);
+                case 'trackMute':
+                    logger.log('trackMute-Payload: ', payload);
                     // attendee.setLockMute(payload.mute) //true or false
                     this.props.dispatch(setAudioMutedAll(payload.mute)); // Lock is button Audio
                     break;
-                case "coHost":
-                    logger.log("coHost Payload: ", payload);
+                case 'coHost':
+                    logger.log('coHost Payload: ', payload);
                     APP.store.dispatch(
                         participantRoleChanged(
                             payload.participantID,
-                            "moderator"
+                            'moderator'
                         )
                     );
                     APP.API.notifyUserRoleChanged(
                         payload.participantID,
-                        "moderator"
+                        'moderator'
                     );
 
                     let getApprove = await axios.post(
-                        interfaceConfig.DOMAIN + "/getApprove",
+                        interfaceConfig.DOMAIN + '/getApprove',
                         { meeting_id: meetingid }
                     );
                     if (getApprove.data.approve) {
@@ -412,22 +413,22 @@ class Toolbox extends Component<Props> {
                     }
 
                     break;
-                case "handleApprove":
+                case 'handleApprove':
                     logger.log(
-                        "handleApprove-ID: ",
+                        'handleApprove-ID: ',
                         payload.knockingParticipantID
                     );
                     APP.store.dispatch(
                         knockingParticipantLeft(payload.knockingParticipantID)
                     );
                     break;
-                case "endMeet":
+                case 'endMeet':
                     logger.log(
-                        "coHost endMeet",
+                        'coHost endMeet',
                         payload.isMod,
-                        "end ",
+                        'end ',
                         payload.userId,
-                        "local ",
+                        'local ',
                         infoUser.getUserId()
                     );
                     if (
@@ -438,7 +439,7 @@ class Toolbox extends Component<Props> {
                     }
                     break;
                 default:
-                    logger.warn("Event coming is not defined!!");
+                    logger.warn('Event coming is not defined!!');
             }
         });
     }
@@ -462,14 +463,14 @@ class Toolbox extends Component<Props> {
             () => {
                 if (isModerator) {
                     if (
-                        checkPlatform === "manageAi" ||
-                        checkPlatform === "followup" ||
-                        checkPlatform === "onedental" ||
-                        checkPlatform === "jmc" ||
-                        checkPlatform === "telemedicine" ||
-                        checkPlatform === "emeeting" ||
-                        checkPlatform === "onebinar" ||
-                        checkPlatform === "education"
+                        checkPlatform === 'manageAi' ||
+                        checkPlatform === 'followup' ||
+                        checkPlatform === 'onedental' ||
+                        checkPlatform === 'jmc' ||
+                        checkPlatform === 'telemedicine' ||
+                        checkPlatform === 'emeeting' ||
+                        checkPlatform === 'onebinar' ||
+                        checkPlatform === 'education'
                     ) {
                         //Recording when start conference
                         let appData = JSON.stringify({
@@ -501,12 +502,12 @@ class Toolbox extends Component<Props> {
             this.props._shouldShowButton('chat') && {
                 character: 'C',
                 exec: this._onShortcutToggleChat,
-                helpDescription: "keyboardShortcuts.toggleChat",
+                helpDescription: 'keyboardShortcuts.toggleChat'
             },
             this.props._shouldShowButton('desktop') && {
                 character: 'D',
                 exec: this._onShortcutToggleScreenshare,
-                helpDescription: "keyboardShortcuts.toggleScreensharing",
+                helpDescription: 'keyboardShortcuts.toggleScreensharing'
             },
             this.props._shouldShowButton('participants-pane') && {
                 character: 'P',
@@ -516,28 +517,27 @@ class Toolbox extends Component<Props> {
             this.props._shouldShowButton('raisehand') && {
                 character: 'R',
                 exec: this._onShortcutToggleRaiseHand,
-                helpDescription: "keyboardShortcuts.raiseHand",
+                helpDescription: 'keyboardShortcuts.raiseHand'
             },
             this.props._shouldShowButton('fullscreen') && {
                 character: 'S',
                 exec: this._onShortcutToggleFullScreen,
-                helpDescription: "keyboardShortcuts.fullScreen",
+                helpDescription: 'keyboardShortcuts.fullScreen'
             },
             this.props._shouldShowButton('tileview') && {
                 character: 'W',
                 exec: this._onShortcutToggleTileView,
-                helpDescription: "toolbar.tileViewToggle",
-            },
+                helpDescription: 'toolbar.tileViewToggle'
+            }
         ];
 
-        KEYBOARD_SHORTCUTS.forEach((shortcut) => {
-            if (typeof shortcut === "object") {
+        KEYBOARD_SHORTCUTS.forEach(shortcut => {
+            if (typeof shortcut === 'object') {
                 APP.keyboardshortcut.registerShortcut(
                     shortcut.character,
                     null,
                     shortcut.exec,
-                    shortcut.helpDescription
-                );
+                    shortcut.helpDescription);
             }
         });
     }
@@ -553,11 +553,9 @@ class Toolbox extends Component<Props> {
             this._onSetOverflowVisible(false);
         }
 
-        if (
-            prevProps._overflowMenuVisible &&
-            !prevProps._dialog &&
-            this.props._dialog
-        ) {
+        if (prevProps._overflowMenuVisible
+            && !prevProps._dialog
+            && this.props._dialog) {
             this._onSetOverflowVisible(false);
             this.props.dispatch(setToolbarHovered(false));
         }
@@ -645,11 +643,9 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _doOpenSpeakerStats() {
-        this.props.dispatch(
-            openDialog(SpeakerStats, {
-                conference: this.props._conference,
-            })
-        );
+        this.props.dispatch(openDialog(SpeakerStats, {
+            conference: this.props._conference
+        }));
     }
 
     /**
@@ -670,10 +666,6 @@ class Toolbox extends Component<Props> {
      */
     _doToggleChat() {
         this.props.dispatch(toggleChat());
-    }
-
-    _doToggleNote() {
-        this.props.dispatch(toggleNote());
     }
 
     /**
@@ -806,11 +798,11 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onShortcutToggleChat() {
-        sendAnalytics(
-            createShortcutEvent("toggle.chat", {
-                enable: !this.props._chatOpen,
-            })
-        );
+        sendAnalytics(createShortcutEvent(
+            'toggle.chat',
+            {
+                enable: !this.props._chatOpen
+            }));
 
         this._doToggleChat();
     }
@@ -837,14 +829,14 @@ class Toolbox extends Component<Props> {
     _onShortcutToggleVideoQuality: () => void;
 
     /**
-     * Creates an analytics keyboard shortcut event and dispatches an action for
-     * toggling the display of Video Quality.
-     *
-     * @private
-     * @returns {void}
-     */
+    * Creates an analytics keyboard shortcut event and dispatches an action for
+    * toggling the display of Video Quality.
+    *
+    * @private
+    * @returns {void}
+    */
     _onShortcutToggleVideoQuality() {
-        sendAnalytics(createShortcutEvent("video.quality"));
+        sendAnalytics(createShortcutEvent('video.quality'));
 
         this._doToggleVideoQuality();
     }
@@ -858,11 +850,11 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onShortcutToggleTileView() {
-        sendAnalytics(
-            createShortcutEvent("toggle.tileview", {
-                enable: !this.props._tileViewEnabled,
-            })
-        );
+        sendAnalytics(createShortcutEvent(
+            'toggle.tileview',
+            {
+                enable: !this.props._tileViewEnabled
+            }));
 
         this._doToggleTileView();
     }
@@ -877,11 +869,11 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onShortcutToggleFullScreen() {
-        sendAnalytics(
-            createShortcutEvent("toggle.fullscreen", {
-                enable: !this.props._fullScreen,
-            })
-        );
+        sendAnalytics(createShortcutEvent(
+            'toggle.fullscreen',
+            {
+                enable: !this.props._fullScreen
+            }));
 
         this._doToggleFullScreen();
     }
@@ -896,13 +888,10 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onShortcutToggleRaiseHand() {
-        sendAnalytics(
-            createShortcutEvent(
-                "toggle.raise.hand",
-                ACTION_SHORTCUT_TRIGGERED,
-                { enable: !this.props._raisedHand }
-            )
-        );
+        sendAnalytics(createShortcutEvent(
+            'toggle.raise.hand',
+            ACTION_SHORTCUT_TRIGGERED,
+            { enable: !this.props._raisedHand }));
 
         this._doToggleRaiseHand();
     }
@@ -951,7 +940,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenFeedback() {
-        sendAnalytics(createToolbarEvent("feedback"));
+        sendAnalytics(createToolbarEvent('feedback'));
 
         this._doOpenFeedback();
     }
@@ -984,7 +973,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenKeyboardShortcuts() {
-        sendAnalytics(createToolbarEvent("shortcuts"));
+        sendAnalytics(createToolbarEvent('shortcuts'));
 
         this._doOpenKeyboardShorcuts();
     }
@@ -999,7 +988,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenEmbedMeeting() {
-        sendAnalytics(createToolbarEvent("embed.meeting"));
+        sendAnalytics(createToolbarEvent('embed.meeting'));
 
         this._doOpenEmbedMeeting();
     }
@@ -1014,7 +1003,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenSpeakerStats() {
-        sendAnalytics(createToolbarEvent("speaker.stats"));
+        sendAnalytics(createToolbarEvent('speaker.stats'));
 
         this._doOpenSpeakerStats();
     }
@@ -1029,7 +1018,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenVideoQuality() {
-        sendAnalytics(createToolbarEvent("video.quality"));
+        sendAnalytics(createToolbarEvent('video.quality'));
 
         this._doOpenVideoQuality();
     }
@@ -1051,28 +1040,6 @@ class Toolbox extends Component<Props> {
             }));
         this._closeOverflowMenuIfOpen();
         this._doToggleChat();
-    }
-
-    _onToolbarToggleNote: () => void;
-
-    /**
-     * Creates an analytics toolbar event and dispatches an action for toggling
-     * the display of chat.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onToolbarToggleNote() {
-        sendAnalytics(
-            createToolbarEvent("toggle.note", {
-                enable: !this.props._noteOpen,
-            })
-        );
-
-        if (APP.store.getState()["features/chat"].isOpen) {
-            this._doToggleChat();
-        }
-        this._doToggleNote();
     }
 
     _onToolbarToggleFullScreen: () => void;
@@ -1104,7 +1071,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarToggleProfile() {
-        sendAnalytics(createToolbarEvent("profile"));
+        sendAnalytics(createToolbarEvent('profile'));
 
         this._doToggleProfile();
     }
@@ -1119,11 +1086,9 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarToggleRaiseHand() {
-        sendAnalytics(
-            createToolbarEvent("raise.hand", {
-                enable: !this.props._raisedHand,
-            })
-        );
+        sendAnalytics(createToolbarEvent(
+            'raise.hand',
+            { enable: !this.props._raisedHand }));
 
         this._doToggleRaiseHand();
     }
@@ -1190,7 +1155,7 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenLocalRecordingInfoDialog() {
-        sendAnalytics(createToolbarEvent("local.recording"));
+        sendAnalytics(createToolbarEvent('local.recording'));
 
         this.props.dispatch(openDialog(LocalRecordingInfoDialog));
     }
@@ -1357,6 +1322,13 @@ class Toolbox extends Component<Props> {
             && <hr
                 className = 'overflow-menu-hr'
                 key = 'hr3' />,
+
+            <RecordButton
+                key='record'
+                showLabel={true}
+                visible={this._shouldShowButton('recording')}
+            />,
+            <PollCreateButton key='poll' showLabel={true} />,
 
             this.props._shouldShowButton('settings')
                 && <SettingsButton
@@ -1635,7 +1607,7 @@ function _mapStateToProps(state) {
         _backgroundType: state['features/virtual-background'].backgroundType,
         _virtualSource: state['features/virtual-background'].virtualSource,
         _desktopSharingDisabledTooltipKey: desktopSharingDisabledTooltipKey,
-        _dialog: Boolean(state["features/base/dialog"].component),
+        _dialog: Boolean(state['features/base/dialog'].component),
         _feedbackConfigured: Boolean(callStatsID),
         _isProfileDisabled: Boolean(state['features/base/config'].disableProfile),
         _isMobile: isMobileBrowser(),

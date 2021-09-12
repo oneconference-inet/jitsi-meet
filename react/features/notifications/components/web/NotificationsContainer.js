@@ -1,21 +1,22 @@
 // @flow
 
-import { FlagGroup } from "@atlaskit/flag";
-import React from "react";
+import { FlagGroup } from '@atlaskit/flag';
+import React from 'react';
 
-import { connect } from "../../../base/redux";
+import { connect } from '../../../base/redux';
 import AbstractNotificationsContainer, {
     _abstractMapStateToProps,
-    type Props as AbstractProps,
-} from "../AbstractNotificationsContainer";
+    type Props as AbstractProps
+} from '../AbstractNotificationsContainer';
 
-import Notification from "./Notification";
+import Notification from './Notification';
 
 type Props = AbstractProps & {
+
     /**
      * Whether we are a SIP gateway or not.
      */
-    _iAmSipGateway: boolean,
+     _iAmSipGateway: boolean
 };
 
 /**
@@ -26,6 +27,7 @@ type Props = AbstractProps & {
  * @extends {Component}
  */
 class NotificationsContainer extends AbstractNotificationsContainer<Props> {
+
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -46,7 +48,7 @@ class NotificationsContainer extends AbstractNotificationsContainer<Props> {
         );
     }
 
-    _onDismissed: (number) => void;
+    _onDismissed: number => void;
 
     /**
      * Renders notifications to display as ReactElements. An empty array will
@@ -58,7 +60,7 @@ class NotificationsContainer extends AbstractNotificationsContainer<Props> {
     _renderFlags() {
         const { _notifications } = this.props;
 
-        return _notifications.map((notification) => {
+        return _notifications.map(notification => {
             const { props, uid } = notification;
 
             // The id attribute is necessary as {@code FlagGroup} looks for
@@ -85,12 +87,13 @@ class NotificationsContainer extends AbstractNotificationsContainer<Props> {
  * @returns {Props}
  */
 function _mapStateToProps(state) {
-    const { iAmSipGateway } = state["features/base/config"];
+    const { iAmSipGateway } = state['features/base/config'];
 
     return {
         ..._abstractMapStateToProps(state),
-        _iAmSipGateway: Boolean(iAmSipGateway),
+        _iAmSipGateway: Boolean(iAmSipGateway)
     };
 }
+
 
 export default connect(_mapStateToProps)(NotificationsContainer);

@@ -1,23 +1,23 @@
 // @flow
 
-import { FieldTextAreaStateless } from "@atlaskit/field-text-area";
-import StarIcon from "@atlaskit/icon/glyph/star";
-import StarFilledIcon from "@atlaskit/icon/glyph/star-filled";
-import React, { Component } from "react";
-import type { Dispatch } from "redux";
+import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
+import StarIcon from '@atlaskit/icon/glyph/star';
+import StarFilledIcon from '@atlaskit/icon/glyph/star-filled';
+import React, { Component } from 'react';
+import type { Dispatch } from 'redux';
 
-import { createFeedbackOpenEvent, sendAnalytics } from "../../analytics";
-import { Dialog } from "../../base/dialog";
-import { translate } from "../../base/i18n";
-import { connect } from "../../base/redux";
-import { cancelFeedback, submitFeedback } from "../actions";
+import { createFeedbackOpenEvent, sendAnalytics } from '../../analytics';
+import { Dialog } from '../../base/dialog';
+import { translate } from '../../base/i18n';
+import { connect } from '../../base/redux';
+import { cancelFeedback, submitFeedback } from '../actions';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
 
 const scoreAnimationClass = interfaceConfig.ENABLE_FEEDBACK_ANIMATION
-  ? "shake-rotate"
-  : "";
+  ? 'shake-rotate'
+  : '';
 
 /**
  * The scores to display for selecting. The score is the index in the array and
@@ -26,11 +26,11 @@ const scoreAnimationClass = interfaceConfig.ENABLE_FEEDBACK_ANIMATION
  * @types {string[]}
  */
 const SCORES = [
-  "feedback.veryBad",
-  "feedback.bad",
-  "feedback.average",
-  "feedback.good",
-  "feedback.veryGood",
+  'feedback.veryBad',
+  'feedback.bad',
+  'feedback.average',
+  'feedback.good',
+  'feedback.veryGood',
 ];
 
 /**
@@ -170,7 +170,7 @@ class FeedbackDialog extends Component<Props, State> {
    */
   componentDidMount() {
     sendAnalytics(createFeedbackOpenEvent());
-    if (typeof APP !== "undefined") {
+    if (typeof APP !== 'undefined') {
       APP.API.notifyFeedbackPromptDisplayed();
     }
   }
@@ -199,7 +199,7 @@ class FeedbackDialog extends Component<Props, State> {
 
     const scoreIcons = this._scoreClickConfigurations.map((config, index) => {
       const isFilled = index <= scoreToDisplayAsSelected;
-      const activeClass = isFilled ? "active" : "";
+      const activeClass = isFilled ? 'active' : '';
       const className = `star-btn ${scoreAnimationClass} ${activeClass}`;
 
       return (
@@ -210,9 +210,9 @@ class FeedbackDialog extends Component<Props, State> {
           onMouseOver={config._onMouseOver}
         >
           {isFilled ? (
-            <StarFilledIcon label="star-filled" size="xlarge" />
+            <StarFilledIcon label='star-filled' size='xlarge' />
           ) : (
-            <StarIcon label="star" size="xlarge" />
+            <StarIcon label='star' size='xlarge' />
           )}
         </a>
       );
@@ -222,29 +222,29 @@ class FeedbackDialog extends Component<Props, State> {
 
     return (
       <Dialog
-        okKey="dialog.Submit"
+        okKey='dialog.Submit'
         onCancel={this._onCancel}
         onSubmit={this._onSubmit}
-        titleKey="feedback.rateExperience"
+        titleKey='feedback.rateExperience'
       >
-        <div className="feedback-dialog">
-          <div className="rating">
-            <div className="star-label">
-              <p id="starLabel">{t(SCORES[scoreToDisplayAsSelected])}</p>
+        <div className='feedback-dialog'>
+          <div className='rating'>
+            <div className='star-label'>
+              <p id='starLabel'>{t(SCORES[scoreToDisplayAsSelected])}</p>
             </div>
             <div
-              className="stars"
+              className='stars'
               onMouseLeave={this._onScoreContainerMouseLeave}
             >
               {scoreIcons}
             </div>
           </div>
-          <div className="details">
+          <div className='details'>
             <FieldTextAreaStateless
               autoFocus={true}
-              className="input-control"
-              id="feedbackTextArea"
-              label={t("feedback.detailsLabel")}
+              className='input-control'
+              id='feedbackTextArea'
+              label={t('feedback.detailsLabel')}
               onChange={this._onMessageChange}
               shouldFitContainer={true}
               value={message}
@@ -355,10 +355,10 @@ class FeedbackDialog extends Component<Props, State> {
  * }}
  */
 function _mapStateToProps(state) {
-  const { message, score } = state["features/feedback"];
+  const { message, score } = state['features/feedback'];
   const { room } = state['features/base/conference'];
 
-  // console.log("STATE: ",state);
+  // console.log('STATE: ',state);
   
   return {
     /**
