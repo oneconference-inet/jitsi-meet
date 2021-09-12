@@ -2,7 +2,7 @@
 // list of tips
 const hints = [
     'You can pin participants by clicking on their thumbnails.',
-    'You can tell others you have something to say by using the "Raise Hand" '
+    'You can tell others you have something to say by using the 'Raise Hand' '
         + 'feature',
     'You can learn about key shortcuts by pressing Shift+?',
     'You can learn more about the state of everyone\'s connection by hovering '
@@ -65,3 +65,7 @@ function onLoad() {
 }
 
 window.onload = onLoad;
+
+function hrefUrltoHome() {
+    window.location.href = interfaceConfig.DOMAIN;
+}

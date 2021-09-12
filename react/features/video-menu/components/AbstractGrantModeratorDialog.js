@@ -6,10 +6,16 @@ import {
     createRemoteVideoMenuButtonEvent,
     sendAnalytics
 } from '../../analytics';
-import { grantModerator } from '../../base/participants';
+import {
+    grantModerator,
+    participantRoleChanged,
+} from '../../base/participants';
+import socketIOClient from 'socket.io-client';
+import infoConf from '../../../../infoConference';
+
+declare var interfaceConfig: Object;
 
 type Props = {
-
     /**
      * The Redux dispatch function.
      */
@@ -29,8 +35,7 @@ type Props = {
 /**
  * Abstract dialog to confirm granting moderator to a participant.
  */
-export default class AbstractGrantModeratorDialog
-    extends Component<Props> {
+export default class AbstractGrantModeratorDialog extends Component<Props> {
     /**
      * Initializes a new {@code AbstractGrantModeratorDialog} instance.
      *
@@ -38,6 +43,10 @@ export default class AbstractGrantModeratorDialog
      */
     constructor(props: Props) {
         super(props);
+
+        this.state = {
+            endpoint: interfaceConfig.SOCKET_NODE || '',
+        };
 
         this._onSubmit = this._onSubmit.bind(this);
     }
@@ -52,14 +61,22 @@ export default class AbstractGrantModeratorDialog
      */
     _onSubmit() {
         const { dispatch, participantID } = this.props;
+        const socket = socketIOClient(this.state.endpoint);
+        const meetingId = infoConf.getMeetingId();
 
-        sendAnalytics(createRemoteVideoMenuButtonEvent(
-            'grant.moderator.button',
-            {
-                'participant_id': participantID
-            }));
+        sendAnalytics(
+            createRemoteVideoMenuButtonEvent('grant.moderator.button', {
+                participant_id: participantID,
+            })
+        );
 
         dispatch(grantModerator(participantID));
+
+        socket.emit('coHost', {
+            meetingId: meetingId,
+            participantID: participantID,
+        });
+        dispatch(participantRoleChanged(participantID, 'moderator'));
 
         return true;
     }

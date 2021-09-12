@@ -1,6 +1,8 @@
 import { NOTIFICATION_TIMEOUT, showNotification } from '../../notifications';
 import { set } from '../redux';
 
+import Logger from 'jitsi-meet-logger';
+
 import {
     DOMINANT_SPEAKER_CHANGED,
     HIDDEN_PARTICIPANT_JOINED,
@@ -25,8 +27,11 @@ import {
     getParticipantDisplayName,
     getParticipantById
 } from './functions';
-import logger from './logger';
+// import logger from './logger';
 
+declare var APP: Object;
+
+const logger = Logger.getLogger(__filename);
 /**
  * Create an action for when dominant speaker changes.
  *

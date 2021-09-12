@@ -15,8 +15,12 @@ import {
 import { FeedbackDialog } from './components';
 import { sendFeedbackToJaaSRequest } from './functions';
 
+import infoUser from '../../../infoUser';
+import infoConf from '../../../infoConference';
+
 declare var config: Object;
 
+import axios from 'axios';
 /**
  * Caches the passed in feedback in the redux store.
  *
@@ -30,6 +34,15 @@ declare var config: Object;
  * }}
  */
 export function cancelFeedback(score: number, message: string) {
+    window.location.href =
+        infoConf.getIsHostHangup() && infoConf.getService() === ''
+            ? interfaceConfig.DOMAIN + '/main'
+            : infoConf.getUserRole() == 'moderator'
+            ? infoConf.getService() && infoConf.getService() !== 'oneconference'
+                ? infoUser.getRedirect()
+                : interfaceConfig.DOMAIN + '/main?genlink=1'
+            : infoUser.getRedirect();
+    
     return {
         type: CANCEL_FEEDBACK,
         message,
@@ -72,26 +85,28 @@ export function maybeOpenFeedbackDialog(conference: Object) {
                 feedbackSubmitted: true,
                 showThankYou: true
             });
-        } else if (conference.isCallstatsEnabled() && feedbackPercentage > Math.random() * 100) {
-            return new Promise(resolve => {
-                dispatch(openFeedbackDialog(conference, () => {
+        }
+        // else if (conference.isCallstatsEnabled() && feedbackPercentage > Math.random() * 100) {
+        return new Promise((resolve) => {
+            dispatch(
+                openFeedbackDialog(conference, () => {
                     const { submitted } = getState()['features/feedback'];
 
                     resolve({
                         feedbackSubmitted: submitted,
                         showThankYou: false
                     });
-                }));
-            });
-        }
+                })
+            );
+        });
 
-        // If the feedback functionality isn't enabled we show a "thank you"
+        // If the feedback functionality isn't enabled we show a 'thank you'
         // message. Signaling it (true), so the caller of requestFeedback can
         // act on it.
-        return Promise.resolve({
-            feedbackSubmitted: false,
-            showThankYou: true
-        });
+        // return Promise.resolve({
+        //     feedbackSubmitted: false,
+        //     showThankYou: true
+        // });
     };
 }
 
@@ -157,20 +172,39 @@ export function sendJaasFeedbackMetadata(conference: Object, feedback: Object) {
  * @returns {Function}
  */
 export function submitFeedback(
-        score: number,
-        message: string,
-        conference: Object) {
-    return (dispatch: Dispatch<any>) =>
-        conference.sendFeedback(score, message)
-        .then(() => dispatch({ type: SUBMIT_FEEDBACK_SUCCESS }))
-        .then(() => dispatch(sendJaasFeedbackMetadata(conference, { score,
-            message }))
-        .catch(error => {
-            dispatch({
-                type: SUBMIT_FEEDBACK_ERROR,
-                error
-            });
+    score: number,
+    message: string,
+    conference: Object,
+    room: string
+) {
+    return axios
+        .post(interfaceConfig.DOMAIN + '/feedback', {
+            score: score,
+            message: message,
+            room: room,
+        })
+        .then(
+            (res) =>
+                (window.location.href =
+                    infoConf.getIsHostHangup() && infoConf.getService() === ''
+                        ? interfaceConfig.DOMAIN + '/main'
+                        : infoConf.getUserRole() == 'moderator'
+                        ? infoConf.getService() && infoConf.getService() !== 'oneconference'
+                            ? infoUser.getRedirect()
+                            : interfaceConfig.DOMAIN + '/main?genlink=1'
+                        : infoUser.getRedirect())
+        );
 
-            return Promise.reject(error);
-        }));
+    // return (dispatch: Dispatch<any>) => conference.sendFeedback(score, message)
+    //     .then(
+    //         () => dispatch({ type: SUBMIT_FEEDBACK_SUCCESS }),
+    //         error => {
+    //             dispatch({
+    //                 type: SUBMIT_FEEDBACK_ERROR,
+    //                 error
+    //             });
+
+    //             return Promise.reject(error);
+    //         }
+    //     );
 }

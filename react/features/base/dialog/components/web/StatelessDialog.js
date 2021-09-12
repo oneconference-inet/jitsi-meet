@@ -24,6 +24,12 @@ const CANCEL_BUTTON_ID = 'modal-dialog-cancel-button';
 const OK_BUTTON_ID = 'modal-dialog-ok-button';
 
 /**
+ * The ID to be used for the ok button if enabled.
+ * @type {string}
+ */
+ const LEAVE_BUTTON_ID = "modal-dialog-leave-button";
+
+/**
  * The type of the React {@code Component} props of {@link StatelessDialog}.
  *
  * @static
@@ -122,6 +128,7 @@ class StatelessDialog extends Component<Props> {
         this._onSubmit = this._onSubmit.bind(this);
         this._renderFooter = this._renderFooter.bind(this);
         this._setDialogElement = this._setDialogElement.bind(this);
+        this._onLeave = this._onLeave.bind(this);
     }
 
     /**
@@ -185,10 +192,28 @@ class StatelessDialog extends Component<Props> {
     _renderFooter(propsFromModalFooter) {
         // Filter out falsy (null) values because {@code ButtonGroup} will error
         // if passed in anything but buttons with valid type props.
-        const buttons = [
-            this._renderOKButton(),
-            this._renderCancelButton()
-        ].filter(Boolean);
+        // const buttons = [
+        //     this._renderOKButton(),
+        //     this._renderCancelButton()
+        // ].filter(Boolean);
+
+        var buttons;
+
+        if (
+            this.state.title === "การสิ้นสุดการประชุม" ||
+            this.state.title === "End Meeting"
+        ) {
+            buttons = [
+                this._renderOKButton(),
+                this._renderLeaveButton(),
+                this._renderCancelButton(),
+            ].filter(Boolean);
+        } else {
+            buttons = [
+                this._renderOKButton(),
+                this._renderCancelButton(),
+            ].filter(Boolean);
+        }
 
         if (this.props.disableFooter) {
             return null;
@@ -222,6 +247,21 @@ class StatelessDialog extends Component<Props> {
             const { onCancel } = this.props;
 
             onCancel && onCancel();
+        }
+    }
+
+    _onLeave: () => void;
+
+    /**
+     * Dispatches action to hide the dialog.
+     *
+     * @returns {void}
+     */
+    _onLeave() {
+        if (!this.props.isModal) {
+            const { onLeave } = this.props;
+
+            onLeave && onLeave();
         }
     }
 
@@ -282,6 +322,33 @@ class StatelessDialog extends Component<Props> {
             </Button>
         );
     }
+
+    
+    _renderLeaveButton() {
+        if (
+            this.props.cancelDisabled ||
+            this.props.isModal ||
+            this.props.hideCancelButton
+        ) {
+            return null;
+        }
+
+        const { t /* The following fixes a flow error: */ = _.identity } =
+            this.props;
+
+        return (
+            <Button
+                appearance="subtle"
+                id={LEAVE_BUTTON_ID}
+                key="leave"
+                onClick={this._onLeave}
+                type="button"
+            >
+                {t("dialog.leave")}
+            </Button>
+        );
+    }
+
 
     /**
      * Renders OK button.

@@ -155,6 +155,7 @@ function _mapStateToProps(state) {
     const testingConfig = state['features/base/config'].testing;
     const { backgroundColor, backgroundImageUrl } = state['features/dynamic-branding'];
     const { isOpen: isChatOpen } = state['features/chat'];
+    // const isChatOpen = false;
 
     return {
         _backgroundAlpha: state['features/base/config'].backgroundAlpha,

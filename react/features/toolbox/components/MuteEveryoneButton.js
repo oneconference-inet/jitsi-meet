@@ -4,10 +4,12 @@ import { createToolbarEvent, sendAnalytics } from '../../analytics';
 import { openDialog } from '../../base/dialog';
 import { translate } from '../../base/i18n';
 import { IconMuteEveryone } from '../../base/icons';
-import { getLocalParticipant, isLocalParticipantModerator } from '../../base/participants';
+import { getLocalParticipant, isLocalParticipantModerator, PARTICIPANT_ROLE } from '../../base/participants';
 import { connect } from '../../base/redux';
 import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
 import { MuteEveryoneDialog } from '../../video-menu/components';
+
+import infoConf from '../../../../infoConference';
 
 type Props = AbstractButtonProps & {
 
@@ -15,6 +17,11 @@ type Props = AbstractButtonProps & {
      * The Redux dispatch function.
      */
     dispatch: Function,
+
+    /*
+     ** Whether the local participant is a moderator or not.
+     */
+    isModerator: Boolean,
 
     /**
      * The ID of the local participant.
@@ -27,9 +34,11 @@ type Props = AbstractButtonProps & {
  * every participant (except the local one)
  */
 class MuteEveryoneButton extends AbstractButton<Props, *> {
+
     accessibilityLabel = 'toolbar.accessibilityLabel.muteEveryone';
     icon = IconMuteEveryone;
-    label = 'toolbar.muteEveryone';
+    label = !infoConf.getMuteAllState() ? 'toolbar.muteEveryone' : 'toolbar.notMuteEveryone';
+    tooltip = !infoConf.getMuteAllState() ? 'toolbar.muteEveryone' : 'toolbar.notMuteEveryone';
 
     /**
      * Handles clicking / pressing the button, and opens a confirmation dialog.
@@ -56,12 +65,14 @@ class MuteEveryoneButton extends AbstractButton<Props, *> {
  */
 function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
+    const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
     const { disableRemoteMute } = state['features/base/config'];
     const { visible = isLocalParticipantModerator(state) && !disableRemoteMute } = ownProps;
 
     return {
+        isModerator,
         localParticipantId: localParticipant.id,
-        visible
+        visible: visible && isModerator && !disableRemoteMute
     };
 }
 

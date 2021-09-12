@@ -8,6 +8,10 @@ import AbstractLiveStreamButton, {
     type Props
 } from '../AbstractLiveStreamButton';
 
+import infoConf from '../../../../../../infoConference'
+
+declare var interfaceConfig: Object;
+
 /**
  * Maps (parts of) the redux state to the associated props for the
  * {@code LiveStreamButton} component.
@@ -25,6 +29,8 @@ import AbstractLiveStreamButton, {
 function _mapStateToProps(state: Object, ownProps: Props) {
     const abstractProps = _abstractMapStateToProps(state, ownProps);
     const toolbarButtons = getToolbarButtons(state);
+    const service = infoConf.getService();
+    const visibleByService = checkService(service)
     let { visible } = ownProps;
 
     if (typeof visible === 'undefined') {
@@ -35,6 +41,15 @@ function _mapStateToProps(state: Object, ownProps: Props) {
         ...abstractProps,
         visible
     };
+}
+
+function checkService(service) {
+    const services_check = interfaceConfig.SERVICE_LIVE_FEATURE || []
+    if (!services_check.includes(service)) {
+        return false
+    } else {
+        return true
+    }
 }
 
 export default translate(connect(_mapStateToProps)(AbstractLiveStreamButton));

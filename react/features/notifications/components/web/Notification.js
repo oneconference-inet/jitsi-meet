@@ -13,6 +13,9 @@ import AbstractNotification, {
     type Props
 } from '../AbstractNotification';
 
+import UIEvents from '../../../../../service/UI/UIEvents';
+
+declare var APP: Object;
 declare var interfaceConfig: Object;
 
 /**
@@ -50,6 +53,10 @@ class Notification extends AbstractNotification<Props> {
             titleKey,
             uid
         } = this.props;
+
+        if (titleKey === 'dialog.kickTitle') {
+            APP.UI.emitEvent(UIEvents.HANGUP);
+        }
 
         return (
             <Flag

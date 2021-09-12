@@ -166,7 +166,9 @@ class Watermarks extends Component<Props, State> {
             const style = {
                 backgroundImage: `url(${_logoUrl})`,
                 maxWidth: 140,
-                maxHeight: 70
+                maxHeight: 70,
+                width: '100%',
+                height: '10%'
             };
 
             reactElement = (<div

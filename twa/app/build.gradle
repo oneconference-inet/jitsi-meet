@@ -46,6 +46,12 @@ def twaManifest = [
     enableSiteSettingsShortcut: 'true',
 ]
 
+// Use the number of seconds/10 since Jan 1 2019 as the versionCode.
+// This lets us upload a new build at most every 10 seconds for the
+// next ~680 years.
+// https://stackoverflow.com/a/38643838
+def vcode = (int) (((new Date().getTime() / 1000) - 1546297200) / 10)
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -65,7 +71,7 @@ android {
         def launchUrl = "https://" + twaManifest.hostName + twaManifest.launchUrl
         resValue "string", "launchUrl", launchUrl
 
-        
+
             // The URL the Web Manifest for the Progressive Web App that the TWA points to. This
             // is used by Chrome OS to open the Web version of the PWA instead of the TWA, as it
             // will probably give a better user experience for non-mobile devices.
@@ -186,11 +192,11 @@ task generateShorcutsFile {
 preBuild.dependsOn(generateShorcutsFile)
 
 repositories {
-    
+
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    
+
     implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.0.0'    
 }

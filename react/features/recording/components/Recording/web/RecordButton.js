@@ -8,6 +8,11 @@ import AbstractRecordButton, {
     type Props
 } from '../AbstractRecordButton';
 
+import infoConf from '../../../../../../infoConference'
+import infoUser from '../../../../../../infoUser'
+
+declare var interfaceConfig: Object;
+
 /**
  * Maps (parts of) the redux state to the associated props for the
  * {@code RecordButton} component.
@@ -25,6 +30,10 @@ import AbstractRecordButton, {
 export function _mapStateToProps(state: Object, ownProps: Props): Object {
     const abstractProps = _abstractMapStateToProps(state, ownProps);
     const toolbarButtons = getToolbarButtons(state);
+    const service = infoConf.getService();
+    const role = infoUser.getUserId().split('-')[1];
+    const visibleByService = checkService(service);
+    const visibleByRole = role == 'host' ? true : false ;
     let { visible } = ownProps;
 
     if (typeof visible === 'undefined') {
@@ -33,8 +42,17 @@ export function _mapStateToProps(state: Object, ownProps: Props): Object {
 
     return {
         ...abstractProps,
-        visible
+        visible: visible && visibleByRole
     };
+}
+
+function checkService(service) {
+    const services_check = interfaceConfig.SERVICE_RECORD_FEATURE || []
+    if (!services_check.includes(service)) {
+        return false
+    } else {
+        return true
+    }
 }
 
 export default translate(connect(_mapStateToProps)(AbstractRecordButton));

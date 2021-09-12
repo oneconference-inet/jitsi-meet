@@ -13,7 +13,12 @@ import {
 } from '../../../react/features/authentication/functions';
 import { isDialogOpen } from '../../../react/features/base/dialog';
 import { setJWT } from '../../../react/features/base/jwt';
+import { toJid } from "../../../react/features/base/connection/functions";
+import { JitsiConnectionErrors } from "../../../react/features/base/lib-jitsi-meet";
 import UIUtil from '../util/UIUtil';
+
+import infoConf from "../../../infoConference";
+import authXmpp from "../../../authXmpp";
 
 import LoginDialog from './LoginDialog';
 
@@ -22,6 +27,15 @@ let externalAuthWindow;
 declare var APP: Object;
 
 const logger = Logger.getLogger(__filename);
+
+let authRequiredDialog;
+
+// const isTokenAuthEnabled =
+//     typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
+// const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
+//     null,
+//     config.tokenAuthUrl
+// );
 
 
 /**
@@ -172,11 +186,20 @@ function initJWTTokenListener(room) {
  */
 function authenticate(room: Object, lockPassword: string) {
     const config = APP.store.getState()['features/base/config'];
+    const isModerator = infoConf.getIsModerator();
 
     if (isTokenAuthEnabled(config) || room.isExternalAuthEnabled()) {
         doExternalAuth(room, lockPassword);
+    } else if (isModerator) {
+        const user = toJid(authXmpp.getUserXmpp(), config.hosts);
+        const password = authXmpp.getPassXmpp();
+        room.authenticateAndUpgradeRole({
+            id: user,
+            password: password,
+            roomPassword: lockPassword,
+        });
     } else {
-        APP.store.dispatch(openLoginDialog());
+        logger.warn("Waiting For Room Owner.");
     }
 }
 
