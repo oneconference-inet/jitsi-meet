@@ -121,8 +121,6 @@ import UIEvents from '../../../../../service/UI/UIEvents';
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
 type Props = {
-    _noteOpen: boolean,
-    
     /**
      * String showing if the virtual background type is desktop-share.
      */
@@ -1051,28 +1049,6 @@ class Toolbox extends Component<Props> {
         this._doToggleChat();
     }
 
-    _onToolbarToggleNote: () => void;
-
-    /**
-     * Creates an analytics toolbar event and dispatches an action for toggling
-     * the display of chat.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onToolbarToggleNote() {
-        sendAnalytics(
-            createToolbarEvent('toggle.note', {
-                enable: !this.props._noteOpen,
-            })
-        );
-
-        if (APP.store.getState()['features/chat'].isOpen) {
-            this._doToggleChat();
-        }
-        this._doToggleNote();
-    }
-
     _onToolbarToggleFullScreen: () => void;
 
     /**
@@ -1656,7 +1632,6 @@ function _mapStateToProps(state) {
     return {
         _chatOpen: state['features/chat'].isOpen,
         _clientWidth: clientWidth,
-        _noteOpen: state['features/note'].isOpen,
         _conference: conference,
         _desktopSharingEnabled: desktopSharingEnabled,
         _backgroundType: state['features/virtual-background'].backgroundType,
