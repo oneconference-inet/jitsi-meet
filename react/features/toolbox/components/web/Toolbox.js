@@ -9,6 +9,7 @@ import {
     sendAnalytics
 } from '../../../analytics';
 import { getToolbarButtons } from '../../../base/config';
+// import { isToolbarButtonEnabled } from '../../../base/config/functions.web';
 import { openDialog, toggleDialog } from '../../../base/dialog';
 import { isMobileBrowser } from '../../../base/environment/utils';
 import { translate } from '../../../base/i18n';
@@ -52,6 +53,7 @@ import {
     RecordButton
 } from '../../../recording';
 import { isScreenAudioShared, isScreenAudioSupported } from '../../../screen-share/';
+import { PollCreateButton } from '../../../polls/components/';
 import SecurityDialogButton from '../../../security/components/security-dialog/SecurityDialogButton';
 import {
     SETTINGS_TABS,
@@ -73,6 +75,8 @@ import {
     VideoQualityDialog
 } from '../../../video-quality';
 import { VideoBackgroundButton } from '../../../virtual-background';
+// import { toggleBackgroundEffect } from '../../../virtual-background/actions';
+// import { VIRTUAL_BACKGROUND_TYPE } from '../../../virtual-background/constants';
 import { checkBlurSupport } from '../../../virtual-background/functions';
 import {
     setFullScreen,
@@ -108,6 +112,11 @@ import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
 type Props = {
+
+    // /**
+    //  * String showing if the virtual background type is desktop-share.
+    //  */
+    //  _backgroundType: String,
 
     /**
      * Whether or not the chat feature is currently displayed.
@@ -186,6 +195,11 @@ type Props = {
      */
     _locked: boolean,
 
+    // /**
+    //  * The JitsiLocalTrack to display.
+    //  */
+    //  _localVideo: Object,
+
     /**
      * Whether or not the overflow menu is visible.
      */
@@ -220,6 +234,16 @@ type Props = {
      * Array with the buttons which this Toolbox should display.
      */
     _visibleButtons: Array<string>,
+
+    // /**
+    //  * Handler to check if a button is enabled.
+    //  */
+    //  _shouldShowButton: Function,
+
+    // /**
+    //  * Returns the selected virtual source object.
+    //  */
+    //  _virtualSource: Object,
 
     /**
      * Invoked to active other features of the app.
@@ -307,7 +331,7 @@ class Toolbox extends Component<Props> {
             } else {
                 'Room is not defined function approve!!!'
             }
-            // console.log("Approve: ", getApprove)
+            // console.log('Approve: ', getApprove)
             if (getApprove.data.approve) {
                 logger.log('Room is require approve to join.')
                 APP.store.dispatch(setLobbyModeEnabled(true));
@@ -322,10 +346,10 @@ class Toolbox extends Component<Props> {
         socket.on(meetingid, (payload) => {
             switch(payload.eventName) {
                 case 'pollResponse':
-                    console.log("pollResponse-Payload: ", payload)
+                    console.log('pollResponse-Payload: ', payload)
                     break;
                 case 'handleApprove':
-                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
+                    logger.log('handleApprove-ID: ', payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
                     break;
                 default:
@@ -340,15 +364,15 @@ class Toolbox extends Component<Props> {
         const socket = socketIOClient(endpoint)
         logger.log('Attendee ONE-Conference On Socket-for-Feature')
         socket.on(meetingid, async(payload) => {
-            logger.log("Socket-payload: ", payload);
+            logger.log('Socket-payload: ', payload);
             switch(payload.eventName) {
                 case 'trackMute':
-                    logger.log("trackMute-Payload: ", payload)
+                    logger.log('trackMute-Payload: ', payload)
                     // attendee.setLockMute(payload.mute) //true or false
                     this.props.dispatch(setAudioMutedAll(payload.mute)) // Lock is button Audio
                     break;
                 case 'coHost':
-                    logger.log("coHost Payload: ", payload)
+                    logger.log('coHost Payload: ', payload)
                     APP.store.dispatch(participantRoleChanged(payload.participantID, 'moderator'));
                     APP.API.notifyUserRoleChanged(payload.participantID, 'moderator');
 
@@ -359,7 +383,7 @@ class Toolbox extends Component<Props> {
 
                     break;
                 case 'handleApprove':
-                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
+                    logger.log('handleApprove-ID: ', payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
                     break;
                 default:
@@ -379,7 +403,7 @@ class Toolbox extends Component<Props> {
         },() => {
             if (isModerator) {
                 
-                if (checkPlatform === "manageAi" || checkPlatform === "followup" || checkPlatform === "onedental" || checkPlatform === "jmc" || checkPlatform === "telemedicine" || checkPlatform === "emeeting" || checkPlatform === "onebinar" || checkPlatform === "education") {
+                if (checkPlatform === 'manageAi' || checkPlatform === 'followup' || checkPlatform === 'onedental' || checkPlatform === 'jmc' || checkPlatform === 'telemedicine' || checkPlatform === 'emeeting' || checkPlatform === 'onebinar' || checkPlatform === 'education') {
                     //Recording when start conference
                     let appData = JSON.stringify({
                         'file_recording_metadata': {
@@ -1011,6 +1035,20 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarToggleScreenshare() {
+        // if (this.props._backgroundType === VIRTUAL_BACKGROUND_TYPE.DESKTOP_SHARE) {
+        //     const noneOptions = {
+        //         enabled: false,
+        //         backgroundType: VIRTUAL_BACKGROUND_TYPE.NONE,
+        //         selectedThumbnail: VIRTUAL_BACKGROUND_TYPE.NONE,
+        //         backgroundEffectEnabled: false
+        //     };
+
+        //     this.props._virtualSource.dispose();
+
+        //     this.props.dispatch(toggleBackgroundEffect(noneOptions, this.props._localVideo));
+
+        //     return;
+        // }
         if (!this.props._desktopSharingEnabled) {
             return;
         }
@@ -1216,6 +1254,13 @@ class Toolbox extends Component<Props> {
             && <hr
                 className = 'overflow-menu-hr'
                 key = 'hr3' />,
+            
+            <RecordButton
+                key='record'
+                showLabel={true}
+                visible={this._shouldShowButton('recording')}
+            />,
+            <PollCreateButton key='poll' showLabel={true} />,
 
             this._shouldShowButton('settings')
                 && <SettingsButton
@@ -1505,6 +1550,8 @@ function _mapStateToProps(state) {
         _clientWidth: clientWidth,
         _conference: conference,
         _desktopSharingEnabled: desktopSharingEnabled,
+        // _backgroundType: state['features/virtual-background'].backgroundType,
+        // _virtualSource: state['features/virtual-background'].virtualSource,
         _desktopSharingDisabledTooltipKey: desktopSharingDisabledTooltipKey,
         _dialog: Boolean(state['features/base/dialog'].component),
         _feedbackConfigured: Boolean(callStatsID),
@@ -1514,12 +1561,14 @@ function _mapStateToProps(state) {
         _fullScreen: fullScreen,
         _tileViewEnabled: shouldDisplayTileView(state),
         _localParticipantID: localParticipant.id,
+        // _localVideo: localVideo,
         _localRecState: localRecordingStates,
         _locked: locked,
         _overflowMenuVisible: overflowMenuVisible,
         _participantsPaneOpen: getParticipantsPaneOpen(state),
         _raisedHand: localParticipant.raisedHand,
         _screensharing: (localVideo && localVideo.videoType === 'desktop') || isScreenAudioShared(state),
+        // _shouldShowButton: buttonName => isToolbarButtonEnabled(buttonName)(state),
         _visible: isToolboxVisible(state),
         _visibleButtons: getToolbarButtons(state)
     };
