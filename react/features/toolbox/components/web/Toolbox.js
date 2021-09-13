@@ -31,13 +31,16 @@ import JitsiMeetJS from '../../../base/lib-jitsi-meet';
 import {
     getLocalParticipant,
     getParticipants,
-    participantUpdated
+    participantUpdated,
+    participantRoleChanged
 } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { OverflowMenuItem } from '../../../base/toolbox/components';
 import { getLocalVideoTrack, toggleScreensharing } from '../../../base/tracks';
 import { isVpaasMeeting } from '../../../billing-counter/functions';
+import { VideoBlurButton } from '../../../blur';
 import { ChatCounter, toggleChat } from '../../../chat';
+import { toggleNote } from '../../../note';
 import { EmbedMeetingDialog } from '../../../embed-meeting';
 import { SharedDocumentButton } from '../../../etherpad';
 import { openFeedbackDialog } from '../../../feedback';
@@ -118,7 +121,8 @@ import UIEvents from '../../../../../service/UI/UIEvents';
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
 type Props = {
-
+    _noteOpen: boolean,
+    
     /**
      * String showing if the virtual background type is desktop-share.
      */
@@ -302,6 +306,7 @@ class Toolbox extends Component<Props> {
         this._onToolbarOpenEmbedMeeting = this._onToolbarOpenEmbedMeeting.bind(this);
         this._onToolbarOpenVideoQuality = this._onToolbarOpenVideoQuality.bind(this);
         this._onToolbarToggleChat = this._onToolbarToggleChat.bind(this);
+        this._onToolbarToggleNote = this._onToolbarToggleNote.bind(this);
         this._onToolbarToggleFullScreen = this._onToolbarToggleFullScreen.bind(this);
         this._onToolbarToggleProfile = this._onToolbarToggleProfile.bind(this);
         this._onToolbarToggleRaiseHand = this._onToolbarToggleRaiseHand.bind(this);
@@ -666,6 +671,10 @@ class Toolbox extends Component<Props> {
      */
     _doToggleChat() {
         this.props.dispatch(toggleChat());
+    }
+
+    _doToggleNote() {
+        this.props.dispatch(toggleNote());
     }
 
     /**
@@ -1042,6 +1051,28 @@ class Toolbox extends Component<Props> {
         this._doToggleChat();
     }
 
+    _onToolbarToggleNote: () => void;
+
+    /**
+     * Creates an analytics toolbar event and dispatches an action for toggling
+     * the display of chat.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onToolbarToggleNote() {
+        sendAnalytics(
+            createToolbarEvent('toggle.note', {
+                enable: !this.props._noteOpen,
+            })
+        );
+
+        if (APP.store.getState()['features/chat'].isOpen) {
+            this._doToggleChat();
+        }
+        this._doToggleNote();
+    }
+
     _onToolbarToggleFullScreen: () => void;
 
     /**
@@ -1330,6 +1361,14 @@ class Toolbox extends Component<Props> {
             />,
             <PollCreateButton key='poll' showLabel={true} />,
 
+            <VideoBlurButton
+                key='videobackgroundblur'
+                showLabel={true}
+                visible={
+                    this.props._shouldShowButton('videobackgroundblur') &&
+                    !_screensharing
+                }
+            />,
             this.props._shouldShowButton('settings')
                 && <SettingsButton
                     key = 'settings'
@@ -1562,6 +1601,20 @@ class Toolbox extends Component<Props> {
             </div>
         );
     }
+
+    // _shouldShowButton: (string) => boolean;
+
+    // /**
+    //  * Returns if a button name has been explicitly configured to be displayed.
+    //  *
+    //  * @param {string} buttonName - The name of the button, as expected in
+    //  * {@link interfaceConfig}.
+    //  * @private
+    //  * @returns {boolean} True if the button should be displayed.
+    //  */
+    // _shouldShowButton(buttonName) {
+    //     return this.props._visibleButtons.has(buttonName);
+    // }
 }
 
 /**
@@ -1579,6 +1632,7 @@ function _mapStateToProps(state) {
         callStatsID,
         enableFeaturesBasedOnToken
     } = state['features/base/config'];
+    const sharedVideoStatus = state['features/shared-video'].status;
     const {
         fullScreen,
         overflowMenuVisible
@@ -1602,6 +1656,7 @@ function _mapStateToProps(state) {
     return {
         _chatOpen: state['features/chat'].isOpen,
         _clientWidth: clientWidth,
+        _noteOpen: state['features/note'].isOpen,
         _conference: conference,
         _desktopSharingEnabled: desktopSharingEnabled,
         _backgroundType: state['features/virtual-background'].backgroundType,
@@ -1623,8 +1678,13 @@ function _mapStateToProps(state) {
         _raisedHand: localParticipant.raisedHand,
         _screensharing: (localVideo && localVideo.videoType === 'desktop') || isScreenAudioShared(state),
         _shouldShowButton: buttonName => isToolbarButtonEnabled(buttonName)(state),
+        _sharingVideo:
+            sharedVideoStatus === 'playing' ||
+            sharedVideoStatus === 'start' ||
+            sharedVideoStatus === 'pause',
         _visible: isToolboxVisible(state),
-        _visibleButtons: getToolbarButtons(state)
+        _visibleButtons: getToolbarButtons(state),
+        _conference: state['features/base/conference'].conference,
     };
 }
 
