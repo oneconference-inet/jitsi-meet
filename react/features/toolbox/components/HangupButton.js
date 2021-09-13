@@ -10,7 +10,7 @@ import { connect } from '../../base/redux';
 import { AbstractHangupButton } from '../../base/toolbox/components';
 import type { AbstractButtonProps } from '../../base/toolbox/components';
 import { getLocalParticipant, PARTICIPANT_ROLE } from '../../base/participants';
-import { EndMeetingDialog } from '../../remote-video-menu/components';
+import { EndMeetingDialog } from '../../video-menu/components';
 import { openDialog } from '../../base/dialog';
 
 import axios from 'axios';
