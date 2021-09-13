@@ -1326,7 +1326,7 @@ class Toolbox extends Component<Props> {
             <RecordButton
                 key='record'
                 showLabel={true}
-                visible={this._shouldShowButton('recording')}
+                visible={this.props._shouldShowButton('recording')}
             />,
             <PollCreateButton key='poll' showLabel={true} />,
 
