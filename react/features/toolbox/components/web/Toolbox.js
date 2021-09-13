@@ -1556,11 +1556,25 @@ class Toolbox extends Component<Props> {
                         </OverflowMenuButton>}
                         <HangupButton
                             customClass = 'hangup-button'
-                            visible = { this.props._shouldShowButton('hangup') } />
+                            visible = { this._shouldShowButton('hangup') } />
                     </div>
                 </div>
             </div>
         );
+    }
+    
+    _shouldShowButton: (string) => boolean;
+
+    /**
+     * Returns if a button name has been explicitly configured to be displayed.
+     *
+     * @param {string} buttonName - The name of the button, as expected in
+     * {@link interfaceConfig}.
+     * @private
+     * @returns {boolean} True if the button should be displayed.
+     */
+    _shouldShowButton(buttonName) {
+        return this.props._visibleButtons.has(buttonName);
     }
 }
 
