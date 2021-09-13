@@ -114,7 +114,7 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
     }
 
     /**
-     * Indicates if video is currently muted ot nor.
+     * Indicates if video is currently muted or not.
      *
      * @override
      * @protected
@@ -187,6 +187,7 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
 function _mapStateToProps(state): Object {
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const tracks = state['features/base/tracks'];
+    const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
 
     return {
         _audioOnly: Boolean(audioOnly),

@@ -1,4 +1,4 @@
-/* global $, APP, config */
+// @flow
 
 import { toJid } from '../../../react/features/base/connection/functions';
 import {
@@ -179,24 +179,12 @@ function LoginDialog(successCallback, cancelCallback) {
 export default {
 
     /**
-     * Show new auth dialog for JitsiConnection.
-     *
-     * @param {function(jid, password)} successCallback
-     * @param {function} [cancelCallback] callback to invoke if user canceled.
-     *
-     * @returns {LoginDialog}
-     */
-    showAuthDialog(successCallback, cancelCallback) {
-        return new LoginDialog(successCallback, cancelCallback);
-    },
-
-    /**
      * Show notification that external auth is required (using provided url).
-     * @param {string} url URL to use for external auth.
-     * @param {function} callback callback to invoke when auth popup is closed.
+     * @param {string} url - URL to use for external auth.
+     * @param {function} callback - callback to invoke when auth popup is closed.
      * @returns auth dialog
      */
-    showExternalAuthDialog(url, callback) {
+    showExternalAuthDialog(url: string, callback: ?Function) {
         const dialog = APP.UI.messageHandler.openCenteredPopup(
             url, 910, 660,
 

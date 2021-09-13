@@ -1,9 +1,11 @@
+/* global APP */
+
 import {
     createTrackMutedEvent,
     sendAnalytics
 } from '../../analytics';
 import { showErrorNotification, showNotification } from '../../notifications';
-import { JitsiTrackErrors, JitsiTrackEvents } from '../lib-jitsi-meet';
+import { JitsiTrackErrors, JitsiTrackEvents, createLocalTrack } from '../lib-jitsi-meet';
 import {
     CAMERA_FACING_MODE,
     MEDIA_TYPE,
@@ -13,6 +15,7 @@ import {
     VIDEO_TYPE
 } from '../media';
 import { getLocalParticipant } from '../participants';
+import { updateSettings } from '../settings';
 
 import {
     SET_NO_SRC_DATA_NOTIFICATION_UID,
@@ -22,6 +25,7 @@ import {
     TRACK_CREATE_ERROR,
     TRACK_NO_DATA_FROM_SOURCE,
     TRACK_REMOVED,
+    TRACK_STOPPED,
     TRACK_UPDATED,
     TRACK_WILL_CREATE,
     TRACK_UPDATE_LAST_VIDEO_MEDIA_EVENT
@@ -127,7 +131,6 @@ export function createLocalTracksA(options = {}) {
                             options.facingMode || CAMERA_FACING_MODE.USER,
                         micDeviceId: options.micDeviceId
                     },
-                    /* firePermissionPromptIsShownEvent */ false,
                     store)
                 .then(
                     localTracks => {
@@ -254,13 +257,19 @@ export function showNoDataFromSourceVideoError(jitsiTrack) {
  * Signals that the local participant is ending screensharing or beginning the
  * screensharing flow.
  *
+ * @param {boolean} enabled - The state to toggle screen sharing to.
+ * @param {boolean} audioOnly - Only share system audio.
  * @returns {{
  *     type: TOGGLE_SCREENSHARING,
+ *     on: boolean,
+ *     audioOnly: boolean
  * }}
  */
-export function toggleScreensharing() {
+export function toggleScreensharing(enabled, audioOnly = false) {
     return {
-        type: TOGGLE_SCREENSHARING
+        type: TOGGLE_SCREENSHARING,
+        enabled,
+        audioOnly
     };
 }
 
@@ -398,8 +407,15 @@ export function trackAdded(track) {
 
                     noDataFromSourceNotificationInfo = { timeout };
                 }
-
             }
+
+            track.on(JitsiTrackEvents.LOCAL_TRACK_STOPPED,
+                () => dispatch({
+                    type: TRACK_STOPPED,
+                    track: {
+                        jitsiTrack: track
+                    }
+                }));
         } else {
             participantId = track.getParticipantId();
             isReceivingData = true;
@@ -599,26 +615,20 @@ function _disposeTracks(tracks) {
  * Implements the {@code Promise} rejection handler of
  * {@code createLocalTracksA} and {@code createLocalTracksF}.
  *
- * @param {Object} reason - The {@code Promise} rejection reason.
+ * @param {Object} error - The {@code Promise} rejection reason.
  * @param {string} device - The device/{@code MEDIA_TYPE} associated with the
  * rejection.
  * @private
  * @returns {Function}
  */
-function _onCreateLocalTracksRejected({ gum }, device) {
+function _onCreateLocalTracksRejected(error, device) {
     return dispatch => {
         // If permissions are not allowed, alert the user.
-        if (gum) {
-            const { error } = gum;
-
-            if (error) {
-                dispatch({
-                    type: TRACK_CREATE_ERROR,
-                    permissionDenied: error.name === 'SecurityError',
-                    trackType: device
-                });
-            }
-        }
+        dispatch({
+            type: TRACK_CREATE_ERROR,
+            permissionDenied: error?.name === 'SecurityError',
+            trackType: device
+        });
     };
 }
 

@@ -1,6 +1,5 @@
 // @flow
 
-import Tooltip from '@atlaskit/tooltip';
 import React, { Component } from 'react';
 
 import { translate } from '../../base/i18n';

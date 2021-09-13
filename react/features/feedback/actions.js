@@ -16,7 +16,6 @@ import infoUser from "../../../infoUser";
 import infoConf from "../../../infoConference";
 
 declare var config: Object;
-declare var interfaceConfig: Object;
 
 import axios from "axios";
 /**
@@ -124,6 +123,39 @@ export function openFeedbackDialog(conference: Object, onClose: ?Function) {
         conference,
         onClose,
     });
+}
+
+/**
+ * Sends feedback metadata to JaaS endpoint.
+ *
+ * @param {JitsiConference} conference - The JitsiConference that is being rated.
+ * @param {Object} feedback - The feedback message and score.
+ *
+ * @returns {Promise}
+ */
+export function sendJaasFeedbackMetadata(conference: Object, feedback: Object) {
+    return (dispatch: Dispatch<any>, getState: Function): Promise<any> => {
+        const state = getState();
+        const { jaasFeedbackMetadataURL } = state['features/base/config'];
+
+        const { jwt, user, tenant } = state['features/base/jwt'];
+
+        if (!isVpaasMeeting(state) || !jaasFeedbackMetadataURL) {
+            return Promise.resolve();
+        }
+
+        const meetingFqn = extractFqnFromPath(state['features/base/connection'].locationURL.pathname);
+        const feedbackData = {
+            ...feedback,
+            sessionId: conference.sessionId,
+            userId: user.id,
+            meetingFqn,
+            jwt,
+            tenant
+        };
+
+        return sendFeedbackToJaaSRequest(jaasFeedbackMetadataURL, feedbackData);
+    };
 }
 
 /**

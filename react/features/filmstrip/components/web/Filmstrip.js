@@ -1,6 +1,5 @@
 /* @flow */
 
-import _ from 'lodash';
 import React, { Component } from 'react';
 import type { Dispatch } from 'redux';
 
@@ -9,12 +8,14 @@ import {
     createToolbarEvent,
     sendAnalytics
 } from '../../../analytics';
+import { getToolbarButtons } from '../../../base/config';
 import { translate } from '../../../base/i18n';
 import { Icon, IconMenuDown, IconMenuUp } from '../../../base/icons';
+import { getLocalParticipant } from '../../../base/participants';
 import { connect } from '../../../base/redux';
-import { dockToolbox } from '../../../toolbox/actions.web';
-import { getCurrentLayout, LAYOUTS } from '../../../video-layout';
-import { setFilmstripHovered, setFilmstripVisible } from '../../actions';
+import { isButtonEnabled } from '../../../toolbox/functions.web';
+import { LAYOUTS, getCurrentLayout } from '../../../video-layout';
+import { setFilmstripVisible } from '../../actions';
 import { shouldRemoteVideosBeVisible } from '../../functions';
 
 declare var APP: Object;
@@ -56,10 +57,14 @@ type Props = {
     _hideToolbar: boolean,
 
     /**
-     * Whether or not remote videos are currently being hovered over. Hover
-     * handling is currently being handled detected outside of react.
+     * Whether the filmstrip button is enabled.
      */
-    _hovered: boolean,
+    _isFilmstripButtonEnabled: boolean,
+
+    /**
+     * The participants in the call.
+     */
+    _participants: Array<Object>,
 
     /**
      * The number of rows in tile view.
@@ -94,13 +99,6 @@ type Props = {
  * @extends Component
  */
 class Filmstrip extends Component <Props> {
-    _isHovered: boolean;
-
-    _notifyOfHoveredStateUpdate: Function;
-
-    _onMouseOut: Function;
-
-    _onMouseOver: Function;
 
     /**
      * Initializes a new {@code Filmstrip} instance.
@@ -111,20 +109,7 @@ class Filmstrip extends Component <Props> {
     constructor(props: Props) {
         super(props);
 
-        // Debounce the method for dispatching the new filmstrip handled state
-        // so that it does not get called with each mouse movement event. This
-        // also works around an issue where mouseout and then a mouseover event
-        // is fired when hovering over remote thumbnails, which are not yet in
-        // react.
-        this._notifyOfHoveredStateUpdate = _.debounce(this._notifyOfHoveredStateUpdate, 100);
-
-        // Cache the current hovered state for _updateHoveredState to always
-        // send the last known hovered state.
-        this._isHovered = false;
-
         // Bind event handlers so they are only bound once for every instance.
-        this._onMouseOut = this._onMouseOut.bind(this);
-        this._onMouseOver = this._onMouseOver.bind(this);
         this._onShortcutToggleFilmstrip = this._onShortcutToggleFilmstrip.bind(this);
         this._onToolbarToggleFilmstrip = this._onToolbarToggleFilmstrip.bind(this);
     }
@@ -159,18 +144,15 @@ class Filmstrip extends Component <Props> {
      * @returns {ReactElement}
      */
     render() {
-        // Note: Appending of {@code RemoteVideo} views is handled through
-        // VideoLayout. The views do not get blown away on render() because
-        // ReactDOMComponent is only aware of the given JSX and not new appended
-        // DOM. As such, when updateDOMProperties gets called, only attributes
-        // will get updated without replacing the DOM. If the known DOM gets
-        // modified, then the views will get blown away.
-
         const filmstripStyle = { };
         const filmstripRemoteVideosContainerStyle = {};
         let remoteVideoContainerClassName = 'remote-videos-container';
+        const { _currentLayout, _participants } = this.props;
+        const remoteParticipants = _participants.filter(p => !p.local);
+        const localParticipant = getLocalParticipant(_participants);
+        const tileViewActive = _currentLayout === LAYOUTS.TILE_VIEW;
 
-        switch (this.props._currentLayout) {
+        switch (_currentLayout) {
         case LAYOUTS.VERTICAL_FILMSTRIP_VIEW:
             // Adding 18px for the 2px margins, 2px borders on the left and right and 5px padding on the left and right.
             // Also adding 7px for the scrollbar.
@@ -211,10 +193,14 @@ class Filmstrip extends Component <Props> {
                     id = 'remoteVideos'>
                     <div
                         className = 'filmstrip__videos'
-                        id = 'filmstripLocalVideo'
-                        onMouseOut = { this._onMouseOut }
-                        onMouseOver = { this._onMouseOver }>
-                        <div id = 'filmstripLocalVideoThumbnail' />
+                        id = 'filmstripLocalVideo'>
+                        <div id = 'filmstripLocalVideoThumbnail'>
+                            {
+                                !tileViewActive && <Thumbnail
+                                    key = 'local'
+                                    participantID = { localParticipant.id } />
+                            }
+                        </div>
                     </div>
                     <div
                         className = { remoteVideosWrapperClassName }
@@ -227,10 +213,22 @@ class Filmstrip extends Component <Props> {
                         <div
                             className = { remoteVideoContainerClassName }
                             id = 'filmstripRemoteVideosContainer'
-                            onMouseOut = { this._onMouseOut }
-                            onMouseOver = { this._onMouseOver }
                             style = { filmstripRemoteVideosContainerStyle }>
-                            <div id = 'localVideoTileViewContainer' />
+                            {
+                                remoteParticipants.map(
+                                    p => (
+                                        <Thumbnail
+                                            key = { `remote_${p.id}` }
+                                            participantID = { p.id } />
+                                    ))
+                            }
+                            <div id = 'localVideoTileViewContainer'>
+                                {
+                                    tileViewActive && <Thumbnail
+                                        key = 'local'
+                                        participantID = { localParticipant.id } />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -246,44 +244,6 @@ class Filmstrip extends Component <Props> {
      */
     _doToggleFilmstrip() {
         this.props.dispatch(setFilmstripVisible(!this.props._visible));
-    }
-
-    /**
-     * If the current hover state does not match the known hover state in redux,
-     * dispatch an action to update the known hover state in redux.
-     *
-     * @private
-     * @returns {void}
-     */
-    _notifyOfHoveredStateUpdate() {
-        if (this.props._hovered !== this._isHovered) {
-            this.props.dispatch(dockToolbox(this._isHovered));
-            this.props.dispatch(setFilmstripHovered(this._isHovered));
-        }
-    }
-
-    /**
-     * Updates the currently known mouseover state and attempt to dispatch an
-     * update of the known hover state in redux.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onMouseOut() {
-        this._isHovered = false;
-        this._notifyOfHoveredStateUpdate();
-    }
-
-    /**
-     * Updates the currently known mouseover state and attempt to dispatch an
-     * update of the known hover state in redux.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onMouseOver() {
-        this._isHovered = true;
-        this._notifyOfHoveredStateUpdate();
     }
 
     _onShortcutToggleFilmstrip: () => void;
@@ -376,7 +336,8 @@ function _mapStateToProps(state) {
         _filmstripWidth: filmstripWidth,
         _hideScrollbar: Boolean(iAmSipGateway),
         _hideToolbar: Boolean(iAmSipGateway),
-        _hovered: hovered,
+        _isFilmstripButtonEnabled: isButtonEnabled('filmstrip', state),
+        _participants: state['features/base/participants'],
         _rows: gridDimensions.rows,
         _videosClassName: videosClassName,
         _visible: visible

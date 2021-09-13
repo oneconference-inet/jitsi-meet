@@ -13,7 +13,7 @@ import Notification from "./Notification";
 
 type Props = AbstractProps & {
     /**
-     * Whther we are a SIP gateway or not.
+     * Whether we are a SIP gateway or not.
      */
     _iAmSipGateway: boolean,
 };

@@ -17,6 +17,7 @@ export function getOverlays(): Array<Object> {
     return [
         PageReloadOverlay,
         SuspendedOverlay,
-        UserMediaPermissionsOverlay
+        UserMediaPermissionsOverlay,
+        SlowGUMOverlay
     ];
 }

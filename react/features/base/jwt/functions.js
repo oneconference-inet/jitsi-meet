@@ -1,6 +1,10 @@
 /* @flow */
 
+import jwtDecode from 'jwt-decode';
+
 import { parseURLParams } from '../util';
+
+import { MEET_FEATURES } from './constants';
 
 /**
  * Retrieves the JSON Web Token (JWT), if any, defined by a specific

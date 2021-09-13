@@ -8,16 +8,13 @@ local http_headers = {
     ["User-Agent"] = "Prosody ("..prosody.version.."; "..prosody.platform..")"
 };
 
-local muc_domain_prefix
-    = module:get_option_string("muc_mapper_domain_prefix", "conference");
+local muc_domain_prefix = module:get_option_string("muc_mapper_domain_prefix", "conference");
 
 -- defaults to module.host, the module that uses the utility
-local muc_domain_base
-    = module:get_option_string("muc_mapper_domain_base", module.host);
+local muc_domain_base = module:get_option_string("muc_mapper_domain_base", module.host);
 
 -- The "real" MUC domain that we are proxying to
-local muc_domain = module:get_option_string(
-    "muc_mapper_domain", muc_domain_prefix.."."..muc_domain_base);
+local muc_domain = module:get_option_string("muc_mapper_domain", muc_domain_prefix.."."..muc_domain_base);
 
 local escaped_muc_domain_base = muc_domain_base:gsub("%p", "%%%1");
 local escaped_muc_domain_prefix = muc_domain_prefix:gsub("%p", "%%%1");
@@ -118,6 +115,23 @@ function get_room_from_jid(room_jid)
             return
         end
     end
+end
+
+-- Returns the room if available, work and in multidomain mode
+-- @param room_name the name of the room
+-- @param group name of the group (optional)
+-- @return returns room if found or nil
+function get_room_by_name_and_subdomain(room_name, subdomain)
+    local room_address;
+
+    -- if there is a subdomain we are in multidomain mode and that subdomain is not our main host
+    if subdomain and subdomain ~= "" and subdomain ~= muc_domain_base then
+        room_address = jid.join("["..subdomain.."]"..room_name, muc_domain);
+    else
+        room_address = jid.join(room_name, muc_domain);
+    end
+
+    return get_room_from_jid(room_address);
 end
 
 function async_handler_wrapper(event, handler)
@@ -324,12 +338,32 @@ function http_get_with_retry(url, retry)
     return content;
 end
 
+-- Checks whether there is status in the <x node
+-- @param muc_x the <x element from presence
+-- @param status checks for this status
+-- @returns true if the status is found, false otherwise or if no muc_x is provided.
+function presence_check_status(muc_x, status)
+    if not muc_x then
+        return false;
+    end
+
+    for statusNode in muc_x:childtags('status') do
+        if statusNode.attr.code == status then
+            return true;
+        end
+    end
+
+    return false;
+end
+
 return {
     extract_subdomain = extract_subdomain;
     is_feature_allowed = is_feature_allowed;
     is_healthcheck_room = is_healthcheck_room;
     get_room_from_jid = get_room_from_jid;
+    get_room_by_name_and_subdomain = get_room_by_name_and_subdomain;
     async_handler_wrapper = async_handler_wrapper;
+    presence_check_status = presence_check_status;
     room_jid_match_rewrite = room_jid_match_rewrite;
     room_jid_split_subdomain = room_jid_split_subdomain;
     internal_room_jid_match_rewrite = internal_room_jid_match_rewrite;

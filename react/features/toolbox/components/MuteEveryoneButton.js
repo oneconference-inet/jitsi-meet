@@ -18,11 +18,6 @@ type Props = AbstractButtonProps & {
      */
     dispatch: Function,
 
-    /*
-     ** Whether the local participant is a moderator or not.
-     */
-    isModerator: Boolean,
-
     /**
      * The ID of the local participant.
      */
@@ -65,14 +60,12 @@ class MuteEveryoneButton extends AbstractButton<Props, *> {
  */
 function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
-    const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
-    const { visible } = ownProps;
     const { disableRemoteMute } = state['features/base/config'];
+    const { visible = isLocalParticipantModerator(state) && !disableRemoteMute } = ownProps;
 
     return {
-        isModerator,
         localParticipantId: localParticipant.id,
-        visible: visible && isModerator && !disableRemoteMute
+        visible
     };
 }
 

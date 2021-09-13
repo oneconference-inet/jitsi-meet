@@ -32,8 +32,8 @@ const DEFAULT_STATE = {
     backgroundImageUrl: '',
 
     /**
-     * Flag indicating that the logo (JitsiWatermark) can be displayed.
-     * This is used in order to avoid image flickering.
+     * Flag indicating that the branding data can be displayed.
+     * This is used in order to avoid image flickering / text changing(blipping).
      *
      * @public
      * @type {boolean}
@@ -57,6 +57,14 @@ const DEFAULT_STATE = {
      * @type {boolean}
      */
     defaultBranding: true,
+
+    /**
+     * Url for a custom page for DID numbers list.
+     *
+     * @public
+     * @type {string}
+     */
+    didPageUrl: '',
 
     /**
      * The custom invite domain.
@@ -101,6 +109,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             backgroundColor,
             backgroundImageUrl,
             defaultBranding,
+            didPageUrl,
             inviteDomain,
             logoClickUrl,
             logoImageUrl
@@ -110,6 +119,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             backgroundColor,
             backgroundImageUrl,
             defaultBranding,
+            didPageUrl,
             inviteDomain,
             logoClickUrl,
             logoImageUrl,

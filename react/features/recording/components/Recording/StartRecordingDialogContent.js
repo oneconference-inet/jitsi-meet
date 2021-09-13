@@ -162,7 +162,9 @@ class StartRecordingDialogContent extends Component<Props> {
      * @returns {React$Component}
      */
     _renderFileSharingContent() {
-        if (!this.props.fileRecordingsServiceSharingEnabled) {
+        const { fileRecordingsServiceSharingEnabled, isVpaas } = this.props;
+
+        if (!fileRecordingsServiceSharingEnabled || isVpaas) {
             return null;
         }
 
@@ -265,7 +267,7 @@ class StartRecordingDialogContent extends Component<Props> {
                         ..._dialogStyles.text,
                         ...styles.title
                     }}>
-                    { t('recording.serviceDescription') }
+                    { label }
                 </Text>
                 { switchContent }
             </Container>

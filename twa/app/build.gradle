@@ -192,7 +192,6 @@ task generateShorcutsFile {
 preBuild.dependsOn(generateShorcutsFile)
 
 repositories {
-
 }
 
 dependencies {

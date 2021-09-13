@@ -1,5 +1,6 @@
 // @flow
 
+import { getToolbarButtons } from '../../../../base/config';
 import { translate } from '../../../../base/i18n';
 import { connect } from '../../../../base/redux';
 import AbstractLiveStreamButton, {

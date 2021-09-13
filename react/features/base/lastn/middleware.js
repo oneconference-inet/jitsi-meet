@@ -18,11 +18,11 @@ import {
 import { MiddlewareRegistry } from '../redux';
 import { isLocalVideoTrackDesktop } from '../tracks/functions';
 
+import { setLastN } from './actions';
 import { limitLastN } from './functions';
 import logger from './logger';
 
 declare var APP: Object;
-
 
 MiddlewareRegistry.register(store => next => action => {
     const result = next(action);
@@ -33,7 +33,7 @@ MiddlewareRegistry.register(store => next => action => {
     case PARTICIPANT_JOINED:
     case PARTICIPANT_KICKED:
     case PARTICIPANT_LEFT:
-    case SCREEN_SHARE_PARTICIPANTS_UPDATED:
+    case SCREEN_SHARE_REMOTE_PARTICIPANTS_UPDATED:
     case SELECT_LARGE_VIDEO_PARTICIPANT:
     case SET_AUDIO_ONLY:
     case SET_FILMSTRIP_ENABLED:
@@ -52,14 +52,14 @@ MiddlewareRegistry.register(store => next => action => {
  * @private
  * @returns {void}
  */
-function _updateLastN({ getState }) {
+function _updateLastN({ dispatch, getState }) {
     const state = getState();
     const { conference } = state['features/base/conference'];
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const { appState } = state['features/background'] || {};
     const { enabled: filmStripEnabled } = state['features/filmstrip'];
     const config = state['features/base/config'];
-    const { lastNLimits } = state['features/base/lastn'];
+    const { lastNLimits, lastN } = state['features/base/lastn'];
     const participantCount = getParticipantCount(state);
 
     if (!conference) {
@@ -89,23 +89,14 @@ function _updateLastN({ getState }) {
         // view since we make an exception only for screenshare when in audio-only mode. If the user unpins
         // the screenshare, lastN will be set to 0 here. It will be set to 1 if screenshare has been auto pinned.
         if (!tileViewEnabled && largeVideoParticipant && !largeVideoParticipant.local) {
-            lastN = (screenShares || []).includes(largeVideoParticipantId) ? 1 : 0;
+            lastNSelected = (remoteScreenShares || []).includes(largeVideoParticipantId) ? 1 : 0;
         } else {
-            lastN = 0;
+            lastNSelected = 0;
         }
     } else if (!filmStripEnabled) {
-        lastN = 1;
+        lastNSelected = 1;
     }
 
-    if (conference.getLastN() === lastN) {
-        return;
-    }
-
-    logger.info(`Setting last N to: ${lastN}`);
-
-    try {
-        conference.setLastN(lastN);
-    } catch (err) {
-        logger.error(`Failed to set lastN: ${err}`);
-    }
+    logger.info(`Setting last N to: ${lastNSelected}`);
+    dispatch(setLastN(lastNSelected));
 }

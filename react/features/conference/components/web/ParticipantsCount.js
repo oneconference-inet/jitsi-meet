@@ -8,6 +8,7 @@ import { getParticipantCount } from "../../../base/participants";
 import { connect } from "../../../base/redux";
 import { SpeakerStats } from "../../../speaker-stats";
 
+
 /**
  * The type of the React {@code Component} props of {@link ParticipantsCount}.
  */

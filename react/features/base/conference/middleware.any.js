@@ -120,6 +120,7 @@ MiddlewareRegistry.register((store) => (next) => (action) => {
 function _conferenceFailed({ dispatch, getState }, next, action) {
     const result = next(action);
     const { conference, error } = action;
+    const { enableForcedReload } = getState()['features/base/config'];
 
     // Handle specific failure reasons.
     switch (error.name) {
@@ -183,6 +184,18 @@ function _conferenceFailed({ dispatch, getState }, next, action) {
             // good to know that it happen, so log it (on the info level).
             logger.info("JitsiConference.leave() rejected with:", reason);
         });
+    } else if (typeof beforeUnloadHandler !== 'undefined') {
+        // FIXME: Workaround for the web version. Currently, the creation of the
+        // conference is handled by /conference.js and appropriate failure handlers
+        // are set there.
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+        beforeUnloadHandler = undefined;
+    }
+
+    if (enableForcedReload && error?.name === JitsiConferenceErrors.CONFERENCE_RESTARTED) {
+        dispatch(conferenceWillLeave(conference));
+        dispatch(reloadNow());
+    }
 
     return result;
 }
@@ -254,6 +267,26 @@ function _connectionEstablished({ dispatch }, next, action) {
 }
 
 /**
+ * Logs jwt validation errors from xmpp and from the client-side validator.
+ *
+ * @param {string} message -The error message from xmpp.
+ * @param {Object} state - The redux state.
+ * @returns {void}
+ */
+function _logJwtErrors(message, state) {
+    const { jwt } = state['features/base/jwt'];
+
+    if (!jwt) {
+        return;
+    }
+
+    const errorKeys = validateJwt(jwt);
+
+    message && logger.error(`JWT error: ${message}`);
+    errorKeys.length && logger.error('JWT parsing error:', errorKeys);
+}
+
+/**
  * Notifies the feature base/conference that the action
  * {@code CONNECTION_FAILED} is being dispatched within a specific redux
  * store.
@@ -268,6 +301,8 @@ function _connectionEstablished({ dispatch }, next, action) {
  * @returns {Object} The value returned by {@code next(action)}.
  */
 function _connectionFailed({ dispatch, getState }, next, action) {
+    _logJwtErrors(action.error.message, getState());
+
     const result = next(action);
 
     if (typeof beforeUnloadHandler !== "undefined") {

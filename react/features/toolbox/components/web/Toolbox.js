@@ -15,11 +15,11 @@ import { translate } from "../../../base/i18n";
 import {
     IconChat,
     IconCodeBlock,
+    IconDeviceDocument,
     IconExitFullScreen,
     IconFeedback,
     IconFullScreen,
-    IconInviteMore,
-    IconOpenInNew,
+    IconParticipants,
     IconPresentation,
     IconRaisedHand,
     IconRec,
@@ -105,6 +105,7 @@ import { JitsiRecordingConstants } from "../../../base/lib-jitsi-meet";
 import { RECORDING_TYPES } from "../../../recording/constants";
 import UIEvents from "../../../../../service/UI/UIEvents";
 
+
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
@@ -112,9 +113,19 @@ type Props = {
     _noteOpen: boolean,
 
     /**
+     * String showing if the virtual background type is desktop-share.
+     */
+    _backgroundType: String,
+
+    /**
      * Whether or not the chat feature is currently displayed.
      */
     _chatOpen: boolean,
+
+    /**
+     * The width of the client.
+     */
+    _clientWidth: number,
 
     /**
      * The {@code JitsiConference} for the current conference.
@@ -179,9 +190,19 @@ type Props = {
     _locked: boolean,
 
     /**
+     * The JitsiLocalTrack to display.
+     */
+    _localVideo: Object,
+
+    /**
      * Whether or not the overflow menu is visible.
      */
     _overflowMenuVisible: boolean,
+
+    /**
+     * Whether or not the participants pane is open.
+     */
+    _participantsPaneOpen: boolean,
 
     /**
      * Whether or not the local participant's hand is raised.
@@ -204,17 +225,17 @@ type Props = {
     _visible: boolean,
 
     /**
-     * Set with the buttons which this Toolbox should display.
+     * Array with the buttons which this Toolbox should display.
      */
-    _visibleButtons: Set<string>,
+    _visibleButtons: Array<string>,
 
     /**
-     * Invoked to active other features of the app.
+     * Handler to check if a button is enabled.
      */
-    dispatch: Function,
+     _shouldShowButton: Function,
 
     /**
-     * Invoked to obtain translated strings.
+     * Returns the selected virtual source object.
      */
     t: Function,
 };
@@ -224,7 +245,7 @@ type Props = {
  */
 type State = {
     /**
-     * The width of the browser's window.
+     * Invoked to obtain translated strings.
      */
     windowWidth: number,
 };
@@ -243,7 +264,7 @@ const visibleButtons = new Set(interfaceConfig.TOOLBAR_BUTTONS);
  *
  * @extends Component
  */
-class Toolbox extends Component<Props, State> {
+class Toolbox extends Component<Props> {
     /**
      * Initializes a new {@code Toolbox} instance.
      *
@@ -256,8 +277,8 @@ class Toolbox extends Component<Props, State> {
         // Bind event handlers so they are only bound once per instance.
         this._onMouseOut = this._onMouseOut.bind(this);
         this._onMouseOver = this._onMouseOver.bind(this);
-        this._onResize = this._onResize.bind(this);
         this._onSetOverflowVisible = this._onSetOverflowVisible.bind(this);
+        this._onTabIn = this._onTabIn.bind(this);
 
         this._onShortcutToggleChat = this._onShortcutToggleChat.bind(this);
         this._onShortcutToggleFullScreen =
@@ -543,10 +564,6 @@ class Toolbox extends Component<Props, State> {
             this._onSetOverflowVisible(false);
             this.props.dispatch(setToolbarHovered(false));
         }
-
-        if (this.props._chatOpen !== prevProps._chatOpen) {
-            this._onResize();
-        }
     }
 
     /**
@@ -588,6 +605,18 @@ class Toolbox extends Component<Props, State> {
                 {this._renderToolboxContent()}
             </div>
         );
+    }
+
+    /**
+     * Closes the overflow menu if opened.
+     *
+     * @private
+     * @returns {void}
+     */
+    _closeOverflowMenuIfOpen() {
+        const { dispatch, _overflowMenuVisible } = this.props;
+
+        _overflowMenuVisible && dispatch(setOverflowMenuVisible(false));
     }
 
     /**
@@ -690,6 +719,7 @@ class Toolbox extends Component<Props, State> {
      */
     _doToggleRaiseHand() {
         const { _localParticipantID, _raisedHand } = this.props;
+        const newRaisedStatus = !_raisedHand;
 
         this.props.dispatch(
             participantUpdated({
@@ -710,22 +740,14 @@ class Toolbox extends Component<Props, State> {
      * Dispatches an action to toggle screensharing.
      *
      * @private
+     * @param {boolean} enabled - The state to toggle screen sharing to.
+     * @param {boolean} audioOnly - Only share system audio.
      * @returns {void}
      */
-    _doToggleScreenshare() {
+    _doToggleScreenshare(enabled, audioOnly = false) {
         if (this.props._desktopSharingEnabled) {
-            this.props.dispatch(toggleScreensharing());
+            this.props.dispatch(toggleScreensharing(enabled, audioOnly));
         }
-    }
-
-    /**
-     * Dispatches an action to toggle YouTube video sharing.
-     *
-     * @private
-     * @returns {void}
-     */
-    _doToggleSharedVideo() {
-        this.props.dispatch(toggleSharedVideo());
     }
 
     /**
@@ -827,6 +849,25 @@ class Toolbox extends Component<Props, State> {
         this._doToggleChat();
     }
 
+    _onShortcutToggleParticipantsPane: () => void;
+
+    /**
+     * Creates an analytics keyboard shortcut event and dispatches an action for
+     * toggling the display of the participants pane.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onShortcutToggleParticipantsPane() {
+        sendAnalytics(createShortcutEvent(
+            'toggle.participants-pane',
+            {
+                enable: !this.props._participantsPaneOpen
+            }));
+
+        this._onToolbarToggleParticipantsPane();
+    }
+
     _onShortcutToggleVideoQuality: () => void;
 
     /**
@@ -916,7 +957,20 @@ class Toolbox extends Component<Props, State> {
             })
         );
 
-        this._doToggleScreenshare();
+        this._doToggleScreenshare(enable);
+    }
+
+    _onTabIn: () => void;
+
+    /**
+     * Toggle the toolbar visibility when tabbing into it.
+     *
+     * @returns {void}
+     */
+    _onTabIn() {
+        if (!this.props._visible) {
+            this.props.dispatch(showToolbox());
+        }
     }
 
     _onToolbarOpenFeedback: () => void;
@@ -934,11 +988,10 @@ class Toolbox extends Component<Props, State> {
         this._doOpenFeedback();
     }
 
-    _onToolbarOpenInvite: () => void;
+    _onToolbarToggleParticipantsPane: () => void;
 
     /**
-     * Creates an analytics toolbar event and dispatches an action for opening
-     * the modal for inviting people directly into the conference.
+     * Dispatches an action for toggling the participants pane.
      *
      * @private
      * @returns {void}
@@ -1115,6 +1168,20 @@ class Toolbox extends Component<Props, State> {
      * @returns {void}
      */
     _onToolbarToggleScreenshare() {
+        if (this.props._backgroundType === VIRTUAL_BACKGROUND_TYPE.DESKTOP_SHARE) {
+            const noneOptions = {
+                enabled: false,
+                backgroundType: VIRTUAL_BACKGROUND_TYPE.NONE,
+                selectedThumbnail: VIRTUAL_BACKGROUND_TYPE.NONE,
+                backgroundEffectEnabled: false
+            };
+
+            this.props._virtualSource.dispose();
+
+            this.props.dispatch(toggleBackgroundEffect(noneOptions, this.props._localVideo));
+
+            return;
+        }
         if (!this.props._desktopSharingEnabled) {
             return;
         }
@@ -1127,16 +1194,15 @@ class Toolbox extends Component<Props, State> {
             )
         );
 
-        this._doToggleScreenshare();
+        this._closeOverflowMenuIfOpen();
+        this._doToggleScreenshare(enable);
     }
 
-    _onToolbarToggleSharedVideo: () => void;
+    _onToolbarToggleShareAudio: () => void;
 
     /**
-     * Creates an analytics toolbar event and dispatches an action for toggling
-     * the sharing of a YouTube video.
+     * Handles toggle share audio action.
      *
-     * @private
      * @returns {void}
      */
     _onToolbarToggleSharedVideo() {
@@ -1146,7 +1212,8 @@ class Toolbox extends Component<Props, State> {
             })
         );
 
-        this._doToggleSharedVideo();
+        this._closeOverflowMenuIfOpen();
+        this._doToggleScreenshare(enable, true);
     }
 
     _onToolbarOpenLocalRecordingInfoDialog: () => void;
@@ -1164,7 +1231,7 @@ class Toolbox extends Component<Props, State> {
     }
 
     /**
-     * Returns true if the the desktop sharing button should be visible and
+     * Returns true if the desktop sharing button should be visible and
      * false otherwise.
      *
      * @returns {boolean}
@@ -1239,7 +1306,7 @@ class Toolbox extends Component<Props, State> {
     }
 
     /**
-     * Returns true if the profile button is visible and false otherwise.
+     * Returns true if the embed meeting button is visible and false otherwise.
      *
      * @returns {boolean}
      */
@@ -1265,12 +1332,15 @@ class Toolbox extends Component<Props, State> {
      * Renders the list elements of the overflow menu.
      *
      * @private
-     * @returns {Array<ReactElement>}
+     * @param {Array<React$Element>} additionalButtons - Additional buttons to be displayed.
+     * @returns {Array<React$Element>}
      */
-    _renderOverflowMenuContent() {
+    _renderOverflowMenuContent(additionalButtons: Array<React$Element<any>>) {
         const {
+            _desktopSharingEnabled,
             _feedbackConfigured,
             _fullScreen,
+            _isMobile,
             _screensharing,
             _sharingVideo,
             t,
@@ -1407,12 +1477,11 @@ class Toolbox extends Component<Props, State> {
     }
 
     /**
-     * Renders a list of buttons that are moved to the overflow menu.
+     * Returns the buttons to be displayed in main or the overflow menu.
      *
-     * @private
-     * @param {Array<string>} movedButtons - The names of the buttons to be
-     * moved.
-     * @returns {Array<ReactElement>}
+     * @param {Set} buttons - A set containing the buttons to be displayed
+     * in the toolbar beside the main audio/video & hanugup.
+     * @returns {Object}
      */
     _renderMovedButtons(movedButtons) {
         const { _chatOpen, _noteOpen, _raisedHand, t } = this.props;
@@ -1535,7 +1604,7 @@ class Toolbox extends Component<Props, State> {
     /**
      * Renders the toolbox content.
      *
-     * @returns {Array<ReactElement>}
+     * @returns {ReactElement}
      */
     _renderToolboxContent() {
         const { _chatOpen, _noteOpen, _overflowMenuVisible, _raisedHand, t } =
@@ -1789,15 +1858,13 @@ function _mapStateToProps(state) {
         desktopSharingDisabledTooltipKey = "dialog.shareYourScreenDisabled";
     }
 
-    // NB: We compute the buttons again here because if URL parameters were used to
-    // override them we'd miss it.
-    const buttons = new Set(interfaceConfig.TOOLBAR_BUTTONS);
-
     return {
         _chatOpen: state["features/chat"].isOpen,
         _noteOpen: state["features/note"].isOpen,
         _conference: conference,
         _desktopSharingEnabled: desktopSharingEnabled,
+        _backgroundType: state['features/virtual-background'].backgroundType,
+        _virtualSource: state['features/virtual-background'].virtualSource,
         _desktopSharingDisabledTooltipKey: desktopSharingDisabledTooltipKey,
         _dialog: Boolean(state["features/base/dialog"].component),
         _feedbackConfigured: Boolean(callStatsID),
@@ -1808,9 +1875,11 @@ function _mapStateToProps(state) {
         _fullScreen: fullScreen,
         _tileViewEnabled: shouldDisplayTileView(state),
         _localParticipantID: localParticipant.id,
+        _localVideo: localVideo,
         _localRecState: localRecordingStates,
         _locked: locked,
         _overflowMenuVisible: overflowMenuVisible,
+        _participantsPaneOpen: getParticipantsPaneOpen(state),
         _raisedHand: localParticipant.raisedHand,
         _screensharing: localVideo && localVideo.videoType === "desktop",
         _sharingVideo:
