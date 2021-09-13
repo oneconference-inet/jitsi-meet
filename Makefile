@@ -36,7 +36,9 @@ deploy-init:
 
 deploy-appbundle:
 	cp \
+		$(BUILD_DIR)/app.bundle.min.js \
 		$(BUILD_DIR)/app.bundle.min.map \
+		$(BUILD_DIR)/do_external_connect.min.js \
 		$(BUILD_DIR)/do_external_connect.min.map \
 		$(BUILD_DIR)/external_api.min.js \
 		$(BUILD_DIR)/external_api.min.map \
@@ -55,6 +57,7 @@ deploy-appbundle:
 
 deploy-lib-jitsi-meet:
 	cp \
+		$(LIBJITSIMEET_DIR)/lib-jitsi-meet.min.js \
 		$(LIBJITSIMEET_DIR)/lib-jitsi-meet.min.map \
 		$(LIBJITSIMEET_DIR)/lib-jitsi-meet.e2ee-worker.js \
 		$(LIBJITSIMEET_DIR)/connection_optimization/external_connect.js \
