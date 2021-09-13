@@ -10,6 +10,7 @@ import {
     sendAnalytics,
     VIDEO_MUTE
 } from '../analytics';
+import { hideDialog } from '../base/dialog';
 import {
     MEDIA_TYPE,
     setAudioMuted,
@@ -21,9 +22,22 @@ import {
     muteRemoteParticipant
 } from '../base/participants';
 
+import { RemoteVideoMenu } from './components';
+
+import { kickParticipant } from '../base/participants';
+
 declare var APP: Object;
 
 const logger = getLogger(__filename);
+
+/**
+ * Hides the remote video menu.
+ *
+ * @returns {Function}
+ */
+export function hideRemoteVideoMenu() {
+    return hideDialog(RemoteVideoMenu);
+}
 
 /**
  * Mutes the local participant.
@@ -90,5 +104,26 @@ export function muteAllParticipants(exclude: Array<string>, mediaType: MEDIA_TYP
             .map(id => id === localId ? muteLocal(true, mediaType) : muteRemote(id, mediaType))
             .map(dispatch);
         /* eslint-enable no-confusing-arrow */
+    };
+}
+
+/////////////////////////// End Meeting - Kick all PARTICIPANT //////////////////////////////////////
+
+export function endAllParticipants(exclude: Array<string>) {
+    return (dispatch: Dispatch<any>, getState: Function) => {
+        const state = getState();
+
+        const participantIds = state['features/base/participants'].map(
+            (p) => p.id
+        );
+
+        /* eslint-disable no-confusing-arrow */
+        const setParticipants = participantIds.filter(
+            (id) => !exclude.includes(id)
+        );
+
+        setParticipants.map((person) => {
+            dispatch(kickParticipant(person));
+        });
     };
 }
