@@ -21,7 +21,7 @@ import { getTrackByMediaTypeAndParticipant } from '../../../base/tracks';
 import { ConnectionIndicator } from '../../../connection-indicator';
 import { DisplayNameLabel } from '../../../display-name';
 import { toggleToolboxVisible } from '../../../toolbox/actions.native';
-import { RemoteVideoMenu } from '../../../video-menu';
+import { VideoMenu } from '../../../video-menu';
 import ConnectionStatusComponent from '../../../video-menu/components/native/ConnectionStatusComponent';
 
 import AudioMutedIndicator from './AudioMutedIndicator';
@@ -239,7 +239,7 @@ function _mapDispatchToProps(dispatch: Function, ownProps): Object {
                     participantID: participant.id
                 }));
             } else {
-                dispatch(openDialog(RemoteVideoMenu, {
+                dispatch(openDialog(VideoMenu, {
                     participant
                 }));
             }

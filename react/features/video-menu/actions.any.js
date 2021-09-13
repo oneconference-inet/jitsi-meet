@@ -22,7 +22,7 @@ import {
     muteRemoteParticipant
 } from '../base/participants';
 
-import { RemoteVideoMenu } from './components';
+import { VideoMenu } from './components';
 
 import { kickParticipant } from '../base/participants';
 
@@ -36,7 +36,7 @@ const logger = getLogger(__filename);
  * @returns {Function}
  */
 export function hideRemoteVideoMenu() {
-    return hideDialog(RemoteVideoMenu);
+    return hideDialog(VideoMenu);
 }
 
 /**
