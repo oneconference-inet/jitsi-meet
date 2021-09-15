@@ -1358,11 +1358,12 @@ class Toolbox extends Component<Props, State> {
                 && <HelpButton
                     key = 'help'
                     showLabel = { true } />,
-            <RecordButton
-                key='record'
-                showLabel={true}
-                visible={this.props._shouldShowButton('recording')}
-            />,
+            this.props._shouldShowButton('record')
+                && <RecordButton
+                    key='record'
+                    showLabel={true}
+                    visible={this.props._shouldShowButton('recording')}
+                />,
             <PollCreateButton key='poll' showLabel={true} />,
             
         ];
