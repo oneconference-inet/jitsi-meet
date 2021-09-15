@@ -31,7 +31,8 @@ import JitsiMeetJS from '../../../base/lib-jitsi-meet';
 import {
     getLocalParticipant,
     getParticipants,
-    participantUpdated
+    participantUpdated,
+    participantRoleChanged,
 } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { OverflowMenuItem } from '../../../base/toolbox/components';
@@ -47,7 +48,7 @@ import {
     close as closeParticipantsPane,
     open as openParticipantsPane
 } from '../../../participants-pane/actions';
-import { getParticipantsPaneOpen } from '../../../participants-pane/functions';
+import { PollCreateButton } from '../../../polls/components/';
 import {
     LiveStreamButton,
     RecordButton
@@ -89,6 +90,7 @@ import HangupButton from '../HangupButton';
 import HelpButton from '../HelpButton';
 import MuteEveryoneButton from '../MuteEveryoneButton';
 import MuteEveryonesVideoButton from '../MuteEveryonesVideoButton';
+import EndMeetingButton from '../EndMeetingButton';
 
 import AudioSettingsButton from './AudioSettingsButton';
 import OverflowMenuButton from './OverflowMenuButton';
@@ -97,6 +99,22 @@ import ToggleCameraButton from './ToggleCameraButton';
 import ToolbarButton from './ToolbarButton';
 import VideoSettingsButton from './VideoSettingsButton';
 
+import Logger from 'jitsi-meet-logger';
+
+import { setAudioMutedAll } from '../../../base/media';
+import {
+    onSocketReqJoin,
+    setLobbyModeEnabled,
+    knockingParticipantLeft,
+} from '../../../lobby';
+import infoConf from '../../../../../infoConference';
+import infoUser from '../../../../../infoUser';
+import socketIOClient from 'socket.io-client';
+import axios from 'axios';
+
+import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
+import { RECORDING_TYPES } from '../../../recording/constants';
+import UIEvents from '../../../../../service/UI/UIEvents';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
@@ -247,13 +265,16 @@ type Props = {
 };
 
 declare var APP: Object;
+declare var interfaceConfig: Object;
+
+const logger = Logger.getLogger(__filename);
 
 /**
  * Implements the conference toolbox on React/Web.
  *
  * @extends Component
  */
-class Toolbox extends Component<Props> {
+class Toolbox extends Component<Props, State> {
     /**
      * Initializes a new {@code Toolbox} instance.
      *
@@ -289,6 +310,137 @@ class Toolbox extends Component<Props> {
         this._onToolbarToggleShareAudio = this._onToolbarToggleShareAudio.bind(this);
         this._onToolbarOpenLocalRecordingInfoDialog = this._onToolbarOpenLocalRecordingInfoDialog.bind(this);
         this._onShortcutToggleTileView = this._onShortcutToggleTileView.bind(this);
+
+        this.state = {
+            meetingid: '',
+            roomname: '',
+            name: '',
+            checkPlatform: '',
+            endpoint: interfaceConfig.SOCKET_NODE || '',
+        };
+    }
+
+    async onSocketHost(state) {
+        const { meetingid, roomname, name, checkPlatform, endpoint } = state;
+        const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || [];
+        const socket = socketIOClient(endpoint);
+        // Get approve incomming conference
+        let getApprove;
+
+        if (services_check.includes(checkPlatform)) {
+            if (checkPlatform === 'onemail_dga') {
+                getApprove = await axios.post(
+                    interfaceConfig.DOMAIN_ONEMAIL_DGA + '/getApprove',
+                    { meeting_id: meetingid }
+                );
+            } else {
+                getApprove = await axios.post(
+                    interfaceConfig.DOMAIN + '/getApprove',
+                    { meeting_id: meetingid }
+                );
+            }
+
+            if (getApprove.data.approve) {
+                logger.log('Room is require approve to join.');
+                APP.store.dispatch(setLobbyModeEnabled(true));
+                onSocketReqJoin(meetingid, endpoint, this.props);
+            } else {
+                logger.warn('Room is not defined function approve!!!');
+            }
+        }
+        // On socket for Host
+        logger.log('Moderator ONE-Conference On Socket-for-Feature');
+        socket.emit('createRoom', {
+            meetingId: meetingid,
+            roomname: roomname,
+            name: name,
+        });
+        socket.on(meetingid, (payload) => {
+            switch (payload.eventName) {
+                case 'pollResponse':
+                    console.log('pollResponse-Payload: ', payload);
+                    break;
+                case 'handleApprove':
+                    logger.log(
+                        'handleApprove-ID: ',
+                        payload.knockingParticipantID
+                    );
+                    APP.store.dispatch(
+                        knockingParticipantLeft(payload.knockingParticipantID)
+                    );
+                    break;
+                case 'endMeet':
+                    logger.log('Host endMeet');
+                    APP.UI.emitEvent(UIEvents.LOGOUT);
+                    break;
+                default:
+                    logger.warn('Event coming is not defined!!');
+            }
+        });
+    }
+
+    async onAttendee(state) {
+        const { meetingid, roomname, name, checkPlatform, endpoint } = state;
+        const socket = socketIOClient(endpoint);
+        logger.log('Attendee ONE-Conference On Socket-for-Feature');
+        socket.on(meetingid, async (payload) => {
+            logger.log('Socket-payload: ', payload);
+            switch (payload.eventName) {
+                case 'trackMute':
+                    logger.log('trackMute-Payload: ', payload);
+                    this.props.dispatch(setAudioMutedAll(payload.mute)); // Lock is button Audio
+                    break;
+                case 'coHost':
+                    logger.log('coHost Payload: ', payload);
+                    APP.store.dispatch(
+                        participantRoleChanged(
+                            payload.participantID,
+                            'moderator'
+                        )
+                    );
+                    APP.API.notifyUserRoleChanged(
+                        payload.participantID,
+                        'moderator'
+                    );
+
+                    let getApprove = await axios.post(
+                        interfaceConfig.DOMAIN + '/getApprove',
+                        { meeting_id: meetingid }
+                    );
+                    if (getApprove.data.approve) {
+                        onSocketReqJoin(meetingid, endpoint, this.props);
+                    }
+
+                    break;
+                case 'handleApprove':
+                    logger.log(
+                        'handleApprove-ID: ',
+                        payload.knockingParticipantID
+                    );
+                    APP.store.dispatch(
+                        knockingParticipantLeft(payload.knockingParticipantID)
+                    );
+                    break;
+                case 'endMeet':
+                    logger.log(
+                        'coHost endMeet',
+                        payload.isMod,
+                        'end ',
+                        payload.userId,
+                        'local ',
+                        infoUser.getUserId()
+                    );
+                    if (
+                        payload.isMod ||
+                        payload.userId !== infoUser.getUserId()
+                    ) {
+                        APP.UI.emitEvent(UIEvents.LOGOUT);
+                    }
+                    break;
+                default:
+                    logger.warn('Event coming is not defined!!');
+            }
+        });
     }
 
     /**
@@ -298,6 +450,48 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     componentDidMount() {
+        const isModerator = infoConf.getIsModerator();
+        const checkPlatform = infoConf.getService();
+        this.setState(
+            {
+                meetingid: infoConf.getMeetingId(),
+                roomname: infoConf.getRoomName(),
+                name: infoConf.getNameJoin(),
+                checkPlatform: infoConf.getService(),
+            },
+            () => {
+                if (isModerator) {
+                    if (
+                        checkPlatform === 'manageAi' ||
+                        checkPlatform === 'followup' ||
+                        checkPlatform === 'onedental' ||
+                        checkPlatform === 'jmc' ||
+                        checkPlatform === 'telemedicine' ||
+                        checkPlatform === 'emeeting' ||
+                        checkPlatform === 'onebinar' ||
+                        checkPlatform === 'education'
+                    ) {
+                        //Recording when start conference
+                        let appData = JSON.stringify({
+                            file_recording_metadata: {
+                                share: this.state.sharingEnabled,
+                            },
+                        });
+
+                        setTimeout(() => {
+                            this.props._conference.startRecording({
+                                mode: JitsiRecordingConstants.mode.FILE,
+                                appData,
+                            });
+                        }, 5000);
+                    } else {
+                        this.onSocketHost(this.state);
+                    }
+                } else {
+                    this.onAttendee(this.state);
+                }
+            }
+        );
         const KEYBOARD_SHORTCUTS = [
             this.props._shouldShowButton('videoquality') && {
                 character: 'A',
@@ -1162,7 +1356,14 @@ class Toolbox extends Component<Props> {
             this.props._shouldShowButton('help')
                 && <HelpButton
                     key = 'help'
-                    showLabel = { true } />
+                    showLabel = { true } />,
+            <RecordButton
+                key='record'
+                showLabel={true}
+                visible={this.props._shouldShowButton('recording')}
+            />,
+            <PollCreateButton key='poll' showLabel={true} />,
+            
         ];
     }
 
