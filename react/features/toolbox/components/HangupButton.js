@@ -101,7 +101,6 @@ class HangupButton extends AbstractHangupButton<Props, *> {
  */
 function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
-    const localParticipant = getLocalParticipant(state);
     console.log('1111localParticipant1')
     console.log('1111localParticipant2', localParticipant)
     const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
