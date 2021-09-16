@@ -101,7 +101,15 @@ class HangupButton extends AbstractHangupButton<Props, *> {
  */
 function _mapStateToProps(state: Object, ownProps: Props) {
     const localParticipant = getLocalParticipant(state);
+    const localParticipant = getLocalParticipant(state);
+    console.log('1111localParticipant1')
+    console.log('1111localParticipant2', localParticipant)
     const isModerator = localParticipant.role === PARTICIPANT_ROLE.MODERATOR;
+    console.log('1111isModerator1')
+    console.log('1111isModerator2', localParticipant)
+    console.log('1111isModerator3', PARTICIPANT_ROLE)
+    console.log('1111isModerator4', isModerator)
+    // const { visible } = ownProps;
     // const { visible } = ownProps;
     // const { disableRemoteMute } = state['features/base/config'];
 
