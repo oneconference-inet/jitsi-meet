@@ -61,10 +61,12 @@ class HangupButton extends AbstractHangupButton<Props, *> {
             if (navigator.product === 'ReactNative') {
                 this.props.dispatch(appNavigate(undefined));
             } else {
+                console.log('1111hangup3');
                 const { dispatch, localParticipantId, isModerator } =
                     this.props;
 
                 if (isModerator) {
+                    console.log('1111hangup4');
                     sendAnalytics(createToolbarEvent('endmeeting.pressed'));
                     dispatch(
                         openDialog(EndMeetingDialog, {
@@ -72,6 +74,7 @@ class HangupButton extends AbstractHangupButton<Props, *> {
                         })
                     );
                 } else {
+                    console.log('1111hangup5');
                     _endJoin();
                 }
             }
