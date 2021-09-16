@@ -322,6 +322,8 @@ class Toolbox extends Component<Props, State> {
     }
 
     async onSocketHost(state) {
+        console.log('1111toolbox1');
+        console.log('1111toolbox2', this.props);
         const { meetingid, roomname, name, checkPlatform, endpoint } = state;
         const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || [];
         const socket = socketIOClient(endpoint);
