@@ -66,6 +66,8 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
      */
     render() {
         const { content, title } = this._getTranslations();
+        console.log('1111titlelogtest');
+        console.log('1111titlelogtest1', title);
 
         return (
             <Dialog
