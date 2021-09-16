@@ -135,6 +135,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
+        console.log('1111analyticsfunc1');
         infoConf.setMeetingId(dataDecode.meetingId);
         infoConf.setRoomName(dataDecode.roomname);
         sessionStorage.setItem(
@@ -145,6 +146,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
             dataDecode.role == "moderator" &&
             meetingIdForCheck == dataDecode.meetingId
         ) {
+            console.log('1111analyticsfunc2');
             // Moderator
             infoConf.setNameJoin(dataDecode.nickname);
             infoConf.setIsModerator();
@@ -211,6 +213,8 @@ export async function createHandlers({ getState }: { getState: Function }) {
             dataDecode.role == "attendee" &&
             meetingIdForCheck == dataDecode.meetingId
         ) {
+            console.log('1111analyticsfunc3');
+
             // Attendee
             infoConf.setIsSecretRoom(dataDecode.secretRoom);
             infoConf.setNameJoin(dataDecode.nickname);
