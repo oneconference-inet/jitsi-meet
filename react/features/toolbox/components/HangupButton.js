@@ -109,7 +109,6 @@ function _mapStateToProps(state: Object, ownProps: Props) {
     console.log('1111isModerator3', PARTICIPANT_ROLE)
     console.log('1111isModerator4', isModerator)
     // const { visible } = ownProps;
-    // const { visible } = ownProps;
     // const { disableRemoteMute } = state['features/base/config'];
 
     return {
@@ -123,6 +122,7 @@ export default translate(connect(_mapStateToProps)(HangupButton));
 
 export async function _endJoin() {
     try {
+        console.log('1111endjoin1');
         const domainEnd = interfaceConfig.DOMAIN_BACK;
         const service = infoConf.getService();
         const meetingId = infoConf.getMeetingId();
@@ -137,12 +137,15 @@ export async function _endJoin() {
         const secretKeyTelemedicine = interfaceConfig.SECRET_KEY_TELEMEDICINE;
         const secretKeyEmeeting = interfaceConfig.SECRET_KEY_EMEETING;
         const secretKeyEducation = interfaceConfig.SECRET_KEY_EDUCATION;
+        console.log('1111endjoin2', isModerator);
         
         if (isModerator && infoConf.getUserRole() == 'moderator') {
+            console.log('1111endjoin3');
             infoConf.setIsHostHangup();
         }
 
         if (service == 'onechat') {
+            console.log('1111endjoin4');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -157,6 +160,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'manageAi') {
+            console.log('1111endjoin5');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -171,6 +175,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'onemail') {
+            console.log('1111endjoin6');
             if (isModerator) {
                 await axios.post(
                     interfaceConfig.DOMAIN_ONEMAIL +
@@ -182,6 +187,7 @@ export async function _endJoin() {
                     }
                 );
             } else {
+                console.log('1111endjoin7');
                 await axios.post(
                     interfaceConfig.DOMAIN_ONEMAIL +
                         '/api/v1/oneconf/service/hangup',
@@ -193,11 +199,13 @@ export async function _endJoin() {
                 );
             }
         } else if (service == 'onemail_dga') {
+            console.log('1111endjoin8');
             await axios.post(interfaceConfig.DOMAIN_ONEMAIL_DGA + '/endJoin', {
                 user_id: userId.split('-')[0],
                 meeting_id: meetingId,
             });
         } else if (service == 'onedental') {
+            console.log('1111endjoin9');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -212,6 +220,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'onebinar') {
+            console.log('1111endjoin10');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -226,6 +235,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'jmc') {
+            console.log('1111endjoin11');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -240,6 +250,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'telemedicine') {
+            console.log('1111endjoin12');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -254,6 +265,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'emeeting') {
+            console.log('1111endjoin13');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -268,6 +280,7 @@ export async function _endJoin() {
                 }
             );
         } else if (service == 'education') {
+            console.log('1111endjoin14');
             await axios.post(
                 domainEnd + '/service/endjoin',
                 {
@@ -282,6 +295,7 @@ export async function _endJoin() {
                 }
             );
         } else {
+            console.log('1111endjoin15');
             await axios.post(interfaceConfig.DOMAIN + '/endJoin', {
                 user_id: userId,
                 meeting_id: meetingId,
@@ -290,6 +304,7 @@ export async function _endJoin() {
 
         APP.store.dispatch(disconnect(true));
     } catch (error) {
+        console.log('1111endjoin16');
         console.log(error);
     }
 }
