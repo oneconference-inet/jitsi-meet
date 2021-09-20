@@ -62,6 +62,7 @@ class HangupButton extends AbstractHangupButton<Props, *> {
                 this.props.dispatch(appNavigate(undefined));
             } else {
                 console.log('1111hangup3');
+                console.log('1111hangup3.1', this.props);
                 const { dispatch, localParticipantId, isModerator } =
                     this.props;
 
