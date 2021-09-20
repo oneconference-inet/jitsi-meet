@@ -67,7 +67,8 @@ export default class VideoMenuButton extends Component<Props> {
                     id = { id }
                     onClick = { onClick }>
                     <span className = 'popupmenu__icon'>
-                        { icon && <Icon src = { icon } /> }
+                        <Icon src = { icon } />
+                        {/* { icon && <Icon src = { icon } /> } */}
                     </span>
                     <span className = 'popupmenu__text'>
                         { buttonText }
