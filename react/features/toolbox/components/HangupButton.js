@@ -296,6 +296,7 @@ export async function _endJoin() {
             );
         } else {
             console.log('1111endjoin15');
+            console.log('1111endjoin15.1', {userId, meetingId});
             await axios.post(interfaceConfig.DOMAIN + '/endJoin', {
                 user_id: userId,
                 meeting_id: meetingId,
