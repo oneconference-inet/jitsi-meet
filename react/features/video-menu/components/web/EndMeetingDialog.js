@@ -94,6 +94,8 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
                 exclude
             } = this.props;
             const service = infoConf.getService();
+            const isModerator = infoConf.getIsModerator();
+            const userId = infoUser.getUserId();
             const secretKeyManageAi = interfaceConfig.SECRET_KEY_MANAGE_AI;
             const secretKeyOnechat = interfaceConfig.SECRET_KEY_ONECHAT;
             const secretKeyOneDental = interfaceConfig.SECRET_KEY_ONE_DENTAL;
