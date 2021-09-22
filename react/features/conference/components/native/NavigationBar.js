@@ -76,7 +76,7 @@ const NavigationBar = (props: Props) => {
                                 <ConferenceTimer textStyle = { styles.roomTimer } />
                             </View>
                 }
-                <Labels />
+                {/* <Labels /> */}
             </View>
         </View>
     );
