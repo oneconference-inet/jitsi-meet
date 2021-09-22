@@ -106,7 +106,7 @@ import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 
 import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
-
+import UIEvents from "../../../../../service/UI/UIEvents";
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
@@ -798,7 +798,6 @@ class Toolbox extends Component<Props> {
                 enable: !this.props._tileViewEnabled
             }));
 
-        console.log("this.props._tileViewEnabled: ",this.props._tileViewEnabled);
         this._doToggleTileView();
     }
 
