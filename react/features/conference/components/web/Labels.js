@@ -2,7 +2,7 @@
 
 import React from "react";
 import Tooltip from "@atlaskit/tooltip";
-import { Label } from "../../base/label";
+import { Label } from "../../../base/label";
 
 import { JitsiRecordingConstants } from "../../../base/lib-jitsi-meet";
 import { connect } from "../../../base/redux";
