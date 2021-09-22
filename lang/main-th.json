@@ -223,6 +223,7 @@
     "kickParticipantDialog": "คุณแน่ใจที่จะเชิญผู้ร่วมประชุมนี้ออกหรือไม่?",
     "kickParticipantTitle": "เชิญผู้ร่วมประชุมนี้ออก?",
     "kickTitle": "โอ๊ะ! {{participantDisplayName}}เชิญคุณออกจากการประชุม",
+    "leave": "ออกจากห้อง",
     "liveStreaming": "ถ่ายทอดสด",
     "liveStreamingDisabledBecauseOfActiveRecordingTooltip": "Not possible while recording is active",
     "liveStreamingDisabledForGuestTooltip": "Guests can't start live streaming.",

@@ -174,10 +174,23 @@ class StatelessDialog extends Component<Props> {
     _renderFooter(propsFromModalFooter) {
         // Filter out falsy (null) values because {@code ButtonGroup} will error
         // if passed in anything but buttons with valid type props.
-        const buttons = [
-            this._renderOKButton(),
-            this._renderCancelButton()
-        ].filter(Boolean);
+        var buttons;
+
+        if (
+            this.state.title === "การสิ้นสุดการประชุม" ||
+            this.state.title === "End Meeting"
+        ) {
+            buttons = [
+                this._renderOKButton(),
+                this._renderLeaveButton(),
+                this._renderCancelButton(),
+            ].filter(Boolean);
+        } else {
+            buttons = [
+                this._renderOKButton(),
+                this._renderCancelButton(),
+            ].filter(Boolean);
+        }
 
         if (this.props.disableFooter) {
             return null;
