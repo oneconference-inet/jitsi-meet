@@ -19,7 +19,7 @@ import ParticipantsCount from "./ParticipantsCount";
 import { InsecureRoomNameLabel } from ".";
 
 import Tooltip from "@atlaskit/tooltip";
-import { Label } from "../../../bas/label";
+import { Label } from "../../../base/label";
 import infoConf from "../../../../../infoConference";
 
 /**
