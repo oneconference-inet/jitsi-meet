@@ -2,7 +2,7 @@
 
 import React from "react";
 import Tooltip from "@atlaskit/tooltip";
-import { CircularLabel } from "../../../base/label";
+import { Label } from "../../base/label";
 
 import { JitsiRecordingConstants } from "../../../base/lib-jitsi-meet";
 import { connect } from "../../../base/redux";
@@ -85,13 +85,15 @@ class Labels extends AbstractLabels<Props, State> {
 
         return (
             <div className={className}>
-                {/* {this.state.isSecret ? (
-                    <Tooltip content={"Secret Room"} position={"left"}>
-                        <CircularLabel className={"secret"} label={"SC"} />
-                    </Tooltip>
-                ) : null} */}
-
                 {this._renderE2EELabel()}
+                {this.state.isSecret ? (
+                    <Tooltip content={"Secret Room"} position={"right"}>
+                        <Label
+                            className={"secret-room"}
+                            text={"SC"}
+                        />
+                    </Tooltip>
+                ) : null}
                 {this._renderRecordingLabel(JitsiRecordingConstants.mode.FILE)}
                 {this._renderRecordingLabel(
                     JitsiRecordingConstants.mode.STREAM
