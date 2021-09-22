@@ -42,6 +42,7 @@ import { SharedDocumentButton } from '../../../etherpad';
 import { openFeedbackDialog } from '../../../feedback';
 import { openKeyboardShortcutsDialog } from '../../../keyboard-shortcuts';
 import { LocalRecordingInfoDialog } from '../../../local-recording';
+import { PollCreateButton } from "../../../polls/components/";
 import {
     close as closeParticipantsPane,
     open as openParticipantsPane
@@ -1251,6 +1252,10 @@ class Toolbox extends Component<Props> {
             this._shouldShowButton('help')
                 && <HelpButton
                     key = 'help'
+                    showLabel = { true } />,
+            this._shouldShowButton('poll')
+                && <PollCreateButton
+                    key = 'poll'
                     showLabel = { true } />
         ];
     }

@@ -20,10 +20,14 @@ const PollResults = (props: AbstractProps) => {
         t
     } = props;
 
-    const renderRow = useCallback((name, percentage, voterCount) =>
+    const renderRow = useCallback((name, percentage, voterCount, totalVoters) =>
         (<div className = 'poll-answer-header'>
-            <span>{ name } - { percentage }% </span>
-            {/* <span className = 'poll-answer-vote-count'> ( { t('polls.answer.vote', { count: voterCount }) } ) </span> */}
+            <span>{ name } -  </span>
+            <span className = 'poll-answer-vote-count'>
+                {Number(voterCount) && Number(voterCount) !== 0 ? ` (${voterCount}` : '(0' }
+                {`/${totalVoters})`}
+            </span>
+            <span> { percentage }% </span>
         </div>)
     );
 
@@ -36,9 +40,9 @@ const PollResults = (props: AbstractProps) => {
             </div>
             <ol className = 'poll-answer-list'>
                 { showDetails
-                    ? answers.map(({ name, percentage, voters, voterCount }, index) =>
+                    ? answers.map(({ name, percentage, voters, voterCount, totalVoters }, index) =>
                         (<li key = { index }>
-                            { renderRow(name, percentage, voterCount) }
+                            { renderRow(name, percentage, voterCount, totalVoters) }
                             {/* show name of voters */}
                             {/* { voters && voterCount > 0
                             && <ul className = 'poll-answer-voters'>
@@ -48,9 +52,9 @@ const PollResults = (props: AbstractProps) => {
                             </ul>} */}
                         </li>)
                     )
-                    : answers.map(({ name, percentage, voterCount }, index) =>
+                    : answers.map(({ name, percentage, voterCount, totalVoters }, index) =>
                         (<li key = { index }>
-                            { renderRow(name, percentage, voterCount) }
+                            { renderRow(name, percentage, voterCount, totalVoters) }
                             <div className = 'poll-bar-container'>
                                 <div
                                     className = 'poll-bar'
