@@ -21,6 +21,8 @@ import {
     muteRemoteParticipant
 } from '../base/participants';
 
+import { kickParticipant } from "../base/participants";
+
 declare var APP: Object;
 
 const logger = getLogger(__filename);
