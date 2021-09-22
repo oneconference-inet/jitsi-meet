@@ -6,7 +6,10 @@ import {
     createRemoteVideoMenuButtonEvent,
     sendAnalytics
 } from '../../analytics';
-import { grantModerator, participantRoleChanged } from '../../base/participants';
+import {
+    grantModerator,
+    participantRoleChanged,
+} from '../../base/participants';
 import socketIOClient from 'socket.io-client';
 import infoConf from '../../../../infoConference';
 
@@ -60,17 +63,21 @@ export default class AbstractGrantModeratorDialog
      */
     _onSubmit() {
         const { dispatch, participantID } = this.props;
-        const socket = socketIOClient(this.state.endpoint)
-        const meetingId = infoConf.getMeetingId()
+        const socket = socketIOClient(this.state.endpoint);
+        const meetingId = infoConf.getMeetingId();
 
-        sendAnalytics(createRemoteVideoMenuButtonEvent(
-            'grant.moderator.button',
-            {
-                'participant_id': participantID
-            }));
+        sendAnalytics(
+            createRemoteVideoMenuButtonEvent('grant.moderator.button', {
+                participant_id: participantID,
+            })
+        );
 
-        socket.emit("coHost", { meetingId: meetingId, participantID: participantID });
-        // dispatch(grantModerator(participantID));
+        dispatch(grantModerator(participantID));
+
+        socket.emit('coHost', {
+            meetingId: meetingId,
+            participantID: participantID,
+        });
         dispatch(participantRoleChanged(participantID, 'moderator'));
 
         return true;
