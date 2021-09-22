@@ -216,7 +216,7 @@ class Conference extends AbstractConference<Props, *> {
                             <KnockingParticipantList />
                         )}
                         <Filmstrip />
-                        {hideLabels || <Labels />}
+                        {/* {hideLabels || <Labels />} */}
                     </div>
 
                     {_showPrejoin || _isLobbyScreenVisible || <Toolbox />}
