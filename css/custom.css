@@ -34,6 +34,11 @@ ul.poll-answer-list {
     margin-top: 10px;
 }
 
+.poll-answer-list-label {
+    font-size: 1em !important;
+    color: #b8c7e0 !important;
+}
+
 .display-avatar-with-name {
     order: 1;
 }

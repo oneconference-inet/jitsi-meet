@@ -46,7 +46,7 @@ const PollAnswerDialog = (props: AbstractProps): React.Node => {
                                     <Checkbox
                                         isChecked = { checkBoxStates[index] }
                                         key = { index }
-                                        label = { <span>{answer.name}</span> }
+                                        label = { <span className = 'poll-answer-list-label'>{answer.name}</span> }
                                         onChange = { ev => setCheckbox(index, ev.target.checked) }
                                         size = 'large' />
                                 </li>
