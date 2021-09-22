@@ -348,12 +348,23 @@ class Toolbox extends Component<Props> {
                     // attendee.setLockMute(payload.mute) //true or false
                     this.props.dispatch(setAudioMutedAll(payload.mute)) // Lock is button Audio
                     break;
-                case 'coHost':
-                    logger.log("coHost Payload: ", payload)
-                    APP.store.dispatch(participantRoleChanged(payload.participantID, 'moderator'));
-                    APP.API.notifyUserRoleChanged(payload.participantID, 'moderator');
+                case "coHost":
+                    logger.log("coHost Payload: ", payload);
+                    APP.store.dispatch(
+                        participantRoleChanged(
+                            payload.participantID,
+                            "moderator"
+                        )
+                    );
+                    APP.API.notifyUserRoleChanged(
+                        payload.participantID,
+                        "moderator"
+                    );
 
-                    let getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
+                    let getApprove = await axios.post(
+                        interfaceConfig.DOMAIN + "/getApprove",
+                        { meeting_id: meetingid }
+                    );
                     if (getApprove.data.approve) {
                         onSocketReqJoin(meetingid, endpoint, this.props);
                     }
