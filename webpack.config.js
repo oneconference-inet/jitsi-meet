@@ -77,6 +77,9 @@ const config = {
             ],
             loader: 'babel-loader',
             options: {
+                // Avoid loading babel.config.js, since we only use it for React Native.
+                configFile: false,
+
                 // XXX The require.resolve bellow solves failures to locate the
                 // presets when lib-jitsi-meet, for example, is npm linked in
                 // jitsi-meet.
@@ -176,6 +179,11 @@ const config = {
         sourceMapFilename: `[name].${minimize ? 'min' : 'js'}.map`
     },
     plugins: [
+        // analyzeBundle
+        //     && new BundleAnalyzerPlugin({
+        //         analyzerMode: 'disabled',
+        //         generateStatsFile: true
+        //     }),
         detectCircularDeps
             && new CircularDependencyPlugin({
                 allowAsyncCycles: false,
@@ -213,6 +221,12 @@ module.exports = [
         ],
         performance: getPerformanceHints(4 * 1024 * 1024)
     }),
+    // Object.assign({}, config, {
+    //     entry: {
+    //         'device_selection_popup_bundle': './react/features/settings/popup.js'
+    //     },
+    //     performance: getPerformanceHints(750 * 1024)
+    // }),
     Object.assign({}, config, {
         entry: {
             'alwaysontop': './react/features/always-on-top/index.js'
@@ -274,6 +288,39 @@ module.exports = [
         ],
         performance: getPerformanceHints(128 * 1024)
     }),
+
+    // // Because both video-blur-effect and rnnoise-processor modules are loaded
+    // // in a lazy manner using the loadScript function with a hard coded name,
+    // // i.e.loadScript('libs/rnnoise-processor.min.js'), webpack dev server
+    // // won't know how to properly load them using the default config filename
+    // // and sourceMapFilename parameters which target libs without .min in dev
+    // // mode. Thus we change these modules to have the same filename in both
+    // // prod and dev mode.
+    // Object.assign({}, config, {
+    //     entry: {
+    //         'video-blur-effect': './react/features/stream-effects/blur/index.js'
+    //     },
+    //     output: Object.assign({}, config.output, {
+    //         library: [ 'JitsiMeetJS', 'app', 'effects' ],
+    //         libraryTarget: 'window',
+    //         filename: '[name].min.js',
+    //         sourceMapFilename: '[name].min.map'
+    //     }),
+    //     performance: getPerformanceHints(1 * 1024 * 1024)
+    // }),
+
+    // Object.assign({}, config, {
+    //     entry: {
+    //         'rnnoise-processor': './react/features/stream-effects/rnnoise/index.js'
+    //     },
+    //     output: Object.assign({}, config.output, {
+    //         library: [ 'JitsiMeetJS', 'app', 'effects', 'rnnoise' ],
+    //         libraryTarget: 'window',
+    //         filename: '[name].min.js',
+    //         sourceMapFilename: '[name].min.map'
+    //     }),
+    //     performance: getPerformanceHints(30 * 1024)
+    // }),
 
     Object.assign({}, config, {
         entry: {
