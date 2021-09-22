@@ -1253,8 +1253,9 @@ class Toolbox extends Component<Props> {
                 && <HelpButton
                     key = 'help'
                     showLabel = { true } />,
-            this._shouldShowButton('poll')
-                && <PollCreateButton
+            // this._shouldShowButton('poll')
+            //     && 
+                <PollCreateButton
                     key = 'poll'
                     showLabel = { true } />
         ];
