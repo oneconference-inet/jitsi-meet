@@ -58,3 +58,8 @@ ul.poll-answer-list {
 .vertical-filmstrip .filmstrip #filmstripRemoteVideos #filmstripRemoteVideosContainer {
     flex-direction: column;
 }
+
+.label.secret-room {
+    background: #59ba46;
+    color: #000;
+}
