@@ -1,28 +1,31 @@
 /* @flow */
 
-import React from 'react';
+import React from "react";
 
-import { getConferenceName } from '../../../base/conference/functions';
-import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
-import { getParticipantCount } from '../../../base/participants/functions';
-import { connect } from '../../../base/redux';
-import { E2EELabel } from '../../../e2ee';
-import { LocalRecordingLabel } from '../../../local-recording';
-import { RecordingLabel } from '../../../recording';
-import { isToolboxVisible } from '../../../toolbox/functions.web';
-import { TranscribingLabel } from '../../../transcribing';
-import { VideoQualityLabel } from '../../../video-quality';
-import ConferenceTimer from '../ConferenceTimer';
+import { getConferenceName } from "../../../base/conference/functions";
+import { JitsiRecordingConstants } from "../../../base/lib-jitsi-meet";
+import { getParticipantCount } from "../../../base/participants/functions";
+import { connect } from "../../../base/redux";
+import { E2EELabel } from "../../../e2ee";
+import { LocalRecordingLabel } from "../../../local-recording";
+import { RecordingLabel } from "../../../recording";
+import { isToolboxVisible } from "../../../toolbox/functions.web";
+import { TranscribingLabel } from "../../../transcribing";
+import { VideoQualityLabel } from "../../../video-quality";
+import ConferenceTimer from "../ConferenceTimer";
 
-import ParticipantsCount from './ParticipantsCount';
+import ParticipantsCount from "./ParticipantsCount";
 
-import { InsecureRoomNameLabel } from '.';
+import { InsecureRoomNameLabel } from ".";
+
+import Tooltip from "@atlaskit/tooltip";
+import { Label } from "../../../bas/label";
+import infoConf from "../../../../../infoConference";
 
 /**
  * The type of the React {@code Component} props of {@link Subject}.
  */
 type Props = {
-
     /**
      * Whether the info should span across the full width.
      */
@@ -52,7 +55,7 @@ type Props = {
     /**
      * Indicates whether the component should be visible or not.
      */
-    _visible: boolean
+    _visible: boolean,
 };
 
 /**
@@ -68,26 +71,36 @@ function ConferenceInfo(props: Props) {
         _showParticipantCount,
         _subject,
         _fullWidth,
-        _visible
+        _visible,
     } = props;
 
     return (
-        <div className = { `subject ${_visible ? 'visible' : ''}` }>
-            <div className = { `subject-info-container${_fullWidth ? ' subject-info-container--full-width' : ''}` }>
-                {
-                    !_hideConferenceNameAndTimer
-                        && <div className = 'subject-info'>
-                            { _subject && <span className = 'subject-text'>{ _subject }</span>}
-                            { !_hideConferenceTimer && <ConferenceTimer /> }
-                        </div>
-                }
-                { _showParticipantCount && <ParticipantsCount /> }
+        <div className={`subject ${_visible ? "visible" : ""}`}>
+            <div
+                className={`subject-info-container${
+                    _fullWidth ? " subject-info-container--full-width" : ""
+                }`}
+            >
+                {!_hideConferenceNameAndTimer && (
+                    <div className="subject-info">
+                        {_subject && (
+                            <span className="subject-text">{_subject}</span>
+                        )}
+                        {!_hideConferenceTimer && <ConferenceTimer />}
+                    </div>
+                )}
+                {_showParticipantCount && <ParticipantsCount />}
                 <E2EELabel />
-                <RecordingLabel mode = { JitsiRecordingConstants.mode.FILE } />
-                <RecordingLabel mode = { JitsiRecordingConstants.mode.STREAM } />
+                <RecordingLabel mode={JitsiRecordingConstants.mode.FILE} />
+                <RecordingLabel mode={JitsiRecordingConstants.mode.STREAM} />
                 <LocalRecordingLabel />
                 <TranscribingLabel />
-                {/* <VideoQualityLabel /> */}
+                <VideoQualityLabel />
+                {infoConf.getIsSecretRoom() ? (
+                    <Tooltip content={"Secret Room"} position={"right"}>
+                        <Label className={"secret-room"} text={"SC"} />
+                    </Tooltip>
+                ) : null}
                 <InsecureRoomNameLabel />
             </div>
         </div>
@@ -109,16 +122,20 @@ function ConferenceInfo(props: Props) {
  */
 function _mapStateToProps(state) {
     const participantCount = getParticipantCount(state);
-    const { hideConferenceTimer, hideConferenceSubject, hideParticipantsStats } = state['features/base/config'];
-    const { clientWidth } = state['features/base/responsive-ui'];
+    const {
+        hideConferenceTimer,
+        hideConferenceSubject,
+        hideParticipantsStats,
+    } = state["features/base/config"];
+    const { clientWidth } = state["features/base/responsive-ui"];
 
     return {
         _hideConferenceNameAndTimer: clientWidth < 300,
         _hideConferenceTimer: Boolean(hideConferenceTimer),
-        _fullWidth: state['features/video-layout'].tileViewEnabled,
+        _fullWidth: state["features/video-layout"].tileViewEnabled,
         _showParticipantCount: participantCount > 2 && !hideParticipantsStats,
-        _subject: hideConferenceSubject ? '' : getConferenceName(state),
-        _visible: isToolboxVisible(state)
+        _subject: hideConferenceSubject ? "" : getConferenceName(state),
+        _visible: isToolboxVisible(state),
     };
 }
 
