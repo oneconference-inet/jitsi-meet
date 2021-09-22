@@ -798,6 +798,7 @@ class Toolbox extends Component<Props> {
                 enable: !this.props._tileViewEnabled
             }));
 
+        console.log("this.props._tileViewEnabled: ",this.props._tileViewEnabled);
         this._doToggleTileView();
     }
 
