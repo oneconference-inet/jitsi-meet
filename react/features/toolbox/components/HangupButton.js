@@ -64,23 +64,23 @@ class HangupButton extends AbstractHangupButton<Props, *> {
                 const { dispatch, localParticipantId, isModerator } =
                     this.props;
                 if (isModerator) {
-                    var state = APP.store.getState();
-                    const _fileRecordingSessionOn = Boolean(
-                        getActiveSession(
-                            state,
-                            JitsiRecordingConstants.mode.FILE
-                        )
-                    );
+                    // var state = APP.store.getState();
+                    // const _fileRecordingSessionOn = Boolean(
+                    //     getActiveSession(
+                    //         state,
+                    //         JitsiRecordingConstants.mode.FILE
+                    //     )
+                    // );
 
-                    if (_fileRecordingSessionOn) {
-                        const _conference =
-                            state["features/base/conference"].conference;
-                        const _fileRecordingSession = getActiveSession(
-                            state,
-                            JitsiRecordingConstants.mode.FILE
-                        );
-                        _conference.stopRecording(_fileRecordingSession.id);
-                    }
+                    // if (_fileRecordingSessionOn) {
+                    //     const _conference =
+                    //         state["features/base/conference"].conference;
+                    //     const _fileRecordingSession = getActiveSession(
+                    //         state,
+                    //         JitsiRecordingConstants.mode.FILE
+                    //     );
+                    //     _conference.stopRecording(_fileRecordingSession.id);
+                    // }
 
                     sendAnalytics(createToolbarEvent("endmeeting.pressed"));
                     dispatch(
@@ -143,6 +143,7 @@ export async function _endJoin() {
         const secretKeyJmc = interfaceConfig.SECRET_KEY_JMC;
         const secretKeyTelemedicine = interfaceConfig.SECRET_KEY_TELEMEDICINE;
         const secretKeyEmeeting = interfaceConfig.SECRET_KEY_EMEETING;
+        const secretKeyEducation = interfaceConfig.SECRET_KEY_EDUCATION;
         if (isModerator) {
             infoConf.setIsHostHangup();
         }
@@ -269,6 +270,20 @@ export async function _endJoin() {
                 {
                     headers: {
                         Authorization: "Bearer " + secretKeyEmeeting,
+                    },
+                }
+            );
+        } else if (service == "education") {
+            await axios.post(
+                domainEnd + "/service/endjoin",
+                {
+                    meetingid: meetingId,
+                    name: nameJoin,
+                    tag: "education",
+                },
+                {
+                    headers: {
+                        Authorization: "Bearer " + secretKeyEducation,
                     },
                 }
             );
