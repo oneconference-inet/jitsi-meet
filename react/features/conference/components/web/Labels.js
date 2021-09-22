@@ -86,6 +86,7 @@ class Labels extends AbstractLabels<Props, State> {
         return (
             <div className={className}>
                 {this._renderE2EELabel()}
+                {console.log("isSecret test: ", this.state.isSecret)}
                 {this.state.isSecret ? (
                     <Tooltip content={"Secret Room"} position={"right"}>
                         <Label
