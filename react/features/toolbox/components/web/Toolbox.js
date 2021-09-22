@@ -330,6 +330,10 @@ class Toolbox extends Component<Props> {
                     logger.log("handleApprove-ID: ", payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
                     break;
+                case "endMeet":
+                    logger.log("Host endMeet");
+                    APP.UI.emitEvent(UIEvents.LOGOUT);
+                    break;
                 default:
                     logger.warn('Event coming is not defined!!')
               }
@@ -375,6 +379,22 @@ class Toolbox extends Component<Props> {
                     logger.log("handleApprove-ID: ", payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
                     break;
+                case "endMeet":
+                        logger.log(
+                            "coHost endMeet",
+                            payload.isMod,
+                            "end ",
+                            payload.userId,
+                            "local ",
+                            infoUser.getUserId()
+                        );
+                        if (
+                            payload.isMod ||
+                            payload.userId !== infoUser.getUserId()
+                        ) {
+                            APP.UI.emitEvent(UIEvents.LOGOUT);
+                        }
+                        break;
                 default:
                     logger.warn('Event coming is not defined!!')
                 }

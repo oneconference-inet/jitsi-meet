@@ -12,6 +12,8 @@ import AbstractEndMeetingParticipantDialog, {
     type Props as AbstractProps
 } from '../AbstractEndMeetingParticipantDialog';
 
+import socketIOClient from "socket.io-client";
+
 declare var APP: Object;
 declare var interfaceConfig: Object;
 
@@ -99,7 +101,18 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             const secretKeyJmc = interfaceConfig.SECRET_KEY_JMC;
             const secretKeyTelemedicine = interfaceConfig.SECRET_KEY_TELEMEDICINE;
             let domainEnd
-            // APP.store.dispatch(maybeOpenFeedbackDialog(conference))
+            
+            const socket = socketIOClient(interfaceConfig.SOCKET_NODE);
+            const meetingId = infoConf.getMeetingId();
+            // APP.store.dispatch(maybeOpenFeedbackDialog(conference));
+
+            socket.emit("endMeet", {
+                meetingId: meetingId,
+                isMod: isModerator,
+                userId: userId,
+            });
+
+            infoConf.setIsHostEndmeet();
             dispatch(endAllParticipants(exclude))
 
             if (service == "onechat") {
