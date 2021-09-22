@@ -106,6 +106,11 @@ class StatelessDialog extends Component<Props> {
     constructor(props) {
         super(props);
 
+        this.state = {
+            title: this.props.titleString,
+        };
+
+
         // Bind event handlers so they are only bound once for every instance.
         this._onCancel = this._onCancel.bind(this);
         this._onDialogDismissed = this._onDialogDismissed.bind(this);
@@ -113,6 +118,7 @@ class StatelessDialog extends Component<Props> {
         this._onSubmit = this._onSubmit.bind(this);
         this._renderFooter = this._renderFooter.bind(this);
         this._setDialogElement = this._setDialogElement.bind(this);
+        this._onLeave = this._onLeave.bind(this);
     }
 
     /**
@@ -253,6 +259,32 @@ class StatelessDialog extends Component<Props> {
         const { onSubmit } = this.props;
 
         onSubmit && onSubmit(value);
+    }
+
+    
+    _renderLeaveButton() {
+        if (
+            this.props.cancelDisabled ||
+            this.props.isModal ||
+            this.props.hideCancelButton
+        ) {
+            return null;
+        }
+
+        const { t /* The following fixes a flow error: */ = _.identity } =
+            this.props;
+
+        return (
+            <Button
+                appearance="subtle"
+                id={LEAVE_BUTTON_ID}
+                key="leave"
+                onClick={this._onLeave}
+                type="button"
+            >
+                {t("dialog.leave")}
+            </Button>
+        );
     }
 
     /**
