@@ -85,11 +85,11 @@ class Labels extends AbstractLabels<Props, State> {
 
         return (
             <div className={className}>
-                {this.state.isSecret ? (
+                {/* {this.state.isSecret ? (
                     <Tooltip content={"Secret Room"} position={"left"}>
                         <CircularLabel className={"secret"} label={"SC"} />
                     </Tooltip>
-                ) : null}
+                ) : null} */}
 
                 {this._renderE2EELabel()}
                 {this._renderRecordingLabel(JitsiRecordingConstants.mode.FILE)}
