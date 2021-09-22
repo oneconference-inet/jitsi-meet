@@ -101,6 +101,7 @@ import Logger from 'jitsi-meet-logger';
 import { setAudioMutedAll } from '../../../base/media';
 import { onSocketReqJoin, setLobbyModeEnabled, knockingParticipantLeft } from '../../../lobby';
 import infoConf from '../../../../../infoConference';
+import infoUser from "../../../../../infoUser";
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 
