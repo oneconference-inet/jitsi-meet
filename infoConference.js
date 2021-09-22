@@ -56,6 +56,10 @@ function setIsHostHangup() {
   listUrl.isHostHangup = true;
 }
 
+function setIsHostEndmeet() {
+  listUrl.isHostEndmeet = true;
+}
+
 function getRoomName() {
   return listUrl.roomname;
 }
@@ -104,6 +108,10 @@ function getIsHostHangup() {
   return listUrl.isHostHangup;
 }
 
+function getIsHostEndmeet() {
+  return listUrl.isHostEndmeet;
+}
+
 export default {
   getRoomName,
   getService,
@@ -128,4 +136,6 @@ export default {
   getIsSecretRoom,
   setIsHostHangup,
   getIsHostHangup,
+  setIsHostEndmeet,
+  getIsHostEndmeet
 };
