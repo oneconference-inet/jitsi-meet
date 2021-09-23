@@ -46,7 +46,6 @@ import {
     LocalRecordingButton,
     LocalRecordingInfoDialog,
 } from "../../../local-recording";
-import { RecordButton } from "../../../recording";
 import { PollCreateButton } from "../../../polls/components/";
 import {
     close as closeParticipantsPane,
