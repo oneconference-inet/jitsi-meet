@@ -42,7 +42,11 @@ import { EmbedMeetingDialog } from '../../../embed-meeting';
 import { SharedDocumentButton } from '../../../etherpad';
 import { openFeedbackDialog } from '../../../feedback';
 import { openKeyboardShortcutsDialog } from '../../../keyboard-shortcuts';
-import { LocalRecordingInfoDialog } from '../../../local-recording';
+import {
+    LocalRecordingButton,
+    LocalRecordingInfoDialog,
+} from "../../../local-recording";
+import { RecordButton } from "../../../recording";
 import { PollCreateButton } from "../../../polls/components/";
 import {
     close as closeParticipantsPane,
@@ -1286,6 +1290,11 @@ class Toolbox extends Component<Props> {
                 && <HelpButton
                     key = 'help'
                     showLabel = { true } />,
+                <RecordButton
+                    key="record"
+                    showLabel={true}
+                    visible={this._shouldShowButton("recording")}
+                />,
                 <PollCreateButton
                     key = 'poll'
                     showLabel = { true } />
