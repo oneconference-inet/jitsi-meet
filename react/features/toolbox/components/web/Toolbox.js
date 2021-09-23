@@ -1202,7 +1202,7 @@ class Toolbox extends Component<Props> {
         ];
 
         const group2 = [
-            this._shouldShowButton('sharedvideo')
+            isModerator && this._shouldShowButton('sharedvideo')
                 && <SharedVideoButton
                     key = 'sharedvideo'
                     showLabel = { true } />,
@@ -1215,7 +1215,7 @@ class Toolbox extends Component<Props> {
             //         key = 'shareaudio'
             //         onClick = { this._onToolbarToggleShareAudio }
             //         text = { t('toolbar.shareaudio') } />,
-            isModerator && this._shouldShowButton('etherpad')
+            this._shouldShowButton('etherpad')
                 && <SharedDocumentButton
                     key = 'etherpad'
                     showLabel = { true } />,
