@@ -45,8 +45,7 @@ MiddlewareRegistry.register(store => next => action => {
 
     // Things to update when tile view state changes
     case SET_TILE_VIEW:
-        console.log(action.enabled);
-        console.log(getPinnedParticipant(store));
+        console.log(store);
         if (action.enabled && getPinnedParticipant(store)) {
             store.dispatch(pinParticipant(null));
         }
