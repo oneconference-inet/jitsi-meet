@@ -267,7 +267,7 @@ class StartRecordingDialogContent extends Component<Props> {
                         ..._dialogStyles.text,
                         ...styles.title
                     }}>
-                    { label }
+                    { t('recording.fileSharingdescription') }
                 </Text>
                 { switchContent }
             </Container>
