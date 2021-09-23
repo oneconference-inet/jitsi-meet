@@ -1174,10 +1174,10 @@ class Toolbox extends Component<Props> {
             && <ClosedCaptionButton
                 key = 'closed-captions'
                 showLabel = { true } />,
-            // this._shouldShowButton('recording')
-            //     && <RecordButton
-            //         key = 'record'
-            //         showLabel = { true } />,
+            this._shouldShowButton('recording')
+                && <RecordButton
+                    key = 'record'
+                    showLabel = { true } />,
             this._shouldShowButton('localrecording')
                 && <OverflowMenuItem
                     accessibilityLabel = { t('toolbar.accessibilityLabel.localRecording') }
