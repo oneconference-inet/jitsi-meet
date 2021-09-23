@@ -52,7 +52,7 @@ export function setTileView(enabled: ?boolean) {
 export function toggleTileView() {
     return (dispatch: Dispatch<any>, getState: Function) => {
         const tileViewActive = shouldDisplayTileView(getState());
-
+        console.log("tileViewActive: ",tileViewActive);
         dispatch(setTileView(!tileViewActive));
     };
 }
