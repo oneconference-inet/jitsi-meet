@@ -27,7 +27,7 @@ MiddlewareRegistry.register(store => next => action => {
     // then re-set it when needed.
     case PIN_PARTICIPANT: {
         const pinnedParticipant = getPinnedParticipant(store.getState());
-        console.log("pinnedParticipant: ",pinnedParticipant);
+        console.log("store.getState(): ",store.getState());
         if (pinnedParticipant) {
             _storeTileViewStateAndClear(store);
         } else {
