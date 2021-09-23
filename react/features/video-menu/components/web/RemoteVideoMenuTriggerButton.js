@@ -160,21 +160,21 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
                         key = 'mute'
                         participantID = { participantID } />
                 );
-                buttons.push(
-                    <MuteEveryoneElseButton
-                        key = 'mute-others'
-                        participantID = { participantID } />
-                );
-                buttons.push(
-                    <MuteVideoButton
-                        key = 'mute-video'
-                        participantID = { participantID } />
-                );
-                buttons.push(
-                    <MuteEveryoneElsesVideoButton
-                        key = 'mute-others-video'
-                        participantID = { participantID } />
-                );
+                // buttons.push(
+                //     <MuteEveryoneElseButton
+                //         key = 'mute-others'
+                //         participantID = { participantID } />
+                // );
+                // buttons.push(
+                //     <MuteVideoButton
+                //         key = 'mute-video'
+                //         participantID = { participantID } />
+                // );
+                // buttons.push(
+                //     <MuteEveryoneElsesVideoButton
+                //         key = 'mute-others-video'
+                //         participantID = { participantID } />
+                // );
             }
 
             if (!_disableGrantModerator) {
