@@ -37,7 +37,6 @@ export const ParticipantsPane = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            {console.log("isLocalModerator: ", isLocalModerator)}
             <div
                 className={classList(
                     "participants_pane",
@@ -53,13 +52,13 @@ export const ParticipantsPane = () => {
                         <AntiCollapse />
                         <MeetingParticipantList />
                     </Container>
-                    {isLocalModerator && (
+                    {/* {isLocalModerator && (
                         <Footer>
                             <FooterButton onClick={muteAll}>
                                 {t("participantsPane.actions.muteAll")}
                             </FooterButton>
                         </Footer>
-                    )}
+                    )} */}
                 </div>
             </div>
         </ThemeProvider>
