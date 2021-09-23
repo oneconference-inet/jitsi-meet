@@ -27,7 +27,7 @@ MiddlewareRegistry.register(store => next => action => {
     // then re-set it when needed.
     case PIN_PARTICIPANT: {
         const pinnedParticipant = getPinnedParticipant(store.getState());
-        console.log("pinnedParticipant: ",pinnedParticipant);
+
         if (pinnedParticipant) {
             _storeTileViewStateAndClear(store);
         } else {
@@ -45,7 +45,6 @@ MiddlewareRegistry.register(store => next => action => {
 
     // Things to update when tile view state changes
     case SET_TILE_VIEW:
-        console.log(action.enabled && getPinnedParticipant(store));
         if (action.enabled && getPinnedParticipant(store)) {
             store.dispatch(pinParticipant(null));
         }

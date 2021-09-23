@@ -102,7 +102,6 @@ function _updateLastN({ getState }, value = null) {
         // Use tileViewEnabled state from redux here instead of determining if client should be in tile
         // view since we make an exception only for screenshare when in audio-only mode. If the user unpins
         // the screenshare, lastN will be set to 0 here. It will be set to 1 if screenshare has been auto pinned.
-        console.log("tileViewEnabled: ",tileViewEnabled);
         if (!tileViewEnabled && largeVideoParticipant && !largeVideoParticipant.local) {
             lastNSelected = (remoteScreenShares || []).includes(largeVideoParticipantId) ? 1 : 0;
         } else {

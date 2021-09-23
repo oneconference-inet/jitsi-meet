@@ -538,7 +538,6 @@ export function participantKicked(kicker, kicked) {
  * }}
  */
 export function pinParticipant(id) {
-    console.log("pinParticipant: ",id);
     return {
         type: PIN_PARTICIPANT,
         participant: {
