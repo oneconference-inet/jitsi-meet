@@ -497,9 +497,9 @@ export default {
      */
     createInitialLocalTracks(options = {}) {
         const errors = {};
-        // const initialDevices = ["audio"];
-        // const requestedAudio = true;
-        // let requestedVideo = false;
+        const initialDevices = ["audio"];
+        const requestedAudio = true;
+        let requestedVideo = false;
 
         // // Always get a handle on the audio input device so that we have statistics even if the user joins the
         // // conference muted. Previous implementation would only acquire the handle when the user first unmuted,
@@ -528,12 +528,19 @@ export default {
 
         // Always get a handle on the audio input device so that we have statistics (such as "No audio input" or
         // "Are you trying to speak?" ) even if the user joins the conference muted.
-        const initialDevices = config.disableInitialGUM ? [] : ["audio"];
-        const requestedAudio = !config.disableInitialGUM;
-        let requestedVideo = false;
+        // const initialDevices = config.disableInitialGUM ? [] : ["audio"];
+        // const requestedAudio = !config.disableInitialGUM;
+        // let requestedVideo = false;
+
+        // Always get a handle on the audio input device so that we have statistics even if the user joins the
+        // conference muted. Previous implementation would only acquire the handle when the user first unmuted,
+        // which would results in statistics ( such as "No audio input" or "Are you trying to speak?") being available
+        // only after that point.
+        if (options.startWithAudioMuted) {
+            this.muteAudio(true, true);
+        }
 
         if (
-            !config.disableInitialGUM &&
             !options.startWithVideoMuted &&
             !options.startAudioOnly &&
             !options.startScreenSharing
@@ -866,7 +873,7 @@ export default {
         var initialOptions = {};
         var option = infoUser.getOption();
 
-        console.log("configconfig: ",config);
+        console.log("configconfig: ", config);
         if (!config.iAmRecorder) {
             // Only Voice
             initialOptions = {
