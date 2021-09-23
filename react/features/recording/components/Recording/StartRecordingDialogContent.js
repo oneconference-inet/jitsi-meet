@@ -162,9 +162,7 @@ class StartRecordingDialogContent extends Component<Props> {
      * @returns {React$Component}
      */
     _renderFileSharingContent() {
-        const { fileRecordingsServiceSharingEnabled, isVpaas } = this.props;
-
-        if (!fileRecordingsServiceSharingEnabled || isVpaas) {
+        if (!this.props.fileRecordingsServiceSharingEnabled) {
             return null;
         }
 
