@@ -1144,6 +1144,7 @@ class Toolbox extends Component<Props> {
             _fullScreen,
             _isMobile,
             _screensharing,
+            isModerator,
             t
         } = this.props;
 
@@ -1185,7 +1186,7 @@ class Toolbox extends Component<Props> {
                     key = 'localrecording'
                     onClick = { this._onToolbarOpenLocalRecordingInfoDialog }
                     text = { t('localRecording.dialogTitle') } />,
-            this._shouldShowButton('mute-everyone')
+            isModerator && this._shouldShowButton('mute-everyone')
                 && <MuteEveryoneButton
                     key = 'mute-everyone'
                     showLabel = { true } />,
