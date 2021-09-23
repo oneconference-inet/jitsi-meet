@@ -861,18 +861,12 @@ export default {
      * @param {{ roomName: string }} options
      * @returns {Promise}
      */
-    // initialOptions ={
-    //     startAudioOnly: config.startAudioOnly,
-    //     startScreenSharing: config.startScreenSharing,
-    //     startWithAudioMuted: getStartWithAudioMuted(APP.store.getState())
-    //         || config.startSilent
-    //         || isUserInteractionRequiredForUnmute(APP.store.getState()),
-    //     startWithVideoMuted: getStartWithVideoMuted(APP.store.getState())
-    //         || isUserInteractionRequiredForUnmute(APP.store.getState())
-    // };
+
     async init({ roomName }) {
         var initialOptions = {};
         var option = infoUser.getOption();
+
+        console.log("configconfig: ",config);
         if (!config.iAmRecorder) {
             // Only Voice
             initialOptions = {
@@ -894,8 +888,6 @@ export default {
                 startWithVideoMuted: true,
             };
         }
-
-        console.log("initialOptions: ", initialOptions);
 
         if (option.muteall) {
             APP.store.dispatch(setAudioMutedAll(option.muteall));
