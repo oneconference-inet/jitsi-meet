@@ -1148,6 +1148,9 @@ class Toolbox extends Component<Props> {
             t
         } = this.props;
 
+        console.log('1111isModerator', isModerator);
+        const isModerator1 = infoConf.getIsModerator();
+
         const group1 = [
             ...additionalButtons,
 
@@ -1186,7 +1189,7 @@ class Toolbox extends Component<Props> {
                     key = 'localrecording'
                     onClick = { this._onToolbarOpenLocalRecordingInfoDialog }
                     text = { t('localRecording.dialogTitle') } />,
-            isModerator && this._shouldShowButton('mute-everyone')
+            isModerator1 && this._shouldShowButton('mute-everyone')
                 && <MuteEveryoneButton
                     key = 'mute-everyone'
                     showLabel = { true } />,
