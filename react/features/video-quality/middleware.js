@@ -82,6 +82,8 @@ StateListenerRegistry.register(
 
         let newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.ULTRA;
 
+        console.log("TILE VIEW BEFORE: ",displayTileView, participantCount, reducedUI, thumbnailHeigh, newMaxRecvVideoQuality);
+
         if (reducedUI) {
             newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.LOW;
         } else if (displayTileView && !Number.isNaN(thumbnailHeight)) {
@@ -103,6 +105,8 @@ StateListenerRegistry.register(
                 }
             }
         }
+
+        console.log("TILE VIEW AFTER: ",displayTileView, participantCount, reducedUI, thumbnailHeigh, newMaxRecvVideoQuality);
 
         if (maxReceiverVideoQuality !== newMaxRecvVideoQuality) {
             dispatch(setMaxReceiverVideoQuality(newMaxRecvVideoQuality));
@@ -208,9 +212,6 @@ StateListenerRegistry.register(
         const changedPreferredVideoQuality = preferredVideoQuality !== previousState.preferredVideoQuality;
         const changedMaxVideoQuality = maxReceiverVideoQuality !== previousState.maxReceiverVideoQuality;
 
-        console.log("CHK TILE changedConference: ", conference,previousState.conference);
-        console.log("CHK TILE changedPreferredVideoQuality: ", preferredVideoQuality,previousState.preferredVideoQuality);
-        console.log("CHK TILE changedMaxVideoQuality: ", maxReceiverVideoQuality,previousState.maxReceiverVideoQuality);
         if (changedConference || changedPreferredVideoQuality || changedMaxVideoQuality) {
             _setReceiverVideoConstraint(conference, preferredVideoQuality, maxReceiverVideoQuality);
         }
