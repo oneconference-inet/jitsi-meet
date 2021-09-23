@@ -209,6 +209,7 @@ StateListenerRegistry.register(
         const changedMaxVideoQuality = maxReceiverVideoQuality !== previousState.maxReceiverVideoQuality;
 
         console.log("CHK TILE: ", changedConference, changedPreferredVideoQuality, changedMaxVideoQuality);
+        console.log("CHK TILE changedMaxVideoQuality: ", maxReceiverVideoQuality,previousState.maxReceiverVideoQuality);
         if (changedConference || changedPreferredVideoQuality || changedMaxVideoQuality) {
             _setReceiverVideoConstraint(conference, preferredVideoQuality, maxReceiverVideoQuality);
         }
