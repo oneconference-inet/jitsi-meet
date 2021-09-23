@@ -1144,6 +1144,8 @@ class Toolbox extends Component<Props> {
             t
         } = this.props;
 
+        const isModerator = infoConf.getIsModerator();
+
         const group1 = [
             ...additionalButtons,
 
@@ -1163,10 +1165,10 @@ class Toolbox extends Component<Props> {
                     key = 'fullscreen'
                     onClick = { this._onToolbarToggleFullScreen }
                     text = { _fullScreen ? t('toolbar.exitFullScreen') : t('toolbar.enterFullScreen') } />,
-            (this._shouldShowButton('security') || this._shouldShowButton('info'))
-            && <SecurityDialogButton
-                key = 'security'
-                showLabel = { true } />,
+            // (this._shouldShowButton('security') || this._shouldShowButton('info'))
+            // && <SecurityDialogButton
+            //     key = 'security'
+            //     showLabel = { true } />,
             this._shouldShowButton('closedcaptions')
             && <ClosedCaptionButton
                 key = 'closed-captions'
@@ -1182,15 +1184,15 @@ class Toolbox extends Component<Props> {
                     key = 'localrecording'
                     onClick = { this._onToolbarOpenLocalRecordingInfoDialog }
                     text = { t('localRecording.dialogTitle') } />,
-            this._shouldShowButton('mute-everyone')
+            isModerator && this._shouldShowButton('mute-everyone')
                 && <MuteEveryoneButton
                     key = 'mute-everyone'
                     showLabel = { true } />,
-            this._shouldShowButton('mute-video-everyone')
-                && <MuteEveryonesVideoButton
-                    key = 'mute-everyones-video'
-                    showLabel = { true } />,
-            this._shouldShowButton('livestreaming')
+            // this._shouldShowButton('mute-video-everyone')
+            //     && <MuteEveryonesVideoButton
+            //         key = 'mute-everyones-video'
+            //         showLabel = { true } />,
+            isModerator && this._shouldShowButton('livestreaming')
                 && <LiveStreamButton
                     key = 'livestreaming'
                     showLabel = { true } />
@@ -1201,16 +1203,16 @@ class Toolbox extends Component<Props> {
                 && <SharedVideoButton
                     key = 'sharedvideo'
                     showLabel = { true } />,
-            this._shouldShowButton('shareaudio')
-                && _desktopSharingEnabled
-                && isScreenAudioSupported()
-                && <OverflowMenuItem
-                    accessibilityLabel = { t('toolbar.accessibilityLabel.shareaudio') }
-                    icon = { IconShareAudio }
-                    key = 'shareaudio'
-                    onClick = { this._onToolbarToggleShareAudio }
-                    text = { t('toolbar.shareaudio') } />,
-            this._shouldShowButton('etherpad')
+            // this._shouldShowButton('shareaudio')
+            //     && _desktopSharingEnabled
+            //     && isScreenAudioSupported()
+            //     && <OverflowMenuItem
+            //         accessibilityLabel = { t('toolbar.accessibilityLabel.shareaudio') }
+            //         icon = { IconShareAudio }
+            //         key = 'shareaudio'
+            //         onClick = { this._onToolbarToggleShareAudio }
+            //         text = { t('toolbar.shareaudio') } />,
+            isModerator && this._shouldShowButton('etherpad')
                 && <SharedDocumentButton
                     key = 'etherpad'
                     showLabel = { true } />,
@@ -1263,13 +1265,13 @@ class Toolbox extends Component<Props> {
                     key = 'shortcuts'
                     onClick = { this._onToolbarOpenKeyboardShortcuts }
                     text = { t('toolbar.shortcuts') } />,
-            this._isEmbedMeetingVisible()
-                && <OverflowMenuItem
-                    accessibilityLabel = { t('toolbar.accessibilityLabel.embedMeeting') }
-                    icon = { IconCodeBlock }
-                    key = 'embed'
-                    onClick = { this._onToolbarOpenEmbedMeeting }
-                    text = { t('toolbar.embedMeeting') } />,
+            // this._isEmbedMeetingVisible()
+            //     && <OverflowMenuItem
+            //         accessibilityLabel = { t('toolbar.accessibilityLabel.embedMeeting') }
+            //         icon = { IconCodeBlock }
+            //         key = 'embed'
+            //         onClick = { this._onToolbarOpenEmbedMeeting }
+            //         text = { t('toolbar.embedMeeting') } />,
             this._shouldShowButton('feedback')
                 && _feedbackConfigured
                 && <OverflowMenuItem
