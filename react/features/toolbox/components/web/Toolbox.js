@@ -1144,12 +1144,10 @@ class Toolbox extends Component<Props> {
             _fullScreen,
             _isMobile,
             _screensharing,
-            isModerator,
             t
         } = this.props;
 
-        console.log('1111isModerator', isModerator);
-        const isModerator1 = infoConf.getIsModerator();
+        const isModerator = infoConf.getIsModerator();
 
         const group1 = [
             ...additionalButtons,
@@ -1189,7 +1187,7 @@ class Toolbox extends Component<Props> {
                     key = 'localrecording'
                     onClick = { this._onToolbarOpenLocalRecordingInfoDialog }
                     text = { t('localRecording.dialogTitle') } />,
-            isModerator1 && this._shouldShowButton('mute-everyone')
+            isModerator && this._shouldShowButton('mute-everyone')
                 && <MuteEveryoneButton
                     key = 'mute-everyone'
                     showLabel = { true } />,
@@ -1197,7 +1195,7 @@ class Toolbox extends Component<Props> {
             //     && <MuteEveryonesVideoButton
             //         key = 'mute-everyones-video'
             //         showLabel = { true } />,
-            this._shouldShowButton('livestreaming')
+            isModerator && this._shouldShowButton('livestreaming')
                 && <LiveStreamButton
                     key = 'livestreaming'
                     showLabel = { true } />
@@ -1217,7 +1215,7 @@ class Toolbox extends Component<Props> {
             //         key = 'shareaudio'
             //         onClick = { this._onToolbarToggleShareAudio }
             //         text = { t('toolbar.shareaudio') } />,
-            this._shouldShowButton('etherpad')
+            isModerator && this._shouldShowButton('etherpad')
                 && <SharedDocumentButton
                     key = 'etherpad'
                     showLabel = { true } />,
