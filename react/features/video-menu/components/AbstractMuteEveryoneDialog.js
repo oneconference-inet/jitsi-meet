@@ -16,6 +16,8 @@ import socketIOClient from 'socket.io-client';
 import Logger from "jitsi-meet-logger";
 
 declare var interfaceConfig: Object;
+import { MEDIA_TYPE } from '../../base/media';
+
 const logger = Logger.getLogger(__filename);
 
 /**
@@ -94,7 +96,7 @@ export default class AbstractMuteEveryoneDialog<P: Props> extends AbstractMuteRe
         }
 
         if (track) {
-            dispatch(muteAllParticipants(exclude));
+            dispatch(muteAllParticipants(exclude, MEDIA_TYPE.AUDIO));
             socket.emit('trackMute', data)
             infoConf.setMuteAllState(true)
             this._apiTrackmute(true);
