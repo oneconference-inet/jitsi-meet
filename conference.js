@@ -525,7 +525,7 @@ export default {
         //             mediaPermissionPromptVisibilityChanged(true, browserName)
         //         )
         // );
-        
+
         // Always get a handle on the audio input device so that we have statistics (such as "No audio input" or
         // "Are you trying to speak?" ) even if the user joins the conference muted.
         const initialDevices = config.disableInitialGUM ? [] : ["audio"];
@@ -894,6 +894,8 @@ export default {
                 startWithVideoMuted: true,
             };
         }
+
+        console.log("initialOptions: ", initialOptions);
 
         if (option.muteall) {
             APP.store.dispatch(setAudioMutedAll(option.muteall));
