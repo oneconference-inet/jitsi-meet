@@ -1189,10 +1189,10 @@ class Toolbox extends Component<Props> {
                 && <MuteEveryoneButton
                     key = 'mute-everyone'
                     showLabel = { true } />,
-            this._shouldShowButton('mute-video-everyone')
-                && <MuteEveryonesVideoButton
-                    key = 'mute-everyones-video'
-                    showLabel = { true } />,
+            // this._shouldShowButton('mute-video-everyone')
+            //     && <MuteEveryonesVideoButton
+            //         key = 'mute-everyones-video'
+            //         showLabel = { true } />,
             this._shouldShowButton('livestreaming')
                 && <LiveStreamButton
                     key = 'livestreaming'
