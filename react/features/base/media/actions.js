@@ -57,6 +57,7 @@ export function setAudioMuted(muted: boolean, ensureTrack: boolean = false) {
 }
 
 export function setAudioMutedAll(stateMuteAll: boolean) {
+    console.log("stateMuteAll: ",stateMuteAll);
     return {
         type: SET_AUDIO_MUTED_ALL,
         stateMuteAll
