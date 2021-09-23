@@ -82,8 +82,6 @@ StateListenerRegistry.register(
 
         let newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.ULTRA;
 
-        console.log("TILE VIEW BEFORE: ",displayTileView, participantCount, reducedUI, thumbnailHeigh, newMaxRecvVideoQuality);
-
         if (reducedUI) {
             newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.LOW;
         } else if (displayTileView && !Number.isNaN(thumbnailHeight)) {
@@ -105,8 +103,6 @@ StateListenerRegistry.register(
                 }
             }
         }
-
-        console.log("TILE VIEW AFTER: ",displayTileView, participantCount, reducedUI, thumbnailHeigh, newMaxRecvVideoQuality);
 
         if (maxReceiverVideoQuality !== newMaxRecvVideoQuality) {
             dispatch(setMaxReceiverVideoQuality(newMaxRecvVideoQuality));
