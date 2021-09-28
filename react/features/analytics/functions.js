@@ -149,6 +149,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
             infoUser.setUserId(dataDecode.clientid);
             authXmpp.setUser(dataDecode.userXmpAuth);
             authXmpp.setPass(dataDecode.passXmpAuth);
+            infoConf.setUserRole(dataDecode.role);
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
@@ -209,6 +210,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
             infoUser.setName(dataDecode.nickname);
             infoUser.setUserId(dataDecode.clientid);
             infoUser.setRedirect(dataDecode.redirect);
+            infoConf.setUserRole(dataDecode.role);
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
