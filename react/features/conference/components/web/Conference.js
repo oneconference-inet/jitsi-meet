@@ -218,8 +218,7 @@ class Conference extends AbstractConference<Props, *> {
             _isParticipantsPaneVisible,
             _layoutClassName,
             _showPrejoin,
-            _showLobby,
-            _showPrejoin
+            _showLobby
         } = this.props;
         const hideLabels = _iAmRecorder;
 

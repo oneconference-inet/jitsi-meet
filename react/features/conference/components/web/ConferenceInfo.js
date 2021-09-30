@@ -8,7 +8,6 @@ import { getParticipantCount } from '../../../base/participants/functions';
 import { connect } from '../../../base/redux';
 import { E2EELabel } from '../../../e2ee';
 import { LocalRecordingLabel } from '../../../local-recording';
-import { RecordingLabel } from '../../../recording';
 import { getSessionStatusToShow, RecordingLabel } from '../../../recording';
 import { isToolboxVisible } from '../../../toolbox/functions.web';
 import { TranscribingLabel } from '../../../transcribing';
