@@ -85,7 +85,11 @@ class Notification extends AbstractNotification<Props> {
         const description = this._getDescription();
 
         // the id is used for testing the UI
-        return <div data-testid={this._getDescriptionKey()}>{description}</div>;
+        return (
+            <p data-testid = { this._getDescriptionKey() } >
+                { description }
+            </p>
+        );
     }
 
     /**
@@ -109,13 +113,20 @@ class Notification extends AbstractNotification<Props> {
      */
     _mapAppearanceToButtons(hideErrorSupportLink) {
         switch (this.props.appearance) {
-            case NOTIFICATION_TYPE.ERROR: {
-                const buttons = [
-                    {
-                        content: this.props.t("dialog.dismiss"),
-                        onClick: this._onDismissed,
-                    },
-                ];
+        case NOTIFICATION_TYPE.ERROR: {
+            const buttons = [
+                {
+                    content: this.props.t('dialog.dismiss'),
+                    onClick: this._onDismissed
+                }
+            ];
+
+            if (!hideErrorSupportLink && interfaceConfig.SUPPORT_URL) {
+                buttons.push({
+                    content: this.props.t('dialog.contactSupport'),
+                    onClick: this._onOpenSupportLink
+                });
+            }
 
                 if (!hideErrorSupportLink) {
                     buttons.push({

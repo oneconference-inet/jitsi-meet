@@ -21,8 +21,8 @@ import {
 } from '../../../base/react';
 import { connect } from '../../../base/redux';
 import { ColorPalette, StyleType } from '../../../base/styles';
-import { isVpaasMeeting } from '../../../billing-counter/functions';
 import { authorizeDropbox, updateDropboxToken } from '../../../dropbox';
+import { isVpaasMeeting } from '../../../jaas/functions';
 import { RECORDING_TYPES } from '../../constants';
 import { getRecordingDurationEstimation } from '../../functions';
 
@@ -162,7 +162,11 @@ class StartRecordingDialogContent extends Component<Props> {
      * @returns {React$Component}
      */
     _renderFileSharingContent() {
-        if (!this.props.fileRecordingsServiceSharingEnabled) {
+        const { fileRecordingsServiceSharingEnabled, isVpaas, selectedRecordingService } = this.props;
+
+        if (!fileRecordingsServiceSharingEnabled
+            || isVpaas
+            || selectedRecordingService !== RECORDING_TYPES.JITSI_REC_SERVICE) {
             return null;
         }
 
@@ -171,26 +175,17 @@ class StartRecordingDialogContent extends Component<Props> {
             _styles: styles,
             isValidating,
             onSharingSettingChanged,
-            selectedRecordingService,
             sharingSetting,
             t
         } = this.props;
 
-        const controlDisabled = selectedRecordingService !== RECORDING_TYPES.JITSI_REC_SERVICE;
-        let mainContainerClasses = 'recording-header recording-header-line';
-
-        if (controlDisabled) {
-            mainContainerClasses += ' recording-switch-disabled';
-        }
-
         return (
             <Container
-                className = { mainContainerClasses }
+                className = 'recording-header'
                 key = 'fileSharingSetting'
                 style = { [
                     styles.header,
-                    _dialogStyles.topBorderContainer,
-                    controlDisabled ? styles.controlDisabled : null
+                    _dialogStyles.topBorderContainer
                 ] }>
                 <Container className = 'recording-icon-container'>
                     <Image
@@ -208,12 +203,12 @@ class StartRecordingDialogContent extends Component<Props> {
                 </Text>
                 <Switch
                     className = 'recording-switch'
-                    disabled = { controlDisabled || isValidating }
+                    disabled = { isValidating }
                     onValueChange
                         = { onSharingSettingChanged }
                     style = { styles.switch }
                     trackColor = {{ false: ColorPalette.lightGrey }}
-                    value = { !controlDisabled && sharingSetting } />
+                    value = { sharingSetting } />
             </Container>
         );
     }
@@ -246,7 +241,8 @@ class StartRecordingDialogContent extends Component<Props> {
                         value = { this.props.selectedRecordingService === RECORDING_TYPES.JITSI_REC_SERVICE } />
                 ) : null;
 
-        const icon = isVpaas ? ICON_SHARE : ONECON_LOGO;
+        const icon = isVpaas ? ICON_CLOUD : JITSI_LOGO;
+        const label = isVpaas ? t('recording.serviceDescriptionCloud') : t('recording.serviceDescription');
 
         return (
             <Container
@@ -331,7 +327,7 @@ class StartRecordingDialogContent extends Component<Props> {
         return (
             <Container>
                 <Container
-                    className = 'recording-header'
+                    className = 'recording-header recording-header-line'
                     style = { styles.header }>
                     <Container
                         className = 'recording-icon-container'>

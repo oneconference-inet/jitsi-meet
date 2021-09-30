@@ -4,25 +4,34 @@ import { getCurrentConference } from '../base/conference';
 import { participantIsKnockingOrUpdated } from './actions';
 import socketIOClient from 'socket.io-client';
 import Logger from 'jitsi-meet-logger';
+/**
+* Selector to return lobby enable state.
+*
+* @param {any} state - State object.
+* @returns {boolean}
+*/
+export function getLobbyEnabled(state: any) {
+    return state['features/lobby'].lobbyEnabled;
+}
 
 /**
- * Approves (lets in) or rejects a knocking participant.
- *
- * @param {Function} getState - Function to get the Redux state.
- * @param {string} id - The id of the knocking participant.
- * @param {boolean} approved - True if the participant is approved, false otherwise.
- * @returns {Function}
- */
-export function setKnockingParticipantApproval(getState: Function, id: string, approved: boolean) {
-    const conference = getCurrentConference(getState());
+* Selector to return a list of knocking participants.
+*
+* @param {any} state - State object.
+* @returns {Array<Object>}
+*/
+export function getKnockingParticipants(state: any) {
+    return state['features/lobby'].knockingParticipants;
+}
 
-    if (conference) {
-        if (approved) {
-            conference.lobbyApproveAccess(id);
-        } else {
-            conference.lobbyDenyAccess(id);
-        }
-    }
+/**
+ * Selector to return lobby visibility.
+ *
+ * @param {any} state - State object.
+ * @returns {any}
+ */
+export function getIsLobbyVisible(state: any) {
+    return state['features/lobby'].lobbyVisible;
 }
 
 export function onSocketReqJoin(meetingId, endpoint, props) {
@@ -35,11 +44,11 @@ export function onSocketReqJoin(meetingId, endpoint, props) {
     })
 }
 /**
- * Selector to return lobby state.
+ * Selector to return array with knocking participant ids.
  *
  * @param {any} state - State object.
- * @returns {any}
+ * @returns {Array}
  */
-export function getLobbyState(state: any) {
-    return state['features/lobby'];
+export function getKnockingParticipantsById(state: any) {
+    return getKnockingParticipants(state).map(participant => participant.id);
 }

@@ -56,6 +56,16 @@ type Props = {
      */
     hideCancelButton: boolean,
 
+    /**
+     * If true, the close icon button will not be displayed.
+     */
+    hideCloseIconButton: boolean,
+
+    /**
+     * If true, no footer will be displayed.
+     */
+    disableFooter?: boolean,
+
     i18n: Object,
 
     /**
@@ -63,6 +73,12 @@ type Props = {
      * leave the dialog open. No cancel button.
      */
     isModal: boolean,
+
+    /**
+     * The handler for the event when clicking the 'confirmNo' button.
+     * Defaults to onCancel if absent.
+     */
+    onDecline?: Function,
 
     /**
      * Disables rendering of the submit button.
@@ -88,6 +104,10 @@ type Props = {
  * Web dialog that uses atlaskit modal-dialog to display dialogs.
  */
 class StatelessDialog extends Component<Props> {
+    static defaultProps = {
+        hideCloseIconButton: false
+    };
+
     /**
      * The functional component to be used for rendering the modal footer.
      */
@@ -111,7 +131,7 @@ class StatelessDialog extends Component<Props> {
         // Bind event handlers so they are only bound once for every instance.
         this._onCancel = this._onCancel.bind(this);
         this._onDialogDismissed = this._onDialogDismissed.bind(this);
-        this._onKeyDown = this._onKeyDown.bind(this);
+        this._onKeyPress = this._onKeyPress.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
         this._renderFooter = this._renderFooter.bind(this);
         this._setDialogElement = this._setDialogElement.bind(this);
@@ -128,6 +148,7 @@ class StatelessDialog extends Component<Props> {
         const {
             customHeader,
             children,
+            hideCloseIconButton,
             t /* The following fixes a flow error: */ = _.identity,
             titleString,
             titleKey,
@@ -136,19 +157,25 @@ class StatelessDialog extends Component<Props> {
 
         return (
             <Modal
-                autoFocus={true}
-                components={{
-                    Header: customHeader,
+                autoFocus = { true }
+                components = {{
+                    Header: customHeader ? customHeader : props => (
+                        <ModalHeader
+                            { ...props }
+                            heading = { titleString || t(titleKey) }
+                            hideCloseIconButton = { hideCloseIconButton } />
+                    )
                 }}
-                footer={this._renderFooter}
-                heading={customHeader ? undefined : titleString || t(titleKey)}
-                i18n={this.props.i18n}
-                onClose={this._onDialogDismissed}
-                onDialogDismissed={this._onDialogDismissed}
-                shouldCloseOnEscapePress={true}
-                width={width || 'medium'}
-            >
-                <div onKeyDown={this._onKeyDown} ref={this._setDialogElement}>
+                footer = { this._renderFooter }
+                // heading={customHeader ? undefined : titleString || t(titleKey)}
+                i18n = { this.props.i18n }
+                onClose = { this._onDialogDismissed }
+                onDialogDismissed = { this._onDialogDismissed }
+                shouldCloseOnEscapePress = { true }
+                width = { width || 'medium' }>
+                <div
+                    onKeyPress = { this._onKeyPress }
+                    ref = { this._setDialogElement }>
                     <form
                         className='modal-dialog-form'
                         id='modal-dialog-form'
@@ -277,18 +304,19 @@ class StatelessDialog extends Component<Props> {
             return null;
         }
 
-        const { t /* The following fixes a flow error: */ = _.identity } =
-            this.props;
+        const {
+            t /* The following fixes a flow error: */ = _.identity,
+            onDecline
+        } = this.props;
 
         return (
             <Button
-                appearance='subtle'
-                id={CANCEL_BUTTON_ID}
-                key='cancel'
-                onClick={this._onCancel}
-                type='button'
-            >
-                {t(this.props.cancelKey || 'dialog.Cancel')}
+                appearance = 'subtle'
+                id = { CANCEL_BUTTON_ID }
+                key = 'cancel'
+                onClick = { onDecline || this._onCancel }
+                type = 'button'>
+                { t(this.props.cancelKey || 'dialog.Cancel') }
             </Button>
         );
     }
@@ -362,7 +390,7 @@ class StatelessDialog extends Component<Props> {
         this._dialogElement = element;
     }
 
-    _onKeyDown: (Object) => void;
+    _onKeyPress: (Object) => void;
 
     /**
      * Handles 'Enter' key in the dialog to submit/hide dialog depending on
@@ -372,7 +400,7 @@ class StatelessDialog extends Component<Props> {
      * @private
      * @returns {void}
      */
-    _onKeyDown(event) {
+    _onKeyPress(event) {
         // If the event coming to the dialog has been subject to preventDefault
         // we don't handle it here.
         if (event.defaultPrevented) {

@@ -2,27 +2,40 @@
 
 import { ReducerRegistry } from '../base/redux';
 
-import { RECEIVE_POLL, RECEIVE_ANSWER } from './actionTypes';
+import {
+    RECEIVE_POLL,
+    RECEIVE_ANSWER,
+    REGISTER_VOTE,
+    RETRACT_VOTE,
+    RESET_NB_UNREAD_POLLS
+} from './actionTypes';
 import type { Answer } from './types';
 
 const INITIAL_STATE = {
-    polls: {}
+    polls: {},
+
+    // Number of not read message
+    nbUnreadPolls: 0
 };
 
 ReducerRegistry.register('features/polls', (state = INITIAL_STATE, action) => {
     switch (action.type) {
 
     // Reducer triggered when a poll is received
-    case RECEIVE_POLL:
-        return {
+    case RECEIVE_POLL: {
+        const newState = {
             ...state,
             polls: {
                 ...state.polls,
 
                 // The poll is added to the dictionnary of received polls
                 [action.pollId]: action.poll
-            }
+            },
+            nbUnreadPolls: state.nbUnreadPolls + 1
         };
+
+        return newState;
+    }
 
     // Reducer triggered when an answer is received
     // The answer is added  to an existing poll
@@ -42,22 +55,27 @@ ReducerRegistry.register('features/polls', (state = INITIAL_STATE, action) => {
             .map(_answer => {
                 return {
                     name: _answer.name,
-                    voters: new Set(_answer.voters)
+                    voters: new Map(_answer.voters)
                 };
             });
 
         for (let i = 0; i < newAnswers.length; i++) {
-            // if the answer was chosen, we add the senderID to the set of voters of this answer
-            if (answer.answers[i] === true) {
-                newAnswers[i].voters.add(answer.senderId);
+            // if the answer was chosen, we add the sender to the set of voters of this answer
+            const voters = newAnswers[i].voters;
+
+            if (answer.answers[i]) {
+                voters.set(answer.voterId, answer.voterName);
+
+            } else {
+                voters.delete(answer.voterId);
             }
         }
 
         let newsenderWeights = [ ...(state.polls[pollId].senderWeights) ]
-        if (!(newsenderWeights.some(sdWeight => sdWeight.senderId === answer.senderId))) {
+        if (!(newsenderWeights.some(sdWeight => sdWeight.voterId === answer.voterId))) {
             // Add new senderWeight
             newsenderWeights = [ ...newsenderWeights, {
-                senderId: answer.senderId,
+                voterId: answer.voterId,
                 weight: Number(answer.weight)
             }]
         }
@@ -76,6 +94,43 @@ ReducerRegistry.register('features/polls', (state = INITIAL_STATE, action) => {
         };
     }
 
+    case REGISTER_VOTE: {
+        const { answers, pollId }: { answers: Array<boolean> | null; pollId: string } = action;
+
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [pollId]: {
+                    ...state.polls[pollId],
+                    lastVote: answers,
+                    showResults: true
+                }
+            }
+        };
+    }
+
+    case RETRACT_VOTE: {
+        const { pollId }: { pollId: string } = action;
+
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [pollId]: {
+                    ...state.polls[pollId],
+                    showResults: false
+                }
+            }
+        };
+    }
+
+    case RESET_NB_UNREAD_POLLS: {
+        return {
+            ...state,
+            nbUnreadPolls: 0
+        };
+    }
 
     default:
         return state;

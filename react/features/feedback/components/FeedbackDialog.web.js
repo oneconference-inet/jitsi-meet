@@ -1,16 +1,20 @@
 // @flow
 
-import { FieldTextAreaStateless } from "@atlaskit/field-text-area";
-import StarIcon from "@atlaskit/icon/glyph/star";
-import StarFilledIcon from "@atlaskit/icon/glyph/star-filled";
-import React, { Component } from "react";
-import type { Dispatch } from "redux";
+import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
+import StarIcon from '@atlaskit/icon/glyph/star';
+import StarFilledIcon from '@atlaskit/icon/glyph/star-filled';
+import React, { Component } from 'react';
+import type { Dispatch } from 'redux';
 
-import { createFeedbackOpenEvent, sendAnalytics } from "../../analytics";
-import { Dialog } from "../../base/dialog";
-import { translate } from "../../base/i18n";
-import { connect } from "../../base/redux";
-import { cancelFeedback, submitFeedback } from "../actions";
+import {
+    createFeedbackOpenEvent,
+    sendAnalytics
+} from '../../analytics';
+import { Dialog } from '../../base/dialog';
+import { isMobileBrowser } from '../../base/environment/utils';
+import { translate } from '../../base/i18n';
+import { connect } from '../../base/redux';
+import { cancelFeedback, submitFeedback } from '../actions';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
