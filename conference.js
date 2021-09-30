@@ -117,7 +117,6 @@ import {
 import { downloadJSON } from './react/features/base/util/downloadJSON';
 import { showDesktopPicker } from './react/features/desktop-picker';
 import { appendSuffix } from './react/features/display-name';
-import { getConferenceOptions } from "./react/features/conference/functions";
 import {
     maybeOpenFeedbackDialog,
     submitFeedback,
