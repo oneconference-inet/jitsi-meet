@@ -141,7 +141,7 @@ function ConferenceInfo(props: Props) {
         //         </div>
         //     </div>
         // </div>
-        <div className={`subject ${_visible ? "visible" : ""}`}>
+        <div className = { `subject ${_recordingLabel ? 'recording' : ''} ${_visible ? 'visible' : ''}` }>
             <div
                 className={`subject-info-container${
                     _fullWidth ? " subject-info-container--full-width" : ""
