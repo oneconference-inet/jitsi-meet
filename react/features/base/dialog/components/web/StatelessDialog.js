@@ -157,26 +157,19 @@ class StatelessDialog extends Component<Props> {
 
         return (
             <Modal
-                autoFocus = { true }
-                components = {{
-                    Header: customHeader 
-                    // ? customHeader : props => (
-                    //     <ModalHeader
-                    //         { ...props }
-                    //         heading = { titleString || t(titleKey) }
-                    //         hideCloseIconButton = { hideCloseIconButton } />
-                    // )
+                autoFocus={true}
+                components={{
+                    Header: customHeader,
                 }}
-                footer = { this._renderFooter }
+                footer={this._renderFooter}
                 heading={customHeader ? undefined : titleString || t(titleKey)}
-                i18n = { this.props.i18n }
-                onClose = { this._onDialogDismissed }
-                onDialogDismissed = { this._onDialogDismissed }
-                shouldCloseOnEscapePress = { true }
-                width = { width || 'medium' }>
-                <div
-                    onKeyPress = { this._onKeyPress }
-                    ref = { this._setDialogElement }>
+                i18n={this.props.i18n}
+                onClose={this._onDialogDismissed}
+                onDialogDismissed={this._onDialogDismissed}
+                shouldCloseOnEscapePress={true}
+                width={width || 'medium'}
+            >
+                <div onKeyDown={this._onKeyDown} ref={this._setDialogElement}>
                     <form
                         className='modal-dialog-form'
                         id='modal-dialog-form'
