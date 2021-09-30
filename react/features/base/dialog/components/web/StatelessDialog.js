@@ -168,7 +168,7 @@ class StatelessDialog extends Component<Props> {
                     // )
                 }}
                 footer = { this._renderFooter }
-                // heading={customHeader ? undefined : titleString || t(titleKey)}
+                heading={customHeader ? undefined : titleString || t(titleKey)}
                 i18n = { this.props.i18n }
                 onClose = { this._onDialogDismissed }
                 onDialogDismissed = { this._onDialogDismissed }
