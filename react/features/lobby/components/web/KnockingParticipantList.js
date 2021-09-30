@@ -119,3 +119,4 @@ function _mapStateToProps(state: Object): $Shape<Props> {
 }
 
 export default translate(connect(_mapStateToProps)(KnockingParticipantList));
+
