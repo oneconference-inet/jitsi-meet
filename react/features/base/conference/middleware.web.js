@@ -2,7 +2,6 @@
 
 import { setPrejoinPageVisibility, setSkipPrejoinOnReload } from '../../prejoin';
 import { PREJOIN_SCREEN_STATES } from '../../prejoin/constants';
-import { JitsiConferenceErrors } from '../lib-jitsi-meet';
 import UIEvents from "../../../../service/UI/UIEvents";
 import { MiddlewareRegistry } from "../redux";
 import { TOGGLE_SCREENSHARING } from "../tracks/actionTypes";
