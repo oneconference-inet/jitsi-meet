@@ -6,10 +6,6 @@ import { JitsiConferenceErrors } from '../lib-jitsi-meet';
 import UIEvents from "../../../../service/UI/UIEvents";
 import { MiddlewareRegistry } from "../redux";
 import { TOGGLE_SCREENSHARING } from "../tracks/actionTypes";
-import {
-    setPrejoinPageVisibility,
-    setSkipPrejoinOnReload,
-} from "../../prejoin";
 import { JitsiConferenceErrors } from "../lib-jitsi-meet";
 
 import { CONFERENCE_FAILED, CONFERENCE_JOINED } from "./actionTypes";
