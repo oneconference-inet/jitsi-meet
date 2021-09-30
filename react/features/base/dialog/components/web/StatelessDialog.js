@@ -159,12 +159,13 @@ class StatelessDialog extends Component<Props> {
             <Modal
                 autoFocus = { true }
                 components = {{
-                    Header: customHeader ? customHeader : props => (
-                        <ModalHeader
-                            { ...props }
-                            heading = { titleString || t(titleKey) }
-                            hideCloseIconButton = { hideCloseIconButton } />
-                    )
+                    Header: customHeader 
+                    // ? customHeader : props => (
+                    //     <ModalHeader
+                    //         { ...props }
+                    //         heading = { titleString || t(titleKey) }
+                    //         hideCloseIconButton = { hideCloseIconButton } />
+                    // )
                 }}
                 footer = { this._renderFooter }
                 // heading={customHeader ? undefined : titleString || t(titleKey)}
