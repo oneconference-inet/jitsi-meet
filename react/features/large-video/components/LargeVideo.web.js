@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 
 import { Watermarks } from '../../base/react';
 import { connect } from '../../base/redux';
+
+import { InviteMore, Subject } from '../../conference';
 import { setColorAlpha } from '../../base/util';
 import { fetchCustomBrandingData } from '../../dynamic-branding';
 import { SharedVideo } from '../../shared-video/components/web';
@@ -74,13 +76,19 @@ class LargeVideo extends Component<Props> {
         } = this.props;
         const style = this._getCustomSyles();
         // const className = `videocontainer${this.props._isChatOpen ? ' shift-right' : ''}`;
+        console.log('1111largeVideo');
 
         return (
+            // 5870
             <div
                 className = 'videocontainer'
                 id = 'largeVideoContainer'
                 style = { style }>
-                <SharedVideo />
+                <Subject />
+                <InviteMore />
+                <div id = 'sharedVideo'>
+                    <div id = 'sharedVideoIFrame' />
+                </div>
                 <div id = 'etherpad' />
 
                 <Watermarks />
@@ -102,11 +110,9 @@ class LargeVideo extends Component<Props> {
                       * another container for the background and the
                       * largeVideoWrapper in order to hide/show them.
                       */}
-                    <div
-                        id = 'largeVideoWrapper'
-                        role = 'figure' >
+                    <div id = 'largeVideoWrapper'>
                         <video
-                            autoPlay = { !_noAutoPlayVideo }
+                            autoPlay = { !this.props._noAutoPlayVideo }
                             id = 'largeVideo'
                             muted = { true }
                             playsInline = { true } /* for Safari on iOS to work */ />
@@ -115,6 +121,47 @@ class LargeVideo extends Component<Props> {
                 { interfaceConfig.DISABLE_TRANSCRIPTION_SUBTITLES
                     || <Captions /> }
             </div>
+
+            // 6293
+            // <div
+            //     className = 'videocontainer'
+            //     id = 'largeVideoContainer'
+            //     style = { style }>
+            //     <SharedVideo />
+            //     <div id = 'etherpad' />
+
+            //     <Watermarks />
+
+            //     <div id = 'dominantSpeaker'>
+            //         <div className = 'dynamic-shadow' />
+            //         <div id = 'dominantSpeakerAvatarContainer' />
+            //     </div>
+            //     <div id = 'remotePresenceMessage' />
+            //     <span id = 'remoteConnectionMessage' />
+            //     <div id = 'largeVideoElementsContainer'>
+            //         <div id = 'largeVideoBackgroundContainer' />
+
+            //         {/*
+            //           * FIXME: the architecture of elements related to the large
+            //           * video and the naming. The background is not part of
+            //           * largeVideoWrapper because we are controlling the size of
+            //           * the video through largeVideoWrapper. That's why we need
+            //           * another container for the background and the
+            //           * largeVideoWrapper in order to hide/show them.
+            //           */}
+            //         <div
+            //             id = 'largeVideoWrapper'
+            //             role = 'figure' >
+            //             <video
+            //                 autoPlay = { !_noAutoPlayVideo }
+            //                 id = 'largeVideo'
+            //                 muted = { true }
+            //                 playsInline = { true } /* for Safari on iOS to work */ />
+            //         </div>
+            //     </div>
+            //     { interfaceConfig.DISABLE_TRANSCRIPTION_SUBTITLES
+            //         || <Captions /> }
+            // </div>
         );
     }
 
