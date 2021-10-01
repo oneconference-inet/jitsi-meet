@@ -963,6 +963,7 @@ export default {
             roomName,
             initialOptions
         );
+        let localTracks = tracks;
 
         this._initDeviceList(true);
 
