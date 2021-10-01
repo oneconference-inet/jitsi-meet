@@ -141,6 +141,7 @@ function ConferenceInfo(props: Props) {
                 className={`subject-info-container${
                     _fullWidth ? " subject-info-container--full-width" : ""
                 }`}
+                id = 'subject-container'
             >
                 {!_hideConferenceNameAndTimer && (
                     <div className="subject-info">
