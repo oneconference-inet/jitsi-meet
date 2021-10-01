@@ -44,13 +44,7 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 </div>
                 <NotificationWithParticipants
                     approveButtonText = { t('lobby.allow') }
-                    onApprove = {() =>
-                        this._onRespondToParticipantSocket(
-                            p.id,
-                            p.name,
-                            true
-                        )
-                    }
+                    onApprove = { approveKnockingParticipant }
                     onReject = { rejectKnockingParticipant }
                     participants = { _participants }
                     rejectButtonText = { t('lobby.reject') }
