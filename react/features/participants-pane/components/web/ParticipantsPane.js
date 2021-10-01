@@ -117,6 +117,7 @@ class ParticipantsPane extends Component<Props, State> {
             _showFooter,
             t
         } = this.props;
+        console.log('1111partcpane');
 
         // when the pane is not open optimize to not
         // execute the MeetingParticipantList render for large list of participants

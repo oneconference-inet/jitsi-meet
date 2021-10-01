@@ -109,6 +109,7 @@ export default function ParticipantItem({
     youText
 }: Props) {
     const ParticipantActions = Actions[actionsTrigger];
+    console.log('1111partcitem');
 
     return (
         <ParticipantContainer
