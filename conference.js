@@ -2757,10 +2757,14 @@ export default {
             }
         });
 
-        APP.UI.addListener(
-            UIEvents.TOGGLE_SCREENSHARING, ({ enabled, audioOnly }) => {
-                this.toggleScreenSharing(enabled, { audioOnly });
+        APP.UI.addListener(UIEvents.TOGGLE_SCREENSHARING, (audioOnly) => {
+            this.toggleScreenSharing(undefined, { audioOnly });
         });
+
+        // APP.UI.addListener(
+        //     UIEvents.TOGGLE_SCREENSHARING, ({ enabled, audioOnly }) => {
+        //         this.toggleScreenSharing(enabled, { audioOnly });
+        // });
 
         /* eslint-disable max-params */
         APP.UI.addListener(
