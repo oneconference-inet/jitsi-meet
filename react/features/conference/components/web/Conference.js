@@ -239,9 +239,9 @@ class Conference extends AbstractConference<Props, *> {
                     <Notice />
                     <div id="videospace">
                         <LargeVideo />
-                        {/* {!_isParticipantsPaneVisible && (
+                        {!_isParticipantsPaneVisible && (
                             <KnockingParticipantList />
-                        )} */}
+                        )}
                         {!_isParticipantsPaneVisible
                          && <div id = 'notification-participant-list'>
                              <KnockingParticipantList />
