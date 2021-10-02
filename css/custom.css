@@ -6,7 +6,7 @@
     margin: 5 5px;
 }
 
-ul.poll-answer-field-list {
+/* ul.poll-answer-field-list {
     list-style-type: none;
     padding: 0 0 0 0;
 }
@@ -37,7 +37,7 @@ ul.poll-answer-list {
 .poll-answer-list-label {
     font-size: 1em !important;
     color: #b8c7e0 !important;
-}
+} */
 
 .display-avatar-with-name {
     order: 1;
