@@ -132,11 +132,11 @@ function ConferenceInfo(props: Props) {
                     )}
                     <TranscribingLabel />
                     <VideoQualityLabel />
-                    {infoConf.getIsSecretRoom() ? (
+                    {/* {infoConf.getIsSecretRoom() ? (
                         <Tooltip content={"Secret Room"} position={"right"}>
                             <Label className={"secret-room"} text={"SC"} />
                         </Tooltip>
-                    ) : null}
+                    ) : null} */}
                     <InsecureRoomNameLabel />
                 </div>
             </div>
