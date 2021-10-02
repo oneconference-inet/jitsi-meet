@@ -241,7 +241,7 @@ class StartRecordingDialogContent extends Component<Props> {
                         value = { this.props.selectedRecordingService === RECORDING_TYPES.JITSI_REC_SERVICE } />
                 ) : null;
 
-        const icon = isVpaas ? ICON_CLOUD : JITSI_LOGO;
+        const icon = isVpaas ? ICON_CLOUD : ONECON_LOGO;
         const label = isVpaas ? t('recording.serviceDescriptionCloud') : t('recording.serviceDescription');
 
         return (
