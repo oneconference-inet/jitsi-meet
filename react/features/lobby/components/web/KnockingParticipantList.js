@@ -4,6 +4,8 @@ import React from 'react';
 
 import { translate } from '../../../base/i18n';
 import { connect } from '../../../base/redux';
+import { isToolboxVisible } from "../../../toolbox/functions.web";
+import { HIDDEN_EMAILS } from "../../constants";
 import NotificationWithParticipants from '../../../notifications/components/web/NotificationWithParticipants';
 import { approveKnockingParticipant, rejectKnockingParticipant } from '../../actions';
 import AbstractKnockingParticipantList, {
@@ -31,14 +33,78 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
      * @inheritdoc
      */
     render() {
-        const { _participants, _visible, t } = this.props;
+        // const { _participants, _visible, t } = this.props;
+        const { _participants, _toolboxVisible, _visible, t } = this.props;
+
 
         if (!_visible) {
             return null;
         }
 
         return (
-            <div id = 'knocking-participant-list'>
+            <div
+                className={_toolboxVisible ? "toolbox-visible" : ""}
+                id="knocking-participant-list"
+            >
+                <span className="title">
+                    {t("lobby.knockingParticipantList")}
+                </span>
+                <ul className="knocking-participants-container">
+                    {_participants.map((p) => (
+                        <li className="knocking-participant" key={p.id}>
+                            {/* <Avatar
+                                displayName = { p.name }
+                                size = { 48 }
+                                testId = 'knockingParticipant.avatar'
+                                url = { p.loadableAvatarUrl } /> */}
+                            {infoConf.getIsSecretRoom() ? (
+                                <img src={p.image} />
+                            ) : null}
+                            <div style={{ display: "flex" }}>
+                                <div className="details">
+                                    <span data-testid="knockingParticipant.name">
+                                        {p.name}
+                                    </span>
+                                    {p.email &&
+                                        !HIDDEN_EMAILS.includes(p.email) && (
+                                            <span data-testid="knockingParticipant.email">
+                                                {p.email}
+                                            </span>
+                                        )}
+                                </div>
+                                <button
+                                    className="primary"
+                                    data-testid="lobby.allow"
+                                    onClick={() =>
+                                        this._onRespondToParticipantSocket(
+                                            p.id,
+                                            p.name,
+                                            true
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {t("lobby.allow")}
+                                </button>
+                                <button
+                                    className="borderLess"
+                                    data-testid="lobby.reject"
+                                    onClick={() =>
+                                        this._onRespondToParticipantSocket(
+                                            p.id,
+                                            p.name,
+                                            false
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {t("lobby.reject")}
+                                </button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+                {/* <div id = 'knocking-participant-list'>
                 <div className = 'title'>
                     { t('lobby.knockingParticipantList') }
                 </div>
@@ -49,6 +115,7 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                     participants = { _participants }
                     rejectButtonText = { t('lobby.reject') }
                     testIdPrefix = 'lobby' />
+            </div> */}
             </div>
         );
     }
