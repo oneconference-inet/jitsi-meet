@@ -62,12 +62,6 @@ class ChatMessage extends AbstractChatMessage<Props> {
                     <div className = 'replywrapper'>
                         <div className = 'messagecontent'>
                             { this.props.showDisplayName && this._renderDisplayName() }
-                                { message.pollId === undefined
-                                    ? <div className = 'usermessage'>
-                                        { processedMessage }
-                                    </div>
-                                    : <PollResultsMessage pollId = { message.pollId } />
-                                }
                             <div className = 'usermessage'>
                                 <span className = 'sr-only'>
                                     { this.props.message.displayName === this.props.message.recipient
