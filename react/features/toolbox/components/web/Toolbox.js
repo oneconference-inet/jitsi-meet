@@ -958,7 +958,8 @@ class Toolbox extends Component<Props, State> {
             group: 4
         };
 
-        return {
+        const isModerator = infoConf.getIsModerator();
+        let returnButtons = {
             microphone,
             camera,
             profile,
@@ -975,10 +976,10 @@ class Toolbox extends Component<Props, State> {
             cc,
             recording,
             localRecording,
-            livestreaming,
-            muteEveryone,
+            // livestreaming,
+            // muteEveryone,
             // muteVideoEveryone,
-            shareVideo,
+            // shareVideo,
             // shareAudio,
             etherpad,
             virtualBackground,
@@ -989,7 +990,44 @@ class Toolbox extends Component<Props, State> {
             feedback,
             download,
             help
-        };
+        }
+
+        if (isModerator) {
+            returnButtons = {
+                microphone,
+                camera,
+                profile,
+                desktop,
+                chat,
+                raisehand,
+                participants,
+                invite,
+                tileview,
+                toggleCamera,
+                videoQuality,
+                fullscreen,
+                // security,
+                cc,
+                recording,
+                localRecording,
+                livestreaming,
+                muteEveryone,
+                // muteVideoEveryone,
+                shareVideo,
+                // shareAudio,
+                etherpad,
+                virtualBackground,
+                speakerStats,
+                settings,
+                shortcuts,
+                // embed,
+                feedback,
+                download,
+                help
+            }
+        }
+
+        return returnButtons
     }
 
     /**
