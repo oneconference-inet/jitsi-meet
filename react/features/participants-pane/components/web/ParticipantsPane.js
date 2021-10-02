@@ -144,7 +144,7 @@ class ParticipantsPane extends Component<Props, State> {
                         </Container>
                         {_showFooter && (
                             <Footer>
-                                <FooterButton onClick = { this._onMuteAll }>
+                                {/* <FooterButton onClick = { this._onMuteAll }>
                                     {t('participantsPane.actions.muteAll')}
                                 </FooterButton>
                                 <FooterEllipsisContainer>
@@ -153,7 +153,7 @@ class ParticipantsPane extends Component<Props, State> {
                                         onClick = { this._onToggleContext } />
                                     {this.state.contextOpen
                                         && <FooterContextMenu onMouseLeave = { this._onToggleContext } />}
-                                </FooterEllipsisContainer>
+                                </FooterEllipsisContainer> */}
                             </Footer>
                         )}
                     </div>
