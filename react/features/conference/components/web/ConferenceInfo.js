@@ -95,50 +95,33 @@ function ConferenceInfo(props: Props) {
     } = props;
 
     return (
-        <div className = { `subject ${_recordingLabel ? 'recording' : ''} ${_visible ? 'visible' : ''}` }>
+        <div className={`subject ${_visible ? "visible" : ""}`}>
             <div
-                className = { `subject-info-container${_fullWidth ? ' subject-info-container--full-width' : ''}` }
-                id = 'subject-container'>
-                {!_hideRecordingLabel && <div
-                    className = 'show-always'
-                    id = 'rec-container'
-                    // eslint-disable-next-line react-native/no-inline-styles
-                    style = {{
-                        marginLeft: !_recordingLabel || _visible ? 0 : getLeftMargin()
-                    }}>
-                    <RecordingLabel mode = { JitsiRecordingConstants.mode.FILE } />
-                    <RecordingLabel mode = { JitsiRecordingConstants.mode.STREAM } />
-                    <LocalRecordingLabel />
-                </div>
-                }
-                <div
-                    className = 'subject-details-container'
-                    id = 'subject-details-container'>
-                    {
-                        !_hideConferenceNameAndTimer
-                            && <div className = 'subject-info'>
-                                { _subject && <span className = 'subject-text'>{ _subject }</span>}
-                                { !_hideConferenceTimer && <ConferenceTimer /> }
-                            </div>
-                    }
-                    { _showParticipantCount && <ParticipantsCount /> }
-                    <E2EELabel />
-                    {_hideRecordingLabel && (
-                        <>
-                            <RecordingLabel mode = { JitsiRecordingConstants.mode.FILE } />
-                            <RecordingLabel mode = { JitsiRecordingConstants.mode.STREAM } />
-                            <LocalRecordingLabel />
-                        </>
-                    )}
-                    <TranscribingLabel />
-                    <VideoQualityLabel />
-                    {/* {infoConf.getIsSecretRoom() ? (
-                        <Tooltip content={"Secret Room"} position={"right"}>
-                            <Label className={"secret-room"} text={"SC"} />
-                        </Tooltip>
-                    ) : null} */}
-                    <InsecureRoomNameLabel />
-                </div>
+                className={`subject-info-container${
+                    _fullWidth ? " subject-info-container--full-width" : ""
+                }`}
+            >
+                {!_hideConferenceNameAndTimer && (
+                    <div className="subject-info">
+                        {_subject && (
+                            <span className="subject-text">{_subject}</span>
+                        )}
+                        {!_hideConferenceTimer && <ConferenceTimer />}
+                    </div>
+                )}
+                {_showParticipantCount && <ParticipantsCount />}
+                <E2EELabel />
+                <RecordingLabel mode={JitsiRecordingConstants.mode.FILE} />
+                <RecordingLabel mode={JitsiRecordingConstants.mode.STREAM} />
+                <LocalRecordingLabel />
+                <TranscribingLabel />
+                <VideoQualityLabel />
+                {infoConf.getIsSecretRoom() ? (
+                    <Tooltip content={"Secret Room"} position={"right"}>
+                        <Label className={"secret-room"} text={"SC"} />
+                    </Tooltip>
+                ) : null}
+                <InsecureRoomNameLabel />
             </div>
         </div>
     );
