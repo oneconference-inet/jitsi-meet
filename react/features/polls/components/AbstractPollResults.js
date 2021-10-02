@@ -14,15 +14,10 @@ import { COMMAND_ANSWER_POLL } from '../constants';
  */
 type InputProps = {
 
-    // /**
-    //  * Whether to display vote details
-    //  */
-    // showDetails: boolean,
-
     /**
      * ID of the poll to display
      */
-    pollId: number,
+    pollId: string,
 };
 
 export type AnswerInfo = {
@@ -63,40 +58,6 @@ const AbstractPollResults = (Component: AbstractComponent<AbstractProps>) => (pr
     });
 
     const answers: Array<AnswerInfo> = useMemo(() => {
-
-        // const senderWeights = pollDetails.senderWeights
-
-        // let totalSenderWeight = 0
-        // let totalVoters = 0
-        // for (const senderWeight of pollDetails.senderWeights) {
-        //     totalSenderWeight = totalSenderWeight + Number(senderWeight.weight)
-        //     totalVoters = totalVoters + 1
-        // }
-
-        // // Getting every voters ID that participates to the poll
-        // for (const answer of pollDetails.answers) {
-        //     for (const voter of answer.voters) {
-        //         voterSet.add(voter);
-        //     }
-        // }
-
-        // // const totalVoters = voterSet.size;
-
-        // // Calculate the voter weight of the answer. 
-        // const answerWeight = (voters) => {
-        //     let voterWeights = senderWeights.filter(senderWeight => Array.from(voters).includes(senderWeight.voterId))
-        //     let totalvoterWeights = 0
-        //     for (const voterWeight of voterWeights) {
-        //         totalvoterWeights = totalvoterWeights + Number(voterWeight.weight)
-        //     }
-        //     return totalvoterWeights
-        // }
-
-        // return pollDetails.answers.map(answer => {
-        //     // const percentage = totalVoters === 0 ? 0 : Number.parseFloat(answer.voters.size / totalVoters * 100).toFixed(2);
-        //     const percentage = totalSenderWeight === 0 ? 0
-        //         : Number.parseFloat(answerWeight(answer.voters) / totalSenderWeight * 100).toFixed(2);
-
         const voterSet = new Set();
 
         // Getting every voters ID that participates to the poll
@@ -126,8 +87,7 @@ const AbstractPollResults = (Component: AbstractComponent<AbstractProps>) => (pr
                 name: answer.name,
                 percentage,
                 voters,
-                voterCount: answer.voters.size,
-                totalVoters: totalVoters
+                voterCount: answer.voters.size
             };
         });
     }, [ pollDetails.answers, showDetails ]);

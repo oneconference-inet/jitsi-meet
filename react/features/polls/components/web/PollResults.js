@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import AbstractPollResults from '../AbstractPollResults';
 import type { AbstractProps } from '../AbstractPollResults';
@@ -13,24 +13,6 @@ import type { AbstractProps } from '../AbstractPollResults';
  * @returns {React.Node}
  */
 const PollResults = (props: AbstractProps) => {
-    // const {
-    //     answers,
-    //     showDetails,
-    //     question,
-    //     t
-    // } = props;
-
-    // const renderRow = useCallback((name, percentage, voterCount, totalVoters) =>
-    //     (<div className = 'poll-answer-header'>
-    //         <span>{ name } -  </span>
-    //         <span className = 'poll-answer-vote-count'>
-    //             {Number(voterCount) && Number(voterCount) !== 0 ? ` (${voterCount}` : '(0' }
-    //             {`/${totalVoters})`}
-    //         </span>
-    //         <span> { percentage }% </span>
-    //     </div>)
-    // );
-    
     const {
         answers,
         changeVote,
@@ -48,25 +30,6 @@ const PollResults = (props: AbstractProps) => {
                     <strong>{ question }</strong>
                 </div>
             </div>
-            {/* <ol className = 'poll-answer-list'>
-                { showDetails
-                    ? answers.map(({ name, percentage, voters, voterCount, totalVoters }, index) =>
-                        (<li key = { index }>
-                            { renderRow(name, percentage, voterCount, totalVoters) }
-                        </li>)
-                    )
-                    : answers.map(({ name, percentage, voterCount, totalVoters }, index) =>
-                        (<li key = { index }>
-                            { renderRow(name, percentage, voterCount, totalVoters) }
-                            <div className = 'poll-bar-container'>
-                                <div
-                                    className = 'poll-bar'
-                                    style = {{ width: `${percentage}%` }} />
-                            </div>
-                        </li>)
-                    )
-                }
-            </ol> */}
             <ol className = 'poll-result-list'>
                 {answers.map(({ name, percentage, voters, voterCount }, index) =>
                     (<li key = { index }>

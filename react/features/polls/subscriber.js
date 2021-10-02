@@ -87,13 +87,12 @@ StateListenerRegistry.register(
                 }
 
                 case COMMAND_ANSWER_POLL: {
-                    const { pollId, answers, voterId, voterName, weight } = data;
+                    const { pollId, answers, voterId, voterName } = data;
 
                     const receivedAnswer: Answer = {
                         voterId,
                         voterName,
                         pollId,
-                        weight,
                         answers
                     };
 

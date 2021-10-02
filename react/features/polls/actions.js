@@ -9,26 +9,11 @@ import {
 } from './actionTypes';
 import type { Answer, Poll } from './types';
 
-// /**
-//  * Action to signal that a new poll was received.
-//  *
-//  * @param {string} pollId - The id of the incoming poll.
-//  * @param {Poll} poll - The incoming Poll object.
-//  * @returns {{
-//  *     type: RECEIVE_POLL,
-//  *     poll: Poll,
-//  *     pollId: string
-//  * }}
-//  */
-// export const receivePoll = (pollId: string, poll: Poll) => {
-//     return {
-//         type: RECEIVE_POLL,
-//         poll,
-//         pollId
-
 /**
  * Action to signal that a new poll was received.
  *
+ * @param {string} pollId - The id of the incoming poll.
+ * @param {Poll} poll - The incoming Poll object.
  * @param {boolean} notify - Whether to send or not a notification.
  * @returns {{
  *     type: RECEIVE_POLL,

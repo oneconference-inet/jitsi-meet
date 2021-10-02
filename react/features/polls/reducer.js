@@ -71,15 +71,6 @@ ReducerRegistry.register('features/polls', (state = INITIAL_STATE, action) => {
             }
         }
 
-        let newsenderWeights = [ ...(state.polls[pollId].senderWeights) ]
-        if (!(newsenderWeights.some(sdWeight => sdWeight.voterId === answer.voterId))) {
-            // Add new senderWeight
-            newsenderWeights = [ ...newsenderWeights, {
-                voterId: answer.voterId,
-                weight: Number(answer.weight)
-            }]
-        }
-
         // finally we update the state by returning the updated poll
         return {
             ...state,
@@ -87,8 +78,7 @@ ReducerRegistry.register('features/polls', (state = INITIAL_STATE, action) => {
                 ...state.polls,
                 [pollId]: {
                     ...state.polls[pollId],
-                    answers: newAnswers,
-                    senderWeights: newsenderWeights
+                    answers: newAnswers
                 }
             }
         };
