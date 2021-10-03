@@ -327,6 +327,7 @@ class Toolbox extends Component<Props, State> {
         // Get approve incomming conference
         let getApprove
         if (services_check.includes(checkPlatform)) {
+            console.log('1111getApproveHost');
             if(checkPlatform !== 'onemail_dga') {
                 getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
             } else {
@@ -350,6 +351,7 @@ class Toolbox extends Component<Props, State> {
                     console.log("pollResponse-Payload: ", payload)
                     break;
                 case 'handleApprove':
+                    console.log('1111handleApproveHost');
                     logger.log("handleApprove-ID: ", payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
                     break;
@@ -399,6 +401,7 @@ class Toolbox extends Component<Props, State> {
 
                     break;
                 case 'handleApprove':
+                    console.log('1111handleApproveAttendee');
                     logger.log("handleApprove-ID: ", payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
                     break;
