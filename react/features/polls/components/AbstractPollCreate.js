@@ -103,6 +103,7 @@ const AbstractPollCreate = (Component: AbstractComponent<AbstractProps>) => (pro
             senderId: myId,
             senderName: myName,
             question,
+            oneChoice: true,
             answers: filteredAnswers
         });
 

@@ -52,6 +52,11 @@ export type Poll = {
      * The question asked by this poll
      */
     question: string,
+    
+    /**
+     * Number of choice to choose from in this poll.
+     */
+     oneChoice: boolean,
 
     /**
      * An array of answers:

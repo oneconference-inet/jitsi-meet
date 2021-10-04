@@ -60,7 +60,7 @@ StateListenerRegistry.register(
             const receiveMessage = (_, data) => {
                 switch (data.type) {
                 case COMMAND_NEW_POLL: {
-                    const { question, answers, pollId, senderId, senderName } = data;
+                    const { question, answers, pollId, senderId, senderName, oneChoice } = data;
 
                     const poll = {
                         senderId,
@@ -68,6 +68,7 @@ StateListenerRegistry.register(
                         showResults: false,
                         lastVote: null,
                         question,
+                        oneChoice,
                         answers: answers.map(answer => {
                             return {
                                 name: answer,

@@ -56,10 +56,23 @@ const AbstractPollAnswer = (Component: AbstractComponent<AbstractProps>) => (pro
     });
 
     const setCheckbox = useCallback((index, state) => {
-        const newCheckBoxStates = [ ...checkBoxStates ];
+        // const newCheckBoxStates = [ ...checkBoxStates ];
 
-        newCheckBoxStates[index] = state;
-        setCheckBoxState(newCheckBoxStates);
+        // newCheckBoxStates[index] = state;
+        // setCheckBoxState(newCheckBoxStates);
+
+        if (String(poll.oneChoice) === 'true') {
+            const newOneCheckBoxStates = checkBoxStates.map((checkBox, ind) => {
+                checkBox = ind === index ? state : false
+                return checkBox
+            })
+            setCheckBoxState(newOneCheckBoxStates);
+        } else {
+            const newCheckBoxStates = [...checkBoxStates];
+
+            newCheckBoxStates[index] = state;
+            setCheckBoxState(newCheckBoxStates);
+        }
     }, [ checkBoxStates ]);
 
     const dispatch = useDispatch();
