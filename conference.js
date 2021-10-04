@@ -334,8 +334,7 @@ class ConferenceConnector {
             // Schedule reconnect to check if someone else created the room.
             this.reconnectTimeout = setTimeout(() => {
                 APP.store.dispatch(conferenceWillJoin(room));
-                // room.join(null, replaceParticipant);
-                room.join();
+                room.join(null, replaceParticipant);
             }, 5000);
 
                 const { password } =
@@ -969,19 +968,17 @@ export default {
 
         this._initDeviceList(true);
 
-        return this.startConference(con, tracks);
+        if (initialOptions.startWithAudioMuted) {
+            // Always add the audio track to the peer connection and then mute the track on mobile Safari
+            // because of a known issue where audio playout doesn't happen if the user joins audio and video muted.
+            if (isIosMobileBrowser()) {
+                this.muteAudio(true, true);
+            } else {
+                localTracks = localTracks.filter(track => track.getType() !== MEDIA_TYPE.AUDIO);
+            }
+        }
 
-        // if (initialOptions.startWithAudioMuted) {
-        //     // Always add the audio track to the peer connection and then mute the track on mobile Safari
-        //     // because of a known issue where audio playout doesn't happen if the user joins audio and video muted.
-        //     if (isIosMobileBrowser()) {
-        //         this.muteAudio(true, true);
-        //     } else {
-        //         localTracks = localTracks.filter(track => track.getType() !== MEDIA_TYPE.AUDIO);
-        //     }
-        // }
-
-        // return this.startConference(con, localTracks);
+        return this.startConference(con, localTracks);
     },
 
     /**
