@@ -275,7 +275,7 @@ function logout(room) {
         if (room.isJoined()) {
             const replaceParticipant = getReplaceParticipant(APP.store.getState());
 
-            room.join();
+            room.join(null, replaceParticipant);
         }
 
         return url;
