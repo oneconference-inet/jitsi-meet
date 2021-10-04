@@ -334,7 +334,8 @@ class ConferenceConnector {
             // Schedule reconnect to check if someone else created the room.
             this.reconnectTimeout = setTimeout(() => {
                 APP.store.dispatch(conferenceWillJoin(room));
-                room.join(null, replaceParticipant);
+                // room.join(null, replaceParticipant);
+                room.join();
             }, 5000);
 
                 const { password } =
