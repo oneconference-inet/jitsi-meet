@@ -7,10 +7,10 @@ import {
     openAuthDialog,
     openLoginDialog } from '../../../react/features/authentication/actions.web';
 import { WaitForOwnerDialog } from '../../../react/features/authentication/components';
-import {
-    isTokenAuthEnabled,
-    getTokenAuthUrl
-} from '../../../react/features/authentication/functions';
+// import {
+//     isTokenAuthEnabled,
+//     getTokenAuthUrl
+// } from '../../../react/features/authentication/functions';
 import { getReplaceParticipant } from '../../../react/features/base/config/functions';
 import { isDialogOpen } from '../../../react/features/base/dialog';
 import { setJWT } from '../../../react/features/base/jwt';
@@ -30,12 +30,12 @@ declare var APP: Object;
 
 const logger = Logger.getLogger(__filename);
 
-// const isTokenAuthEnabled =
-//     typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
-// const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
-//     null,
-//     config.tokenAuthUrl
-// );
+const isTokenAuthEnabled =
+    typeof config.tokenAuthUrl === "string" && config.tokenAuthUrl.length;
+const getTokenAuthUrl = JitsiMeetJS.util.AuthUtil.getTokenAuthUrl.bind(
+    null,
+    config.tokenAuthUrl
+);
 
 /**
  * Authenticate using external service or just focus
@@ -275,7 +275,7 @@ function logout(room) {
         if (room.isJoined()) {
             const replaceParticipant = getReplaceParticipant(APP.store.getState());
 
-            room.join(null, replaceParticipant);
+            room.join();
         }
 
         return url;
