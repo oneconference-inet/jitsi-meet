@@ -425,11 +425,11 @@ class ConferenceConnector {
      *
      */
     connect() {
-        // const replaceParticipant = getReplaceParticipant(APP.store.getState());
+        const replaceParticipant = getReplaceParticipant(APP.store.getState());
 
-        // // the local storage overrides here and in connection.js can be used by jibri
-        // room.join(jitsiLocalStorage.getItem('xmpp_conference_password_override'), replaceParticipant);
-        room.join();
+        // the local storage overrides here and in connection.js can be used by jibri
+        room.join(jitsiLocalStorage.getItem('xmpp_conference_password_override'), replaceParticipant);
+        // room.join();
     }
 }
 
