@@ -425,10 +425,11 @@ class ConferenceConnector {
      *
      */
     connect() {
-        const replaceParticipant = getReplaceParticipant(APP.store.getState());
+        // const replaceParticipant = getReplaceParticipant(APP.store.getState());
 
-        // the local storage overrides here and in connection.js can be used by jibri
-        room.join(jitsiLocalStorage.getItem('xmpp_conference_password_override'), replaceParticipant);
+        // // the local storage overrides here and in connection.js can be used by jibri
+        // room.join(jitsiLocalStorage.getItem('xmpp_conference_password_override'), replaceParticipant);
+        room.join();
     }
 }
 
@@ -963,7 +964,7 @@ export default {
             roomName,
             initialOptions
         );
-        // let localTracks = tracks;
+        let localTracks = tracks;
 
         this._initDeviceList(true);
 
