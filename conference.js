@@ -1512,13 +1512,13 @@ export default {
         this.changeLocalDisplayName(infoConf.getNameJoin());
         APP.store.dispatch(setSubject(infoConf.getRoomName()));
 
-        return getConferenceOptions(APP.store.getState());
+        // return getConferenceOptions(APP.store.getState());
 
-        // const options = getConferenceOptions(APP.store.getState());
+        const options = getConferenceOptions(APP.store.getState());
 
-        // options.createVADProcessor = createRnnoiseProcessor;
+        options.createVADProcessor = createRnnoiseProcessor;
 
-        // return options;
+        return options;
     },
 
     /**
