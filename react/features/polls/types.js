@@ -3,19 +3,19 @@
 export type Answer = {
 
     /**
-     * ID of the sender of this poll
+     * ID of the voter for this answer
      */
-    senderId: string,
+    voterId: string,
+
+    /**
+     * Name of the voter
+     */
+    voterName: string,
 
     /**
      * ID of the parent Poll of this answer
      */
-    pollId: number,
-
-    /**
-     * Weight of sender
-     */
-    weight: number,
+    pollId: string,
 
     /**
      * An array of boolean: true if the answer was chosen by the responder, else false
@@ -30,30 +30,32 @@ export type Poll = {
      */
     senderId: string,
 
+
+    /**
+     * Name of the sender of this poll
+     * Store poll sender name in case they exit the call
+     */
+    senderName: string,
+
+    /**
+     * Whether the results should be shown instead of the answer form
+     */
+    showResults: boolean,
+
+    /**
+     * The last sent votes for this poll, or null if voting was skipped
+     * Note: This is reset when voting/skipping, not when clicking "Change vote"
+     */
+    lastVote: Array<boolean> | null,
+
     /**
      * The question asked by this poll
      */
     question: string,
 
     /**
-     * Number of choice to choose from in this poll.
-     */
-    oneChoice: boolean,
-
-    /**
-     * Weight vote calculation mode of this poll.
-     */
-     weightMode: boolean,
-
-    /**
      * An array of answers:
-     * the name of the answer name and a set of ids of voters voting for this option
+     * the name of the answer name and a map of ids and names of voters voting for this option
      */
-    answers: Array<{ name: string, voters: Set<string> }>,
-
-    /**
-     * An array of sender's Weight :
-     * the id of sender and weight of sender
-     */
-    senderWeights: Array<{ senderId: string, weight: number }>,
+    answers: Array<{ name: string, voters: Map<string, string> }>,
 };

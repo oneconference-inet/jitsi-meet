@@ -207,6 +207,7 @@ var interfaceConfig = {
 
     SETTINGS_SECTIONS: ["devices", "language", "moderator"],
     // SETTINGS_SECTIONS: [ 'devices', 'language', 'moderator', 'profile', 'calendar' ],
+    SETTINGS_SECTIONS: [ 'devices', 'language', 'moderator', 'profile', 'calendar', 'sounds' ],
 
     /**
      * Specify which sharing features should be displayed. If the value is not set
@@ -247,6 +248,7 @@ var interfaceConfig = {
     //     'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
     //     'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone', 'security'
     // ],
+    // TOOLBAR_BUTTONS: [],
 
     TOOLBAR_BUTTONS: [
         "microphone",
@@ -293,8 +295,9 @@ var interfaceConfig = {
     // Determines how the video would fit the screen. 'both' would fit the whole
     // screen, 'height' would fit the original video height to the height of the
     // screen, 'width' would fit the original video width to the width of the
-    // screen respecting ratio.
-    VIDEO_LAYOUT_FIT: "both",
+    // screen respecting ratio, 'nocrop' would make the video as large as
+    // possible and preserve aspect ratio without cropping.
+    VIDEO_LAYOUT_FIT: 'both',
 
     /**
      * If true, hides the video quality label indicating the resolution status

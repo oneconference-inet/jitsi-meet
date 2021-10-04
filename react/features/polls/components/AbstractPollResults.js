@@ -1,12 +1,13 @@
 // @flow
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import type { AbstractComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { getParticipants } from '../../base/participants';
-
+import { getLocalParticipant, getParticipantById } from '../../base/participants/functions';
+import { retractVote } from '../actions';
+import { COMMAND_ANSWER_POLL } from '../constants';
 
 /**
  * The type of the React {@code Component} props of inheriting component.
@@ -14,14 +15,9 @@ import { getParticipants } from '../../base/participants';
 type InputProps = {
 
     /**
-     * Whether to display vote details
-     */
-    showDetails: boolean,
-
-    /**
      * ID of the poll to display
      */
-    pollId: number,
+    pollId: string,
 };
 
 export type AnswerInfo = {
@@ -36,9 +32,12 @@ export type AnswerInfo = {
  */
 export type AbstractProps = {
     answers: Array<AnswerInfo>,
+    changeVote: Function,
     showDetails: boolean,
     question: string,
-    t: Function
+    t: Function,
+    toggleIsDetailed: Function,
+    haveVoted: boolean,
 };
 
 /**
@@ -49,60 +48,37 @@ export type AbstractProps = {
  * @returns {React.AbstractComponent}
  */
 const AbstractPollResults = (Component: AbstractComponent<AbstractProps>) => (props: InputProps) => {
-    const { pollId, showDetails } = props;
+    const { pollId } = props;
 
     const pollDetails = useSelector(state => state['features/polls'].polls[pollId]);
 
-    const participants = useSelector(state => getParticipants(state));
+    const [ showDetails, setShowDetails ] = useState(false);
+    const toggleIsDetailed = useCallback(() => {
+        setShowDetails(!showDetails);
+    });
 
     const answers: Array<AnswerInfo> = useMemo(() => {
         const voterSet = new Set();
 
-        const senderWeights = pollDetails.senderWeights
-
-        let totalSenderWeight = 0
-        let totalVoters = 0
-        for (const senderWeight of pollDetails.senderWeights) {
-            totalSenderWeight = totalSenderWeight + Number(senderWeight.weight)
-            totalVoters = totalVoters + 1
-        }
-
         // Getting every voters ID that participates to the poll
         for (const answer of pollDetails.answers) {
-            for (const voter of answer.voters) {
-                voterSet.add(voter);
+            for (const [ voterId ] of answer.voters) {
+                voterSet.add(voterId);
             }
         }
 
-        // const totalVoters = voterSet.size;
-
-        // Calculate the voter weight of the answer. 
-        const answerWeight = (voters) => {
-            let voterWeights = senderWeights.filter(senderWeight => Array.from(voters).includes(senderWeight.senderId))
-            let totalvoterWeights = 0
-            for (const voterWeight of voterWeights) {
-                totalvoterWeights = totalvoterWeights + Number(voterWeight.weight)
-            }
-            return totalvoterWeights
-        }
+        const totalVoters = voterSet.size;
 
         return pollDetails.answers.map(answer => {
-            // const percentage = totalVoters === 0 ? 0 : Number.parseFloat(answer.voters.size / totalVoters * 100).toFixed(2);
-            const percentage = totalSenderWeight === 0 ? 0
-                : Number.parseFloat(answerWeight(answer.voters) / totalSenderWeight * 100).toFixed(2);
+            const percentage = totalVoters === 0 ? 0 : Math.round(answer.voters.size / totalVoters * 100);
 
             let voters = null;
 
             if (showDetails) {
-                voters = [ ...answer.voters ].map(voterId => {
-                    // Getting the name of participant from its ID
-                    const participant = participants.find(part => part.id === voterId);
-
+                voters = [ ...answer.voters ].map(([ id, name ]) => {
                     return {
-                        id: voterId,
-                        name: participant
-                            ? participant.name
-                            : 'Absent Jitster'
+                        id,
+                        name
                     };
                 });
             }
@@ -111,19 +87,38 @@ const AbstractPollResults = (Component: AbstractComponent<AbstractProps>) => (pr
                 name: answer.name,
                 percentage,
                 voters,
-                voterCount: answer.voters.size,
-                totalVoters: totalVoters
+                voterCount: answer.voters.size
             };
         });
-    }, [ pollDetails.answers ]);
+    }, [ pollDetails.answers, showDetails ]);
+
+    const dispatch = useDispatch();
+
+    const conference: Object = useSelector(state => state['features/base/conference'].conference);
+    const localId = useSelector(state => getLocalParticipant(state).id);
+    const localParticipant = useSelector(state => getParticipantById(state, localId));
+    const localName: string = localParticipant ? localParticipant.name : 'Fellow Jitster';
+    const changeVote = useCallback(() => {
+        conference.sendMessage({
+            type: COMMAND_ANSWER_POLL,
+            pollId,
+            voterId: localId,
+            voterName: localName,
+            answers: new Array(pollDetails.answers.length).fill(false)
+        });
+        dispatch(retractVote(pollId));
+    }, [ pollId, localId, localName, pollDetails ]);
 
     const { t } = useTranslation();
 
     return (<Component
         answers = { answers }
+        changeVote = { changeVote }
+        haveVoted = { pollDetails.lastVote !== null }
         question = { pollDetails.question }
         showDetails = { showDetails }
-        t = { t } />);
+        t = { t }
+        toggleIsDetailed = { toggleIsDetailed } />);
 };
 
 export default AbstractPollResults;

@@ -12,6 +12,29 @@ import AbstractSharedVideoDialog from '../AbstractSharedVideoDialog';
  */
 class SharedVideoDialog extends AbstractSharedVideoDialog<*> {
     /**
+     * Instantiates a new component.
+     *
+     * @inheritdoc
+     */
+    constructor(props) {
+        super(props);
+
+        this._onSubmitValue = this._onSubmitValue.bind(this);
+    }
+
+    _onSubmitValue: () => boolean;
+
+    /**
+     * Callback to be invoked when the value of the link input is submitted.
+     *
+     * @param {string} value - The entered video link.
+     * @returns {boolean}
+     */
+    _onSubmitValue(value) {
+        return super._onSetVideoLink(value);
+    }
+
+    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
@@ -20,14 +43,12 @@ class SharedVideoDialog extends AbstractSharedVideoDialog<*> {
         return (
             <InputDialog
                 contentKey = 'dialog.shareVideoTitle'
-                onSubmit = { this._onSetVideoLink }
+                onSubmit = { this._onSubmitValue }
                 textInputProps = {{
                     placeholder: defaultSharedVideoLink
                 }} />
         );
     }
-
-    _onSetVideoLink: string => boolean;
 }
 
 export default connect()(SharedVideoDialog);

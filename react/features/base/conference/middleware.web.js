@@ -3,6 +3,10 @@
 import UIEvents from "../../../../service/UI/UIEvents";
 import { MiddlewareRegistry } from "../redux";
 import { TOGGLE_SCREENSHARING } from "../tracks/actionTypes";
+import { setPrejoinPageVisibility, setSkipPrejoinOnReload } from '../../prejoin';
+import { PREJOIN_SCREEN_STATES } from '../../prejoin/constants';
+import { JitsiConferenceErrors } from '../lib-jitsi-meet';
+import { MiddlewareRegistry } from '../redux';
 
 import {
     setPrejoinPageVisibility,
@@ -24,6 +28,14 @@ MiddlewareRegistry.register(({ dispatch, getState }) => (next) => (action) => {
                 APP.UI.emitEvent(UIEvents.TOGGLE_SCREENSHARING);
             }
             break;
+MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
+    const { enableForcedReload } = getState()['features/base/config'];
+
+    switch (action.type) {
+    case CONFERENCE_JOINED: {
+        if (enableForcedReload) {
+            dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
+            dispatch(setSkipPrejoinOnReload(false));
         }
         case CONFERENCE_JOINED: {
             if (enableForcedReload) {

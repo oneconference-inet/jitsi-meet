@@ -39,6 +39,7 @@ import {
     conferenceWillJoin,
     conferenceWillLeave,
     dataChannelOpened,
+    getConferenceOptions,
     kickedOut,
     lockStateChanged,
     onStartMutedPolicyChanged,
@@ -53,8 +54,9 @@ import {
     notifyCameraError,
     notifyMicError,
     setAudioOutputDeviceId,
-    updateDeviceList,
-} from "./react/features/base/devices";
+    updateDeviceList
+} from './react/features/base/devices';
+import { isIosMobileBrowser } from './react/features/base/environment/utils';
 import {
     browser,
     isFatalJitsiConnectionError,
@@ -319,13 +321,22 @@ class ConferenceConnector {
                 break;
             }
 
-            // not enough rights to create conference
-            case JitsiConferenceErrors.AUTHENTICATION_REQUIRED: {
-                // Schedule reconnect to check if someone else created the room.
-                this.reconnectTimeout = setTimeout(() => {
-                    APP.store.dispatch(conferenceWillJoin(room));
-                    room.join();
-                }, 5000);
+        case JitsiConferenceErrors.NOT_ALLOWED_ERROR: {
+            // let's show some auth not allowed page
+            APP.store.dispatch(redirectToStaticPage('static/authError.html'));
+            break;
+        }
+
+        // not enough rights to create conference
+        case JitsiConferenceErrors.AUTHENTICATION_REQUIRED: {
+
+            const replaceParticipant = getReplaceParticipant(APP.store.getState());
+
+            // Schedule reconnect to check if someone else created the room.
+            this.reconnectTimeout = setTimeout(() => {
+                APP.store.dispatch(conferenceWillJoin(room));
+                room.join(null, replaceParticipant);
+            }, 5000);
 
                 const { password } =
                     APP.store.getState()["features/base/conference"];
@@ -415,7 +426,10 @@ class ConferenceConnector {
      *
      */
     connect() {
-        room.join();
+        const replaceParticipant = getReplaceParticipant(APP.store.getState());
+
+        // the local storage overrides here and in connection.js can be used by jibri
+        room.join(jitsiLocalStorage.getItem('xmpp_conference_password_override'), replaceParticipant);
     }
 }
 
@@ -953,7 +967,17 @@ export default {
 
         this._initDeviceList(true);
 
-        return this.startConference(con, tracks);
+        if (initialOptions.startWithAudioMuted) {
+            // Always add the audio track to the peer connection and then mute the track on mobile Safari
+            // because of a known issue where audio playout doesn't happen if the user joins audio and video muted.
+            if (isIosMobileBrowser()) {
+                this.muteAudio(true, true);
+            } else {
+                localTracks = localTracks.filter(track => track.getType() !== MEDIA_TYPE.AUDIO);
+            }
+        }
+
+        return this.startConference(con, localTracks);
     },
 
     /**
@@ -1218,17 +1242,6 @@ export default {
     },
 
     /**
-     * Sends the given feedback through CallStats if enabled.
-     *
-     * @param overallFeedback an integer between 1 and 5 indicating the
-     * user feedback
-     * @param detailedFeedback detailed feedback from the user. Not yet used
-     */
-    sendFeedback(overallFeedback, detailedFeedback) {
-        return room.sendFeedback(overallFeedback, detailedFeedback);
-    },
-
-    /**
      * Get speaker stats that track total dominant speaker time.
      *
      * @returns {object} A hash with keys being user ids and values being the
@@ -1458,8 +1471,8 @@ export default {
 
         APP.store.dispatch(conferenceWillJoin(room));
 
-        // Filter out the tracks that are muted.
-        const tracks = localTracks.filter((track) => !track.isMuted());
+        // Filter out the tracks that are muted (except on mobile Safari).
+        const tracks = isIosMobileBrowser() ? localTracks : localTracks.filter(track => !track.isMuted());
 
         this._setLocalAudioVideoStreams(tracks);
         this._room = room; // FIXME do not use this
@@ -1497,7 +1510,7 @@ export default {
         this.changeLocalDisplayName.bind(this);
         this.changeLocalDisplayName(infoConf.getNameJoin());
         APP.store.dispatch(setSubject(infoConf.getRoomName()));
-
+        options.createVADProcessor = createRnnoiseProcessor;
         return getConferenceOptions(APP.store.getState());
     },
 
@@ -2202,6 +2215,14 @@ export default {
         room.on(JitsiConferenceEvents.CONFERENCE_UNIQUE_ID_SET, (...args) =>
             APP.store.dispatch(conferenceUniqueIdSet(room, ...args))
         );
+        room.on(
+            JitsiConferenceEvents.CONFERENCE_UNIQUE_ID_SET,
+            (...args) => {
+                // Preserve the sessionId so that the value is accessible even after room
+                // is disconnected.
+                room.sessionId = room.getMeetingUniqueId();
+                APP.store.dispatch(conferenceUniqueIdSet(room, ...args));
+            });
 
         room.on(
             JitsiConferenceEvents.AUTH_STATUS_CHANGED,
@@ -2237,8 +2258,6 @@ export default {
             }
 
             logger.log(`USER ${id} LEFT:`, user);
-
-            APP.UI.onSharedVideoStop(id);
         });
 
         room.on(JitsiConferenceEvents.USER_STATUS_CHANGED, (id, status) => {
@@ -2340,6 +2359,9 @@ export default {
         room.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED, (id) =>
             APP.store.dispatch(dominantSpeakerChanged(id, room))
         );
+        room.on(
+            JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
+            (dominant, previous) => APP.store.dispatch(dominantSpeakerChanged(dominant, previous, room)));
 
         room.on(
             JitsiConferenceEvents.CONFERENCE_CREATED_TIMESTAMP,
@@ -2447,6 +2469,24 @@ export default {
 
         room.on(JitsiConferenceEvents.KICKED, (participant) => {
             // APP.UI.hideStats();
+        room.on(JitsiConferenceEvents.KICKED, (participant, reason, isReplaced) => {
+            if (isReplaced) {
+                // this event triggers when the local participant is kicked, `participant`
+                // is the kicker. In replace participant case, kicker is undefined,
+                // as the server initiated it. We mark in store the local participant
+                // as being replaced based on jwt.
+                const localParticipant = getLocalParticipant(APP.store.getState());
+
+                APP.store.dispatch(participantUpdated({
+                    conference: room,
+                    id: localParticipant.id,
+                    isReplaced
+                }));
+
+                // we send readyToClose when kicked participant is replace so that
+                // embedding app can choose to dispose the iframe API on the handler.
+                APP.API.notifyReadyToClose();
+            }
             APP.store.dispatch(kickedOut(room, participant));
         });
 
@@ -2527,6 +2567,9 @@ export default {
                     audioMuted &&
                     track.jitsiTrack?.getType() === MEDIA_TYPE.AUDIO
                 ) {
+                // Always add the track on mobile Safari because of a known issue where audio playout doesn't happen
+                // if the user joins audio and video muted.
+                if (audioMuted && track.jitsiTrack?.getType() === MEDIA_TYPE.AUDIO && !isIosMobileBrowser()) {
                     promises.push(this.useAudioStream(null));
                 }
                 if (
@@ -2800,6 +2843,9 @@ export default {
                 ) {
                     APP.UI.onSharedVideoUpdate(id, value, attributes);
                 }
+        APP.UI.addListener(
+            UIEvents.TOGGLE_SCREENSHARING, ({ enabled, audioOnly }) => {
+                this.toggleScreenSharing(enabled, { audioOnly });
             }
         );
     },
@@ -3226,10 +3272,6 @@ export default {
             requestFeedbackPromise = Promise.resolve(true);
         }
 
-        // All promises are returning Promise.resolve to make Promise.all to
-        // be resolved when both Promises are finished. Otherwise Promise.all
-        // will reject on first rejected Promise and we can redirect the page
-        // before all operations are done.
         Promise.all([
             requestFeedbackPromise,
             this.leaveRoomAndDisconnect(),

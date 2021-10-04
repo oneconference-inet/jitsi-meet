@@ -2,11 +2,18 @@
 
 import React from "react";
 
+<<<<<<< HEAD
 import { Avatar } from "../../../base/avatar";
 import { translate } from "../../../base/i18n";
 import { connect } from "../../../base/redux";
 import { isToolboxVisible } from "../../../toolbox/functions.web";
 import { HIDDEN_EMAILS } from "../../constants";
+=======
+import { translate } from '../../../base/i18n';
+import { connect } from '../../../base/redux';
+import NotificationWithParticipants from '../../../notifications/components/web/NotificationWithParticipants';
+import { approveKnockingParticipant, rejectKnockingParticipant } from '../../actions';
+>>>>>>> 2008c9035944e2cc363bc47f72e07529c47289f8
 import AbstractKnockingParticipantList, {
     mapStateToProps as abstractMapStateToProps,
     type Props as AbstractProps,
@@ -18,7 +25,7 @@ type Props = AbstractProps & {
     /**
      * True if the toolbox is visible, so we need to adjust the position.
      */
-    _toolboxVisible: boolean,
+    _toolboxVisible: boolean
 };
 
 /**
@@ -31,13 +38,14 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
      * @inheritdoc
      */
     render() {
-        const { _participants, _toolboxVisible, _visible, t } = this.props;
+        const { _participants, _visible, t } = this.props;
 
         if (!_visible) {
             return null;
         }
 
         return (
+<<<<<<< HEAD
             <div
                 className={_toolboxVisible ? "toolbox-visible" : ""}
                 id="knocking-participant-list"
@@ -100,11 +108,25 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                         </li>
                     ))}
                 </ul>
+=======
+            <div id = 'knocking-participant-list'>
+                <div className = 'title'>
+                    { t('lobby.knockingParticipantList') }
+                </div>
+                <NotificationWithParticipants
+                    approveButtonText = { t('lobby.allow') }
+                    onApprove = { approveKnockingParticipant }
+                    onReject = { rejectKnockingParticipant }
+                    participants = { _participants }
+                    rejectButtonText = { t('lobby.reject') }
+                    testIdPrefix = 'lobby' />
+>>>>>>> 2008c9035944e2cc363bc47f72e07529c47289f8
             </div>
         );
     }
 }
 
+<<<<<<< HEAD
 /**
  * Maps part of the Redux state to the props of this component.
  *
@@ -119,3 +141,6 @@ function _mapStateToProps(state: Object): $Shape<Props> {
 }
 
 export default translate(connect(_mapStateToProps)(KnockingParticipantList));
+=======
+export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
+>>>>>>> 2008c9035944e2cc363bc47f72e07529c47289f8

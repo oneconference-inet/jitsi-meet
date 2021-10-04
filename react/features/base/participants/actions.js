@@ -9,6 +9,7 @@ import {
     HIDDEN_PARTICIPANT_LEFT,
     GRANT_MODERATOR,
     KICK_PARTICIPANT,
+    LOCAL_PARTICIPANT_RAISE_HAND,
     MUTE_REMOTE_PARTICIPANT,
     PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
@@ -32,7 +33,8 @@ const logger = Logger.getLogger(__filename);
 /**
  * Create an action for when dominant speaker changes.
  *
- * @param {string} id - Participant's ID.
+ * @param {string} dominantSpeaker - Participant ID of the dominant speaker.
+ * @param {Array<string>} previousSpeakers - Participant IDs of the previous speakers.
  * @param {JitsiConference} conference - The {@code JitsiConference} associated
  * with the participant identified by the specified {@code id}. Only the local
  * participant is allowed to not specify an associated {@code JitsiConference}
@@ -41,17 +43,21 @@ const logger = Logger.getLogger(__filename);
  *     type: DOMINANT_SPEAKER_CHANGED,
  *     participant: {
  *         conference: JitsiConference,
- *         id: string
+ *         id: string,
+ *         previousSpeakers: Array<string>
  *     }
  * }}
  */
-export function dominantSpeakerChanged(id, conference) {
+export function dominantSpeakerChanged(dominantSpeaker, previousSpeakers, conference) {
     return {
         type: DOMINANT_SPEAKER_CHANGED,
         participant: {
             conference,
             id,
         },
+            id: dominantSpeaker,
+            previousSpeakers
+        }
     };
 }
 
@@ -376,6 +382,7 @@ export function hiddenParticipantLeft(id) {
  * with the participant identified by the specified {@code id}. Only the local
  * participant is allowed to not specify an associated {@code JitsiConference}
  * instance.
+ * @param {boolean} isReplaced - Whether the participant is to be replaced in the meeting.
  * @returns {{
  *     type: PARTICIPANT_LEFT,
  *     participant: {
@@ -384,13 +391,15 @@ export function hiddenParticipantLeft(id) {
  *     }
  * }}
  */
-export function participantLeft(id, conference) {
+export function participantLeft(id, conference, isReplaced) {
     return {
         type: PARTICIPANT_LEFT,
         participant: {
             conference,
             id,
         },
+            isReplaced
+        }
     };
 }
 
@@ -522,6 +531,22 @@ export function participantKicked(kicker, kicked) {
                 NOTIFICATION_TIMEOUT * 2
             )
         ); // leave more time for this
+            kicker: kicker?.getId()
+        });
+
+        if (kicked.isReplaced && kicked.isReplaced()) {
+            return;
+        }
+
+        dispatch(showNotification({
+            titleArguments: {
+                kicked:
+                    getParticipantDisplayName(getState, kicked.getId()),
+                kicker:
+                    getParticipantDisplayName(getState, kicker.getId())
+            },
+            titleKey: 'notify.kickParticipant'
+        }, NOTIFICATION_TIMEOUT * 2)); // leave more time for this
     };
 }
 
@@ -569,3 +594,18 @@ export function setLoadableAvatarUrl(participantId, url) {
     };
 }
 
+/**
+ * Raise hand for the local participant.
+ *
+ * @param {boolean} enabled - Raise or lower hand.
+ * @returns {{
+ *     type: LOCAL_PARTICIPANT_RAISE_HAND,
+ *     enabled: boolean
+ * }}
+ */
+export function raiseHand(enabled) {
+    return {
+        type: LOCAL_PARTICIPANT_RAISE_HAND,
+        enabled
+    };
+}

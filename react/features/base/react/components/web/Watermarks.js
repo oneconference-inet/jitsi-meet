@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 
-import { isVpaasMeeting } from '../../../../billing-counter/functions';
+import { isVpaasMeeting } from '../../../../jaas/functions';
 import { translate } from '../../../i18n';
 import { connect } from '../../../redux';
 
@@ -160,6 +160,7 @@ class Watermarks extends Component<Props, State> {
             _logoUrl,
             _showJitsiWatermark
         } = this.props;
+        const { t } = this.props;
         let reactElement = null;
 
         if (_showJitsiWatermark) {
@@ -168,7 +169,8 @@ class Watermarks extends Component<Props, State> {
                 maxWidth: 140,
                 maxHeight: 70,
                 width: '100%',
-                height: '10%'
+                height: '10%',
+                position: _logoLink ? 'static' : 'absolute'
             };
 
             reactElement = (<div
@@ -178,6 +180,8 @@ class Watermarks extends Component<Props, State> {
             if (_logoLink) {
                 reactElement = (
                     <a
+                        aria-label = { t('jitsiHome', { logo: interfaceConfig.APP_NAME }) }
+                        className = 'watermark leftwatermark'
                         href = { _logoLink }
                         target = '_new'>
                         { reactElement }

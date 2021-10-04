@@ -1,5 +1,7 @@
 // @flow
 
+import debounce from 'lodash/debounce';
+
 import { SET_FILMSTRIP_ENABLED } from '../../filmstrip/actionTypes';
 import { SELECT_LARGE_VIDEO_PARTICIPANT } from '../../large-video/actionTypes';
 import { APP_STATE_CHANGED } from '../../mobile/background/actionTypes';
@@ -18,57 +20,20 @@ import {
 import { MiddlewareRegistry } from '../redux';
 import { isLocalVideoTrackDesktop } from '../tracks/functions';
 
-import { SET_LAST_N } from './actionTypes';
+import { setLastN } from './actions';
 import { limitLastN } from './functions';
 import logger from './logger';
-
-declare var APP: Object;
-
-
-MiddlewareRegistry.register(store => next => action => {
-    const result = next(action);
-
-    switch (action.type) {
-    case APP_STATE_CHANGED:
-    case CONFERENCE_JOINED:
-    case PARTICIPANT_JOINED:
-    case PARTICIPANT_KICKED:
-    case PARTICIPANT_LEFT:
-    case SCREEN_SHARE_REMOTE_PARTICIPANTS_UPDATED:
-    case SELECT_LARGE_VIDEO_PARTICIPANT:
-    case SET_AUDIO_ONLY:
-    case SET_FILMSTRIP_ENABLED:
-    case SET_TILE_VIEW:
-        _updateLastN(store);
-        break;
-    case SET_LAST_N: {
-        const { lastN } = action;
-
-        _updateLastN(store, lastN);
-        break;
-    }
-    }
-
-    return result;
-});
 
 /**
  * Updates the last N value in the conference based on the current state of the redux store.
  *
  * @param {Store} store - The redux store.
- * @param {number} value - The last-n value to be set.
  * @private
  * @returns {void}
  */
-function _updateLastN({ getState }, value = null) {
+const _updateLastN = debounce(({ dispatch, getState }) => {
     const state = getState();
     const { conference } = state['features/base/conference'];
-    const { enabled: audioOnly } = state['features/base/audio-only'];
-    const { appState } = state['features/background'] || {};
-    const { enabled: filmStripEnabled } = state['features/filmstrip'];
-    const config = state['features/base/config'];
-    const { lastNLimits, lastN } = state['features/base/lastn'];
-    const participantCount = getParticipantCount(state);
 
     if (!conference) {
         logger.debug('There is no active conference, not updating last N');
@@ -76,13 +41,19 @@ function _updateLastN({ getState }, value = null) {
         return;
     }
 
+    const { enabled: audioOnly } = state['features/base/audio-only'];
+    const { appState } = state['features/background'] || {};
+    const { enabled: filmStripEnabled } = state['features/filmstrip'];
+    const config = state['features/base/config'];
+    const { lastNLimits, lastN } = state['features/base/lastn'];
+    const participantCount = getParticipantCount(state);
+
     // Select the lastN value based on the following preference order.
-    // 1. The value passed to the setLastN action that is dispatched.
-    // 2. The last-n value in redux.
-    // 3. The last-n value from 'startLastN' if it is specified in config.js
-    // 4. The last-n value from 'channelLastN' if specified in config.js.
-    // 5. -1 as the default value.
-    let lastNSelected = value || lastN || (config.startLastN ?? (config.channelLastN ?? -1));
+    // 1. The last-n value in redux.
+    // 2. The last-n value from 'startLastN' if it is specified in config.js
+    // 3. The last-n value from 'channelLastN' if specified in config.js.
+    // 4. -1 as the default value.
+    let lastNSelected = lastN || (config.startLastN ?? (config.channelLastN ?? -1));
 
     // Apply last N limit based on the # of participants and config settings.
     const limitedLastN = limitLastN(participantCount, lastNLimits);
@@ -111,15 +82,28 @@ function _updateLastN({ getState }, value = null) {
         lastNSelected = 1;
     }
 
-    if (conference.getLastN() === lastNSelected) {
-        return;
-    }
-
     logger.info(`Setting last N to: ${lastNSelected}`);
+    dispatch(setLastN(lastNSelected));
+}, 1000); /* Don't send this more often than once a second. */
 
-    try {
-        conference.setLastN(lastNSelected);
-    } catch (err) {
-        logger.error(`Failed to set lastN: ${err}`);
+
+MiddlewareRegistry.register(store => next => action => {
+    const result = next(action);
+
+    switch (action.type) {
+    case APP_STATE_CHANGED:
+    case CONFERENCE_JOINED:
+    case PARTICIPANT_JOINED:
+    case PARTICIPANT_KICKED:
+    case PARTICIPANT_LEFT:
+    case SCREEN_SHARE_REMOTE_PARTICIPANTS_UPDATED:
+    case SELECT_LARGE_VIDEO_PARTICIPANT:
+    case SET_AUDIO_ONLY:
+    case SET_FILMSTRIP_ENABLED:
+    case SET_TILE_VIEW:
+        _updateLastN(store);
+        break;
     }
-}
+
+    return result;
+});
