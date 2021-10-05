@@ -35,9 +35,6 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
     render() {
         // const { _participants, _visible, t } = this.props;
         const { _participants, _toolboxVisible, _visible, t } = this.props;
-        console.log('1111KnockingParticipantList');
-        console.log('1111KnockingParticipantList11', _participants);
-        console.log('1111KnockingParticipantList_visible', _visible);
 
         if (!_visible) {
             return null;
@@ -50,8 +47,20 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 </div>
                 <NotificationWithParticipants
                     approveButtonText = { t('lobby.allow') }
-                    onApprove = { approveKnockingParticipant }
-                    onReject = { rejectKnockingParticipant }
+                    onApprove = {() =>
+                        this._onRespondToParticipantSocket(
+                            p.id,
+                            p.name,
+                            true
+                        )
+                    }
+                    onReject = {() =>
+                        this._onRespondToParticipantSocket(
+                            p.id,
+                            p.name,
+                            false
+                        )
+                    }
                     participants = { _participants }
                     rejectButtonText = { t('lobby.reject') }
                     testIdPrefix = 'lobby' />
@@ -60,4 +69,19 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
     }
 }
 
-export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
+// export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
+
+/**
+ * Maps part of the Redux state to the props of this component.
+ *
+ * @param {Object} state - The Redux state.
+ * @returns {Props}
+ */
+ function _mapStateToProps(state: Object): $Shape<Props> {
+    return {
+        ...abstractMapStateToProps(state),
+        _toolboxVisible: isToolboxVisible(state),
+    };
+}
+
+export default translate(connect(_mapStateToProps)(KnockingParticipantList));
