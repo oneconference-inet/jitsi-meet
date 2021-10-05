@@ -57,7 +57,6 @@ export default function({
 }: Props): React$Element<'ul'> {
     return (
         <ul className = 'knocking-participants-container'>
-            { console.log('1111NotificationButton') }
             { participants.map(p => (
                 <li
                     className = 'knocking-participant'
