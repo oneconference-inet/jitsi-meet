@@ -2,7 +2,7 @@
 
 import { PureComponent } from 'react';
 
-import { isLocalParticipantModerator } from '../../base/participants';import infoConf from '../../../../infoConference';
+import { isLocalParticipantModerator } from '../../base/participants';
 
 import infoConf from '../../../../infoConference';
 import socketIOClient from 'socket.io-client';
