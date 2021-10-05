@@ -41,7 +41,10 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
         }
 
         return (
-            <div id = 'knocking-participant-list'>
+            <div 
+                className = { _toolboxVisible ? "toolbox-visible" : "" }
+                id = 'knocking-participant-list'
+            >
                 <div className = 'title'>
                     { t('lobby.knockingParticipantList') }
                 </div>
