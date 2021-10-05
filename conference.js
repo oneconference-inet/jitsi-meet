@@ -968,15 +968,15 @@ export default {
 
         this._initDeviceList(true);
 
-        if (initialOptions.startWithAudioMuted) {
-            // Always add the audio track to the peer connection and then mute the track on mobile Safari
-            // because of a known issue where audio playout doesn't happen if the user joins audio and video muted.
-            if (isIosMobileBrowser()) {
-                this.muteAudio(true, true);
-            } else {
-                localTracks = localTracks.filter(track => track.getType() !== MEDIA_TYPE.AUDIO);
-            }
-        }
+        // if (initialOptions.startWithAudioMuted) {
+        //     // Always add the audio track to the peer connection and then mute the track on mobile Safari
+        //     // because of a known issue where audio playout doesn't happen if the user joins audio and video muted.
+        //     if (isIosMobileBrowser()) {
+        //         this.muteAudio(true, true);
+        //     } else {
+        //         localTracks = localTracks.filter(track => track.getType() !== MEDIA_TYPE.AUDIO);
+        //     }
+        // }
 
         return this.startConference(con, localTracks);
     },
