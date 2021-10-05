@@ -25,14 +25,14 @@ import { LAYOUTS, getCurrentLayout } from '../../../video-layout';
 import { maybeShowSuboptimalExperienceNotification } from '../../functions';
 import {
     AbstractConference,
-    abstractMapStateToProps,
-} from "../AbstractConference";
-import type { AbstractProps } from "../AbstractConference";
+    abstractMapStateToProps
+} from '../AbstractConference';
+import type { AbstractProps } from '../AbstractConference';
 
 import Labels from './Labels';
 
-import ConferenceInfo from "./ConferenceInfo";
-import { default as Notice } from "./Notice";
+import ConferenceInfo from './ConferenceInfo';
+import { default as Notice } from './Notice';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -45,9 +45,9 @@ declare var interfaceConfig: Object;
  * @type {Array<string>}
  */
 const FULL_SCREEN_EVENTS = [
-    "webkitfullscreenchange",
-    "mozfullscreenchange",
-    "fullscreenchange",
+    'webkitfullscreenchange',
+    'mozfullscreenchange',
+    'fullscreenchange'
 ];
 
 /**
@@ -58,15 +58,16 @@ const FULL_SCREEN_EVENTS = [
  * @type {Object}
  */
 const LAYOUT_CLASSNAMES = {
-    [LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW]: "horizontal-filmstrip",
-    [LAYOUTS.TILE_VIEW]: "tile-view",
-    [LAYOUTS.VERTICAL_FILMSTRIP_VIEW]: "vertical-filmstrip",
+    [LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW]: 'horizontal-filmstrip',
+    [LAYOUTS.TILE_VIEW]: 'tile-view',
+    [LAYOUTS.VERTICAL_FILMSTRIP_VIEW]: 'vertical-filmstrip'
 };
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
  */
 type Props = AbstractProps & {
+
     /**
      * The alpha(opacity) of the background
      */
@@ -104,8 +105,8 @@ type Props = AbstractProps & {
     _showPrejoin: boolean,
 
     dispatch: Function,
-    t: Function,
-};
+    t: Function
+}
 
 /**
  * The conference page of the Web application.
@@ -141,9 +142,8 @@ class Conference extends AbstractConference<Props, *> {
             100,
             {
                 leading: true,
-                trailing: false,
-            }
-        );
+                trailing: false
+            });
 
         this._onMouseMove = _.throttle(
             event => this._originalOnMouseMove(event),
@@ -175,10 +175,8 @@ class Conference extends AbstractConference<Props, *> {
      * returns {void}
      */
     componentDidUpdate(prevProps) {
-        if (
-            this.props._shouldDisplayTileView ===
-            prevProps._shouldDisplayTileView
-        ) {
+        if (this.props._shouldDisplayTileView
+            === prevProps._shouldDisplayTileView) {
             return;
         }
 
@@ -198,9 +196,8 @@ class Conference extends AbstractConference<Props, *> {
     componentWillUnmount() {
         APP.UI.unbindEvents();
 
-        FULL_SCREEN_EVENTS.forEach((name) =>
-            document.removeEventListener(name, this._onFullScreenChange)
-        );
+        FULL_SCREEN_EVENTS.forEach(name =>
+            document.removeEventListener(name, this._onFullScreenChange));
 
         APP.conference.isJoined() && this.props.dispatch(disconnect());
     }
@@ -217,9 +214,10 @@ class Conference extends AbstractConference<Props, *> {
             _isLobbyScreenVisible,
             _isParticipantsPaneVisible,
             _layoutClassName,
-            _showPrejoin,
-            _showLobby
+            _showLobby,
+            _showPrejoin
         } = this.props;
+
         const hideLabels = _iAmRecorder;
 
         return (
@@ -229,32 +227,27 @@ class Conference extends AbstractConference<Props, *> {
                 onMouseLeave = { this._onMouseLeave }
                 onMouseMove = { this._onMouseMove } >
                 <div
-                    className={_layoutClassName}
-                    id="videoconference_page"
-                    onMouseMove={this._onShowToolbar}
-                    ref={this._setBackground}
-                >
+                    className = { _layoutClassName }
+                    id = 'videoconference_page'
+                    onMouseMove = { this._onShowToolbar }
+                    ref = { this._setBackground }>
                     <ConferenceInfo />
 
                     <Notice />
-                    <div id="videospace">
+                    <div id = 'videospace'>
                         <LargeVideo />
-                        {!_isParticipantsPaneVisible && (
-                            <KnockingParticipantList />
-                        )}
                         {!_isParticipantsPaneVisible
                          && <div id = 'notification-participant-list'>
                              <KnockingParticipantList />
                              <AudioModerationNotifications />
                          </div>}
                         <Filmstrip />
-                        {/* {hideLabels || <Labels />} */}
                     </div>
 
                     { _showPrejoin || _showLobby || <Toolbox showDominantSpeakerName = { true } /> }
                     <Chat />
 
-                    {this.renderNotificationsContainer()}
+                    { this.renderNotificationsContainer() }
 
                     <CalleeInfoContainer />
 
@@ -283,18 +276,12 @@ class Conference extends AbstractConference<Props, *> {
 
         if (this.props._backgroundAlpha !== undefined) {
             const elemColor = element.style.background;
-            const alphaElemColor = setColorAlpha(
-                elemColor,
-                this.props._backgroundAlpha
-            );
+            const alphaElemColor = setColorAlpha(elemColor, this.props._backgroundAlpha);
 
             element.style.background = alphaElemColor;
             if (element.parentElement) {
                 const parentColor = element.parentElement.style.background;
-                const alphaParentColor = setColorAlpha(
-                    parentColor,
-                    this.props._backgroundAlpha
-                );
+                const alphaParentColor = setColorAlpha(parentColor, this.props._backgroundAlpha);
 
                 element.parentElement.style.background = alphaParentColor;
             }
@@ -368,9 +355,8 @@ class Conference extends AbstractConference<Props, *> {
         APP.UI.registerListeners();
         APP.UI.bindEvents();
 
-        FULL_SCREEN_EVENTS.forEach((name) =>
-            document.addEventListener(name, this._onFullScreenChange)
-        );
+        FULL_SCREEN_EVENTS.forEach(name =>
+            document.addEventListener(name, this._onFullScreenChange));
 
         const { dispatch, t } = this.props;
 
@@ -393,7 +379,6 @@ function _mapStateToProps(state) {
 
     return {
         ...abstractMapStateToProps(state),
-        // _backgroundAlpha: state["features/base/config"].backgroundAlpha,
         _backgroundAlpha: backgroundAlpha,
         _isLobbyScreenVisible:
             state["features/base/dialog"]?.component === LobbyScreen,

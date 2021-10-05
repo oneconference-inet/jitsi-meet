@@ -42,9 +42,9 @@ export const LobbyParticipantList = () => {
         dispatch(admitMultiple(participants));
     }, [ dispatch, participants ]);
 
-    if (!lobbyEnabled || !participants.length) {
-        return null;
-    }
+    // if (!lobbyEnabled || !participants.length) {
+    //     return null;
+    // }
 
     console.log('1111lobbypartclist');
 
