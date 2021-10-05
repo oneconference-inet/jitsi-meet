@@ -206,15 +206,14 @@ export function getConferenceNameForTitle(stateful: Function | Object) {
  * @param {Object|Function} stateful - The redux store state.
  * @returns {Object} - Options object.
  */
- export function getConferenceOptions(stateful) {
-
+export function getConferenceOptions(stateful: Function | Object) {
     const state = toState(stateful);
 
-    const options = state['features/base/config'];
+    const config = state['features/base/config'];
     const { locationURL } = state['features/base/connection'];
     const { tenant } = state['features/base/jwt'];
-
     const { email, name: nick } = getLocalParticipant(state);
+    const options = { ...config };
 
     if (tenant) {
         options.siteID = tenant;
@@ -233,20 +232,21 @@ export function getConferenceNameForTitle(stateful: Function | Object) {
     }
 
     options.applicationName = getName();
-    options.getWiFiStatsMethod = getWiFiStatsMethod;
-    options.createVADProcessor = createRnnoiseProcessor;
-    options.billingId = getVpaasBillingId(state);
+    options.transcriptionLanguage = determineTranscriptionLanguage(options);
 
-    // Disable CallStats, if requessted.
+    // Disable analytics, if requested.
     if (options.disableThirdPartyRequests) {
+        delete config.analytics?.scriptURLs;
+        delete config.analytics?.amplitudeAPPKey;
+        delete config.analytics?.googleAnalyticsTrackingId;
         delete options.callStatsID;
         delete options.callStatsSecret;
-        delete options.getWiFiStatsMethod;
+    } else {
+        options.getWiFiStatsMethod = getWiFiStatsMethod;
     }
 
     return options;
 }
-
 
 /**
 * Returns the UTC timestamp when the first participant joined the conference.
