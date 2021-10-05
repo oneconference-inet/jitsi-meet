@@ -47,20 +47,8 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 </div>
                 <NotificationWithParticipants
                     approveButtonText = { t('lobby.allow') }
-                    onApprove = {() =>
-                        this._onRespondToParticipantSocket(
-                            p.id,
-                            p.name,
-                            true
-                        )
-                    }
-                    onReject = {() =>
-                        this._onRespondToParticipantSocket(
-                            p.id,
-                            p.name,
-                            false
-                        )
-                    }
+                    onApprove = { approveKnockingParticipant }
+                    onReject = { rejectKnockingParticipant }
                     participants = { _participants }
                     rejectButtonText = { t('lobby.reject') }
                     testIdPrefix = 'lobby' />
@@ -69,19 +57,4 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
     }
 }
 
-// export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
-
-/**
- * Maps part of the Redux state to the props of this component.
- *
- * @param {Object} state - The Redux state.
- * @returns {Props}
- */
- function _mapStateToProps(state: Object): $Shape<Props> {
-    return {
-        ...abstractMapStateToProps(state),
-        _toolboxVisible: isToolboxVisible(state),
-    };
-}
-
-export default translate(connect(_mapStateToProps)(KnockingParticipantList));
+export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
