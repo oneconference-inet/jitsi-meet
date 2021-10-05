@@ -55,9 +55,9 @@ export default function({
     testIdPrefix,
     rejectButtonText
 }: Props): React$Element<'ul'> {
-    console.log('1111NotificationButton');
     return (
         <ul className = 'knocking-participants-container'>
+            { console.log('1111NotificationButton') }
             { participants.map(p => (
                 <li
                     className = 'knocking-participant'

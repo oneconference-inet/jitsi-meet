@@ -15,12 +15,12 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
 
     switch (action.type) {
 
-        // case CONFERENCE_JOINED: {
-        //     if (enableForcedReload) {
-        //         dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
-        //         dispatch(setSkipPrejoinOnReload(false));
-        //     }
-        // }
+        case CONFERENCE_JOINED: {
+            if (enableForcedReload) {
+                dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
+                dispatch(setSkipPrejoinOnReload(false));
+            }
+        }
         
         case TOGGLE_SCREENSHARING: {
             if (typeof APP === "object") {
