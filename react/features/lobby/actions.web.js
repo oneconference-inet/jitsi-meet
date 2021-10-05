@@ -137,16 +137,17 @@ export function approveKnockingParticipant(id: string, name: string) {
 
         conference && conference.lobbyApproveAccess(id);
 
-        const { meetingId, endpoint } = this.state
-        const socket = socketIOClient(endpoint)
-        const data = {
-            meetingId: meetingId,
-            id: id,
-            name: name,
-            approve: true
-        }
-        logger.log("DATA: ", data);
-        socket.emit('handleApprove', data) ;
+        console.log('1111approveKnockingParticipant', id, name);
+        // const { meetingId, endpoint } = this.state
+        // const socket = socketIOClient(endpoint)
+        // const data = {
+        //     meetingId: meetingId,
+        //     id: id,
+        //     name: name,
+        //     approve: true
+        // }
+        // logger.log("DATA: ", data);
+        // socket.emit('handleApprove', data) ;
     };
 }
 
