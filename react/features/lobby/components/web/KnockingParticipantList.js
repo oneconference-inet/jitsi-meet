@@ -39,9 +39,9 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
         console.log('1111KnockingParticipantList11', _participants);
         console.log('1111KnockingParticipantList_visible', _visible);
 
-        // if (!_visible) {
-        //     return null;
-        // }
+        if (!_visible) {
+            return null;
+        }
 
         return (
             <div id = 'knocking-participant-list'>
