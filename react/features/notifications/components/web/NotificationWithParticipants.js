@@ -61,11 +61,11 @@ export default function({
                 <li
                     className = 'knocking-participant'
                     key = { p.id }>
-                    {/* <Avatar
+                    <Avatar
                         displayName = { p.name }
                         size = { 48 }
                         testId = { `${testIdPrefix}.avatar` }
-                        url = { p.loadableAvatarUrl } /> */}
+                        url = { p.loadableAvatarUrl } />
 
                     <div className = 'details'>
                         <span data-testid = { `${testIdPrefix}.name` }>
