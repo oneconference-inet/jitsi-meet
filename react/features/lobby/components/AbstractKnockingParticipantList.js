@@ -2,9 +2,7 @@
 
 import { PureComponent } from 'react';
 
-import { isLocalParticipantModerator } from '../../base/participants';
-
-// import { setKnockingParticipantApproval } from '../actions';
+import { isLocalParticipantModerator } from '../../base/participants';import infoConf from '../../../../infoConference';
 
 import infoConf from '../../../../infoConference';
 import socketIOClient from 'socket.io-client';
@@ -54,12 +52,29 @@ export default class AbstractKnockingParticipantList<P: Props = Props> extends P
             meetingId: '',
             endpoint: interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
         }
+
+        this._onRespondToParticipant = this._onRespondToParticipant.bind(this);
     }
 
     componentDidMount () {
         this.setState({
             meetingId: infoConf.getMeetingId(),
         })
+    }
+
+    _onRespondToParticipant: (string, boolean) => Function;
+
+    /**
+     * Function that constructs a callback for the response handler button.
+     *
+     * @param {string} id - The id of the knocking participant.
+     * @param {boolean} approve - The response for the knocking.
+     * @returns {Function}
+     */
+    _onRespondToParticipant(id, approve) {
+        return () => {
+            this.props.dispatch(setKnockingParticipantApproval(id, approve));
+        };
     }
 
     /**
