@@ -48,7 +48,6 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 <div className = 'title'>
                     { t('lobby.knockingParticipantList') }
                 </div>
-                <div>123456789={ _participants.length }</div>
                 <NotificationWithParticipants
                     approveButtonText = { t('lobby.allow') }
                     onApprove = { approveKnockingParticipant }
