@@ -1,3 +1,7 @@
+#knocking-participant-list {
+    margin-top: 5px;
+}
+
 #knocking-participant-list ul li {
     display: block;
 }
