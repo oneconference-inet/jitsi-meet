@@ -14,19 +14,18 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
     const { enableForcedReload } = getState()['features/base/config'];
 
     switch (action.type) {
-
-        case CONFERENCE_JOINED: {
-            if (enableForcedReload) {
-                dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
-                dispatch(setSkipPrejoinOnReload(false));
-            }
-        }
-        
         case TOGGLE_SCREENSHARING: {
             if (typeof APP === "object") {
                 APP.UI.emitEvent(UIEvents.TOGGLE_SCREENSHARING);
             }
             break;
+        }
+        
+        case CONFERENCE_JOINED: {
+            if (enableForcedReload) {
+                dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
+                dispatch(setSkipPrejoinOnReload(false));
+            }
         }
 
         case CONFERENCE_FAILED: {
