@@ -15,19 +15,19 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
 
     switch (action.type) {
 
-        case CONFERENCE_JOINED: {
-            if (enableForcedReload) {
-                dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
-                dispatch(setSkipPrejoinOnReload(false));
-            }
-        }
-
-        // case TOGGLE_SCREENSHARING: {
-        //     if (typeof APP === "object") {
-        //         APP.UI.emitEvent(UIEvents.TOGGLE_SCREENSHARING);
+        // case CONFERENCE_JOINED: {
+        //     if (enableForcedReload) {
+        //         dispatch(setPrejoinPageVisibility(PREJOIN_SCREEN_STATES.HIDDEN));
+        //         dispatch(setSkipPrejoinOnReload(false));
         //     }
-        //     break;
         // }
+        
+        case TOGGLE_SCREENSHARING: {
+            if (typeof APP === "object") {
+                APP.UI.emitEvent(UIEvents.TOGGLE_SCREENSHARING);
+            }
+            break;
+        }
 
         case CONFERENCE_FAILED: {
             enableForcedReload &&
