@@ -115,4 +115,19 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
     }
 }
 
-export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
+// export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
+
+/**
+ * Maps part of the Redux state to the props of this component.
+ *
+ * @param {Object} state - The Redux state.
+ * @returns {Props}
+ */
+ function _mapStateToProps(state: Object): $Shape<Props> {
+    return {
+        ...abstractMapStateToProps(state),
+        _toolboxVisible: isToolboxVisible(state),
+    };
+}
+
+export default translate(connect(_mapStateToProps)(KnockingParticipantList));
