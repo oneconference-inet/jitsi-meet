@@ -13,6 +13,8 @@ import AbstractKnockingParticipantList, {
     type Props as AbstractProps
 } from '../AbstractKnockingParticipantList';
 
+import NotificationButton from '../../../notifications/components/web/NotificationButton';
+
 import infoConf from "../../../../../infoConference";
 
 type Props = AbstractProps & {
@@ -48,13 +50,59 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 <div className = 'title'>
                     { t('lobby.knockingParticipantList') }
                 </div>
-                <NotificationWithParticipants
+                {/* <NotificationWithParticipants
                     approveButtonText = { t('lobby.allow') }
-                    onApprove = { this._onRespondToParticipantSocket }
+                    onApprove = { approveKnockingParticipant }
                     onReject = { rejectKnockingParticipant }
                     participants = { _participants }
                     rejectButtonText = { t('lobby.reject') }
-                    testIdPrefix = 'lobby' />
+                    testIdPrefix = 'lobby' /> */}
+                <ul className = 'knocking-participants-container'>
+                    { _participants.map(p => (
+                        <li
+                            className = 'knocking-participant'
+                            key = { p.id }>
+                            <Avatar
+                                displayName = { p.name }
+                                size = { 48 }
+                                testId = { `${testIdPrefix}.avatar` }
+                                url = { p.loadableAvatarUrl } />
+
+                            <div className = 'details'>
+                                <span data-testid = { `${testIdPrefix}.name` }>
+                                    { p.name }
+                                </span>
+                                { p.email && !HIDDEN_EMAILS.includes(p.email) && (
+                                    <span data-testid = { `${testIdPrefix}.email` }>
+                                        { p.email }
+                                    </span>
+                                ) }
+                            </div>
+                            { <NotificationButton
+                                action = {() =>
+                                    this._onRespondToParticipantSocket(
+                                        p.id,
+                                        p.name,
+                                        true
+                                    )
+                                }
+                                className = 'primary'
+                                id = 'unmute-button'
+                                participant = { p }
+                                testId = { `${testIdPrefix}.allow` }>
+                                { approveButtonText }
+                            </NotificationButton> }
+                            { <NotificationButton
+                                action = { onReject }
+                                className = 'borderLess'
+                                id = 'dismiss-button'
+                                participant = { p }
+                                testId = { `${testIdPrefix}.reject` }>
+                                { rejectButtonText }
+                            </NotificationButton>}
+                        </li>
+                    )) }
+                </ul>
             </div>
         );
     }
