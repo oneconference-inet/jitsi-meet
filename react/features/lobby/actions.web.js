@@ -142,7 +142,7 @@ export function approveKnockingParticipant(id: string, name: string) {
 
         // conference && conference.lobbyApproveAccess(id);
 
-        const { dispatch } = this.props
+        // const { dispatch } = this.props
         const { meetingId, endpoint } = this.state
         const socket = socketIOClient(endpoint)
         const data = {
