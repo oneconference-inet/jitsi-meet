@@ -50,7 +50,7 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 </div>
                 <NotificationWithParticipants
                     approveButtonText = { t('lobby.allow') }
-                    onApprove = { approveKnockingParticipant }
+                    onApprove = { this._onRespondToParticipantSocket }
                     onReject = { rejectKnockingParticipant }
                     participants = { _participants }
                     rejectButtonText = { t('lobby.reject') }

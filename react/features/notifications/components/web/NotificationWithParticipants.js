@@ -78,7 +78,7 @@ export default function({
                         ) }
                     </div>
                     { <NotificationButton
-                        action = {() =>  onApprove(p.id, p.name) }
+                        action = {() => onApprove(p.id, p.name, true) }
                         className = 'primary'
                         id = 'unmute-button'
                         participant = { p }
