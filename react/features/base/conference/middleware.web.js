@@ -10,6 +10,8 @@ import { JitsiConferenceErrors } from "../lib-jitsi-meet";
 import { CONFERENCE_FAILED, CONFERENCE_JOINED } from "./actionTypes";
 import "./middleware.any";
 
+declare var APP: Object;
+
 MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
     const { enableForcedReload } = getState()['features/base/config'];
 
