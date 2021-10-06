@@ -131,16 +131,28 @@ export function admitMultiple(participants: Array<Object>) {
  * @param {string} id - The id of the knocking participant.
  * @returns {Function}
  */
-export function approveKnockingParticipant(id: string) {
+export function approveKnockingParticipant(id: string, name: string) {
     return (dispatch: Dispatch<any>, getState: Function) => {
         console.log('1111approveKnockingParticipant', id);
 
         const conference = getCurrentConference(getState);
 
-        console.log('1111approveKnockingParticipant1', conference);
+        console.log('1111approveKnockingParticipant11', conference);
 
 
-        conference && conference.lobbyApproveAccess(id);
+        // conference && conference.lobbyApproveAccess(id);
+
+        const { dispatch } = this.props
+        const { meetingId, endpoint } = this.state
+        const socket = socketIOClient(endpoint)
+        const data = {
+            meetingId: meetingId,
+            id: id,
+            name: name,
+            approve: true
+        }
+        logger.log("DATA: ", data);
+        socket.emit('handleApprove', data) ;
     };
 }
 
