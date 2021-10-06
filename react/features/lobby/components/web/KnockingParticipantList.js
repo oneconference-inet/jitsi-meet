@@ -13,8 +13,6 @@ import AbstractKnockingParticipantList, {
     type Props as AbstractProps
 } from '../AbstractKnockingParticipantList';
 
-import NotificationButton from '../../../notifications/components/web/NotificationButton';
-
 import infoConf from "../../../../../infoConference";
 
 type Props = AbstractProps & {
@@ -78,28 +76,34 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                                     </span>
                                 ) }
                             </div>
-                            { <NotificationButton
-                                action = {() =>
+                            <button
+                                className="primary"
+                                data-testid="lobby.allow"
+                                onClick={() =>
                                     this._onRespondToParticipantSocket(
                                         p.id,
                                         p.name,
                                         true
                                     )
                                 }
-                                className = 'primary'
-                                id = 'unmute-button'
-                                participant = { p }
-                                testId = { `${testIdPrefix}.allow` }>
-                                { approveButtonText }
-                            </NotificationButton> }
-                            { <NotificationButton
-                                action = { onReject }
-                                className = 'borderLess'
-                                id = 'dismiss-button'
-                                participant = { p }
-                                testId = { `${testIdPrefix}.reject` }>
-                                { rejectButtonText }
-                            </NotificationButton>}
+                                type="button"
+                            >
+                                {t("lobby.allow")}
+                            </button>
+                            <button
+                                className="borderLess"
+                                data-testid="lobby.reject"
+                                onClick={() =>
+                                    this._onRespondToParticipantSocket(
+                                        p.id,
+                                        p.name,
+                                        false
+                                    )
+                                }
+                                type="button"
+                            >
+                                {t("lobby.reject")}
+                            </button>
                         </li>
                     )) }
                 </ul>
