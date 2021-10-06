@@ -56,56 +56,59 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                     rejectButtonText = { t('lobby.reject') }
                     testIdPrefix = 'lobby' /> */}
                 <ul className = 'knocking-participants-container'>
-                    { _participants.map(p => (
-                        <li
-                            className = 'knocking-participant'
-                            key = { p.id }>
+                {_participants.map((p) => (
+                        <li className="knocking-participant" key={p.id}>
                             <Avatar
                                 displayName = { p.name }
                                 size = { 48 }
-                                testId = { `${testIdPrefix}.avatar` }
+                                testId = 'knockingParticipant.avatar'
                                 url = { p.loadableAvatarUrl } />
-
-                            <div className = 'details'>
-                                <span data-testid = { `${testIdPrefix}.name` }>
-                                    { p.name }
-                                </span>
-                                { p.email && !HIDDEN_EMAILS.includes(p.email) && (
-                                    <span data-testid = { `${testIdPrefix}.email` }>
-                                        { p.email }
+                            {infoConf.getIsSecretRoom() ? (
+                                <img src={p.image} />
+                            ) : null}
+                            <div style={{ display: "flex" }}>
+                                <div className="details">
+                                    <span data-testid="knockingParticipant.name">
+                                        {p.name}
                                     </span>
-                                ) }
+                                    {p.email &&
+                                        !HIDDEN_EMAILS.includes(p.email) && (
+                                            <span data-testid="knockingParticipant.email">
+                                                {p.email}
+                                            </span>
+                                        )}
+                                </div>
+                                <button
+                                    className="primary"
+                                    data-testid="lobby.allow"
+                                    onClick={() =>
+                                        this._onRespondToParticipantSocket(
+                                            p.id,
+                                            p.name,
+                                            true
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {t("lobby.allow")}
+                                </button>
+                                <button
+                                    className="borderLess"
+                                    data-testid="lobby.reject"
+                                    onClick={() =>
+                                        this._onRespondToParticipantSocket(
+                                            p.id,
+                                            p.name,
+                                            false
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {t("lobby.reject")}
+                                </button>
                             </div>
-                            <button
-                                className="primary"
-                                data-testid="lobby.allow"
-                                onClick={() =>
-                                    this._onRespondToParticipantSocket(
-                                        p.id,
-                                        p.name,
-                                        true
-                                    )
-                                }
-                                type="button"
-                            >
-                                {t("lobby.allow")}
-                            </button>
-                            <button
-                                className="borderLess"
-                                data-testid="lobby.reject"
-                                onClick={() =>
-                                    this._onRespondToParticipantSocket(
-                                        p.id,
-                                        p.name,
-                                        false
-                                    )
-                                }
-                                type="button"
-                            >
-                                {t("lobby.reject")}
-                            </button>
                         </li>
-                    )) }
+                    ))}
                 </ul>
             </div>
         );
