@@ -48,15 +48,8 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
                 <div className = 'title'>
                     { t('lobby.knockingParticipantList') }
                 </div>
-                {/* <NotificationWithParticipants
-                    approveButtonText = { t('lobby.allow') }
-                    onApprove = { approveKnockingParticipant }
-                    onReject = { rejectKnockingParticipant }
-                    participants = { _participants }
-                    rejectButtonText = { t('lobby.reject') }
-                    testIdPrefix = 'lobby' /> */}
-                <ul className = 'knocking-participants-container'>
-                {_participants.map((p) => (
+                <ul className="knocking-participants-container">
+                    {_participants.map((p) => (
                         <li className="knocking-participant" key={p.id}>
                             <Avatar
                                 displayName = { p.name }
@@ -116,6 +109,7 @@ class KnockingParticipantList extends AbstractKnockingParticipantList<Props> {
 }
 
 // export default translate(connect(abstractMapStateToProps)(KnockingParticipantList));
+
 
 /**
  * Maps part of the Redux state to the props of this component.
