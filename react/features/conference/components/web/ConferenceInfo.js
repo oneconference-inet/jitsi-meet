@@ -14,6 +14,8 @@ import { TranscribingLabel } from "../../../transcribing";
 import { VideoQualityLabel } from "../../../video-quality";
 import ConferenceTimer from "../ConferenceTimer";
 
+import { getParticipantCount } from '../../../base/participants';
+
 import ParticipantsCount from "./ParticipantsCount";
 
 import { InsecureRoomNameLabel } from ".";
@@ -31,7 +33,7 @@ type Props = {
     /**
      * Number of the conference participants.
      */
-     count: string,
+    _count: string,
 
     /**
      * Whether the info should span across the full width.
@@ -79,10 +81,10 @@ function ConferenceInfo(props: Props) {
         _subject,
         _fullWidth,
         _visible,
-        count
+        _count
     } = props;
 
-    console.log('1111this.props.count', count);
+    console.log('1111this.props.count', _count);
 
     return (
         <div className={`subject ${_visible ? "visible" : ""}`}>
@@ -146,6 +148,7 @@ function _mapStateToProps(state) {
         _showParticipantCount: participantCount > 2 && !hideParticipantsStats,
         _subject: hideConferenceSubject ? "" : getConferenceName(state),
         _visible: isToolboxVisible(state),
+        _count: getParticipantCount(state),
     };
 }
 
