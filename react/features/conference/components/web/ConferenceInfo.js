@@ -29,6 +29,11 @@ import Axios from "axios";
  */
 type Props = {
     /**
+     * Number of the conference participants.
+     */
+     count: string,
+
+    /**
      * Whether the info should span across the full width.
      */
     _fullWidth: boolean,
@@ -74,9 +79,10 @@ function ConferenceInfo(props: Props) {
         _subject,
         _fullWidth,
         _visible,
+        count
     } = props;
 
-    console.log('1111this.props.count', this.props.count);
+    console.log('1111this.props.count', count);
 
     return (
         <div className={`subject ${_visible ? "visible" : ""}`}>
