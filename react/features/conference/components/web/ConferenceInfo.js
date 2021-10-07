@@ -82,7 +82,37 @@ function ConferenceInfo(props: Props) {
         _count
     } = props;
 
-    console.log('1111this.props.count', _count);
+    if (_count === 1) {
+        // If participant==1 use set end-meet time API
+        Axios.post(
+            interfaceConfig.DOMAIN + "/backend/api/rooms/settimelastuser",
+            {
+                meetingid: infoConf.getMeetingId(),
+                time: Date.now(),
+            },
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + interfaceConfig.SECRET_KEY_ONECONF,
+                },
+            }
+        );
+    } else if (_count === 2) {
+        // If participant!=1 give reset end-meet time API
+        Axios.post(
+            interfaceConfig.DOMAIN + "/backend/api/rooms/settimelastuser",
+            {
+                meetingid: infoConf.getMeetingId(),
+                time: 0,
+            },
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + interfaceConfig.SECRET_KEY_ONECONF,
+                },
+            }
+        );
+    }
 
     return (
         <div className={`subject ${_visible ? "visible" : ""}`}>
