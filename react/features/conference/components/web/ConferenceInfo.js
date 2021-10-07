@@ -14,8 +14,6 @@ import { TranscribingLabel } from "../../../transcribing";
 import { VideoQualityLabel } from "../../../video-quality";
 import ConferenceTimer from "../ConferenceTimer";
 
-import { getParticipantCount } from '../../../base/participants';
-
 import ParticipantsCount from "./ParticipantsCount";
 
 import { InsecureRoomNameLabel } from ".";
