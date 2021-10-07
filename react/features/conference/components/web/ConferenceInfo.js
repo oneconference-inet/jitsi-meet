@@ -22,6 +22,8 @@ import Tooltip from "@atlaskit/tooltip";
 import { Label } from "../../../base/label";
 import infoConf from "../../../../../infoConference";
 
+import Axios from "axios";
+
 /**
  * The type of the React {@code Component} props of {@link Subject}.
  */
@@ -73,6 +75,8 @@ function ConferenceInfo(props: Props) {
         _fullWidth,
         _visible,
     } = props;
+
+    console.log('1111this.props.count', this.props.count);
 
     return (
         <div className={`subject ${_visible ? "visible" : ""}`}>
