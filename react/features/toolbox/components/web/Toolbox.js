@@ -19,7 +19,8 @@ import {
     getLocalParticipant,
     getParticipantCount,
     haveParticipantWithScreenSharingFeature,
-    raiseHand
+    raiseHand,
+    participantRoleChanged
 } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { getLocalVideoTrack } from '../../../base/tracks';
