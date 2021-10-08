@@ -969,7 +969,6 @@ class Toolbox extends Component<Props, State> {
             group: 4
         };
 
-        const isModerator = infoConf.getIsModerator();
         let returnButtons = {
             microphone,
             camera,
@@ -996,7 +995,7 @@ class Toolbox extends Component<Props, State> {
             help
         }
 
-        if (isModerator) {
+        if (this.props._isModerator) {
             returnButtons = {
                 microphone,
                 camera,
