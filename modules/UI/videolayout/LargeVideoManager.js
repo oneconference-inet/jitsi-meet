@@ -557,6 +557,7 @@ export default class LargeVideoManager {
      */
     getContainer(type) {
         const container = this.containers[type];
+        console.log('1111containertype', type);
 
         if (!container) {
             throw new Error(`container of type ${type} doesn't exist`);

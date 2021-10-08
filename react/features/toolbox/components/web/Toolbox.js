@@ -319,7 +319,6 @@ class Toolbox extends Component<Props, State> {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('1111componentWillReceiveProps', nextProps);
         if (nextProps._isModerator) {
             this._renderToolboxContent()
         }

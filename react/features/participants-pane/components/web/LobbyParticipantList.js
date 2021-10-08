@@ -46,7 +46,6 @@ export const LobbyParticipantList = () => {
         return null;
     }
 
-    console.log('1111lobbypartclist');
 
     return (
     <>

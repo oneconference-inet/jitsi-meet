@@ -23,7 +23,6 @@ export const LobbyParticipantItem = ({ participant: p }: Props) => {
     const admit = useCallback(() => dispatch(approveKnockingParticipant(p.id), [ dispatch ]));
     const reject = useCallback(() => dispatch(rejectKnockingParticipant(p.id), [ dispatch ]));
     const { t } = useTranslation();
-    console.log('1111lobbypartcitem');
 
     return (
         <ParticipantItem
