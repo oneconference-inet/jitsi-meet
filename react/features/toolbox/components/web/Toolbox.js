@@ -1542,7 +1542,7 @@ function _mapStateToProps(state, ownProps) {
         toolbarButtons = stateToolbarButtons;
     }
 
-    let isModerator = PARTICIPANT_ROLE.MODERATOR
+    let isModerator = Boolean(localParticipant?.role === PARTICIPANT_ROLE.MODERATOR)
 
     return {
         _backgroundType: state['features/virtual-background'].backgroundType,
