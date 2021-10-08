@@ -119,10 +119,9 @@ export function setKnockingParticipantApproval(id: string, approved: boolean) {
  */
 export function admitMultiple(participants: Array<Object>) {
     return (dispatch: Function, getState: Function) => {
-        const conference = getCurrentConference(getState);
 
         participants.forEach(p => {
-            conference.lobbyApproveAccess(p.id);
+            _onRespondToParticipantSocket(p.id, p.name, true)
         });
     };
 }
@@ -135,8 +134,6 @@ export function admitMultiple(participants: Array<Object>) {
  */
 export function approveKnockingParticipant(id: string, name: string) {
     return (dispatch: Dispatch<any>, getState: Function) => {
-        // const conference = getCurrentConference(getState);
-        // conference && conference.lobbyApproveAccess(id);
         _onRespondToParticipantSocket(id, name, true)
     };
 }
@@ -147,11 +144,9 @@ export function approveKnockingParticipant(id: string, name: string) {
  * @param {string} id - The id of the knocking participant.
  * @returns {Function}
  */
-export function rejectKnockingParticipant(id: string) {
+export function rejectKnockingParticipant(id: string, name: string) {
     return (dispatch: Dispatch<any>, getState: Function) => {
-        const conference = getCurrentConference(getState);
-
-        conference && conference.lobbyDenyAccess(id);
+        _onRespondToParticipantSocket(id, name, false)
     };
 }
 
