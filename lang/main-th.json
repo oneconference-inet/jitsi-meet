@@ -909,6 +909,7 @@
   },
   "lobby": {
     "allow": "อนุญาต",
+    "allowAll": "อนุญาตทั้งหมด",
     "backToKnockModeButton": "No password, ask to join instead",
     "dialogTitle": "โหมดล็อบบี้",
     "disableDialogContent": "Lobby mode is currently enabled. This feature ensures that unwanted participants can't join your meeting. Do you want to disable it?",

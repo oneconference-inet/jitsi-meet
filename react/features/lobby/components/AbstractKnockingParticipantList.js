@@ -77,28 +77,43 @@ export default class AbstractKnockingParticipantList<P: Props = Props> extends P
         };
     }
 
-    /**
-     * Function that constructs a callback for the response handler button.
-     *
-     * @param {string} id - The id of the knocking participant.
-     * @param {boolean} approve - The response for the knocking.
-     * @returns {Function}
-     */
-    // return Approve to Socket
-    _onRespondToParticipantSocket(id, name, approve) {
-        const { dispatch } = this.props
-        const { meetingId, endpoint } = this.state
-        const socket = socketIOClient(endpoint)
-        const data = {
-            meetingId: meetingId,
-            id: id,
-            name: name,
-            approve: approve
-        }
-        logger.log("DATA: ", data);
-        socket.emit('handleApprove', data) ;
-        // dispatch(setKnockingState(false))
+    // /**
+    //  * Function that constructs a callback for the response handler button.
+    //  *
+    //  * @param {string} id - The id of the knocking participant.
+    //  * @param {boolean} approve - The response for the knocking.
+    //  * @returns {Function}
+    //  */
+    // // return Approve to Socket
+    // _onRespondToParticipantSocket(id, name, approve) {
+    //     const { dispatch } = this.props
+    //     const { meetingId, endpoint } = this.state
+    //     const socket = socketIOClient(endpoint)
+    //     const data = {
+    //         meetingId: meetingId,
+    //         id: id,
+    //         name: name,
+    //         approve: approve
+    //     }
+    //     logger.log("DATA: ", data);
+    //     socket.emit('handleApprove', data) ;
+    //     // dispatch(setKnockingState(false))
+    // }
+}
+
+export function _onRespondToParticipantSocket(id, name, approve) {
+    const meetingId = infoConf.getMeetingId()
+    const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
+    const socket = socketIOClient(endpoint)
+    const data = {
+        meetingId: meetingId,
+        id: id,
+        name: name,
+        approve: approve
     }
+    logger.log("DATA: ", data);
+    socket.emit('handleApprove', data) ;
+    // dispatch(setKnockingState(false))
 }
 
 /**

@@ -20,6 +20,8 @@ import {
     SET_PASSWORD_JOIN_FAILED
 } from './actionTypes';
 
+import { _onRespondToParticipantSocket } from './components/AbstractKnockingParticipantList';
+
 declare var APP: Object;
 
 /**
@@ -131,12 +133,11 @@ export function admitMultiple(participants: Array<Object>) {
  * @param {string} id - The id of the knocking participant.
  * @returns {Function}
  */
-export function approveKnockingParticipant(id: string) {
+export function approveKnockingParticipant(id: string, name: string) {
     return (dispatch: Dispatch<any>, getState: Function) => {
-        const conference = getCurrentConference(getState);
-
-
-        conference && conference.lobbyApproveAccess(id);
+        // const conference = getCurrentConference(getState);
+        // conference && conference.lobbyApproveAccess(id);
+        _onRespondToParticipantSocket(id, name, true)
     };
 }
 

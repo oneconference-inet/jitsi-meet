@@ -1153,6 +1153,7 @@
     "lobby": {
         "admit": "Admit",
         "admitAll": "Admit all",
+        "allowAll": "Allow all",
         "knockingParticipantList": "Knocking participant list",
         "allow": "Allow",
         "backToKnockModeButton": "Ask to join",

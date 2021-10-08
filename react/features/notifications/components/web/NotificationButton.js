@@ -43,7 +43,7 @@ type Props = {
  */
 export default function({ action, children, className, participant, id, testId }: Props) {
     const dispatch = useDispatch();
-    const onClick = useCallback(() => dispatch(action(participant.id)), [ dispatch, participant ]);
+    const onClick = useCallback(() => dispatch(action(participant.id, participant.name)), [ dispatch, participant ]);
 
     return (
         <button

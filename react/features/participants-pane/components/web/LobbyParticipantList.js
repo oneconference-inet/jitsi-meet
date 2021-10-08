@@ -57,7 +57,7 @@ export const LobbyParticipantList = () => {
                 participants.length > 1 && (
                     <div
                         className = { classes.link }
-                        onClick = { admitAll }>{t('lobby.admitAll')}</div>
+                        onClick = { admitAll }>{t('lobby.allowAll')}</div>
                 )
             }
         </div>

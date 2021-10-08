@@ -41,7 +41,7 @@ export const LobbyParticipantItem = ({ participant: p }: Props) => {
             <ParticipantActionButton
                 onClick = { admit }
                 primary = { true }>
-                {t('lobby.admit')}
+                {t('lobby.allow')}
             </ParticipantActionButton>
         </ParticipantItem>
     );
