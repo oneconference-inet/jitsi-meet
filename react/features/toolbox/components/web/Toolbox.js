@@ -257,6 +257,8 @@ type Props = {
      */
     toolbarButtons: Array<string>,
 
+    _isModerator: boolean,
+
 };
 
 declare var APP: Object;
@@ -317,6 +319,9 @@ class Toolbox extends Component<Props, State> {
 
     componentWillReceiveProps(nextProps) {
         console.log('1111componentWillReceiveProps', nextProps);
+        if (nextProps._isModerator) {
+            this._renderToolboxContent()
+        }
     }
 
     /**
@@ -1536,6 +1541,8 @@ function _mapStateToProps(state, ownProps) {
         toolbarButtons = stateToolbarButtons;
     }
 
+    const isModerator = infoConf.getIsModerator();
+
     return {
         _backgroundType: state['features/virtual-background'].backgroundType,
         _chatOpen: state['features/chat'].isOpen,
@@ -1560,7 +1567,8 @@ function _mapStateToProps(state, ownProps) {
         _tileViewEnabled: shouldDisplayTileView(state),
         _toolbarButtons: toolbarButtons,
         _virtualSource: state['features/virtual-background'].virtualSource,
-        _visible: isToolboxVisible(state)
+        _visible: isToolboxVisible(state),
+        _isModerator: isModerator
     };
 }
 
