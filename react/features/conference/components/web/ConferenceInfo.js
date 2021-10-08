@@ -22,6 +22,8 @@ import Tooltip from "@atlaskit/tooltip";
 import { Label } from "../../../base/label";
 import infoConf from "../../../../../infoConference";
 
+import Axios from "axios";
+
 /**
  * The type of the React {@code Component} props of {@link Subject}.
  */
@@ -91,8 +93,42 @@ function ConferenceInfo(props: Props) {
         _subject,
         _fullWidth,
         _visible,
-        _recordingLabel
+        _recordingLabel,
+        _count
     } = props;
+
+    
+    if (_count === 1) {
+        // If participant==1 use set end-meet time API
+        Axios.post(
+            interfaceConfig.DOMAIN + "/backend/api/rooms/settimelastuser",
+            {
+                meetingid: infoConf.getMeetingId(),
+                time: Date.now(),
+            },
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + interfaceConfig.SECRET_KEY_ONECONF,
+                },
+            }
+        );
+    } else if (_count === 2) {
+        // If participant!=1 give reset end-meet time API
+        Axios.post(
+            interfaceConfig.DOMAIN + "/backend/api/rooms/settimelastuser",
+            {
+                meetingid: infoConf.getMeetingId(),
+                time: 0,
+            },
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + interfaceConfig.SECRET_KEY_ONECONF,
+                },
+            }
+        );
+    }
 
     return (
         <div className={`subject ${_visible ? "visible" : ""}`}>
@@ -167,7 +203,8 @@ function _mapStateToProps(state) {
         _showParticipantCount: participantCount > 2 && !hideParticipantsStats,
         _subject: hideConferenceSubject ? '' : getConferenceName(state),
         _visible: isToolboxVisible(state),
-        _recordingLabel: (isFileRecording || isStreamRecording || isEngaged) && !shouldHideRecordingLabel
+        _recordingLabel: (isFileRecording || isStreamRecording || isEngaged) && !shouldHideRecordingLabel,
+        _count: getParticipantCount(state),
     };
 }
 
