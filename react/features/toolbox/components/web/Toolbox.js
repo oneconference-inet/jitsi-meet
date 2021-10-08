@@ -315,6 +315,10 @@ class Toolbox extends Component<Props, State> {
         this._onEscKey = this._onEscKey.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log('1111componentWillReceiveProps', nextProps);
+    }
+
     /**
      * Sets keyboard shortcuts for to trigger ToolbarButtons actions.
      *

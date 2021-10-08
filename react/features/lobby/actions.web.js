@@ -133,11 +133,7 @@ export function admitMultiple(participants: Array<Object>) {
  */
 export function approveKnockingParticipant(id: string) {
     return (dispatch: Dispatch<any>, getState: Function) => {
-        console.log('1111approveKnockingParticipant', id);
-
         const conference = getCurrentConference(getState);
-
-        console.log('1111approveKnockingParticipant1', conference);
 
 
         conference && conference.lobbyApproveAccess(id);
