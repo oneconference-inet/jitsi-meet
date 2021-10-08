@@ -20,7 +20,8 @@ import {
     getParticipantCount,
     haveParticipantWithScreenSharingFeature,
     raiseHand,
-    participantRoleChanged
+    participantRoleChanged,
+    PARTICIPANT_ROLE,
 } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { getLocalVideoTrack } from '../../../base/tracks';
@@ -1541,7 +1542,7 @@ function _mapStateToProps(state, ownProps) {
         toolbarButtons = stateToolbarButtons;
     }
 
-    const isModerator = infoConf.getIsModerator();
+    let isModerator = PARTICIPANT_ROLE.MODERATOR
 
     return {
         _backgroundType: state['features/virtual-background'].backgroundType,
