@@ -141,7 +141,7 @@ class ParticipantsPane extends Component<Props, State> {
                             <AntiCollapse />
                             <MeetingParticipantList />
                         </Container>
-                        {_showFooter && (
+                        {/* {_showFooter && (
                             <Footer>
                                 <FooterButton onClick = { this._onMuteAll }>
                                     {t('participantsPane.actions.muteAll')}
@@ -154,7 +154,7 @@ class ParticipantsPane extends Component<Props, State> {
                                         && <FooterContextMenu onMouseLeave = { this._onToggleContext } />}
                                 </FooterEllipsisContainer>
                             </Footer>
-                        )}
+                        )} */}
                     </div>
                 </div>
             </ThemeProvider>
