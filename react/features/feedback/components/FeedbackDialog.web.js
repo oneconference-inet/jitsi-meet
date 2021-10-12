@@ -1,16 +1,20 @@
 // @flow
 
-import { FieldTextAreaStateless } from "@atlaskit/field-text-area";
-import StarIcon from "@atlaskit/icon/glyph/star";
-import StarFilledIcon from "@atlaskit/icon/glyph/star-filled";
-import React, { Component } from "react";
-import type { Dispatch } from "redux";
+import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
+import StarIcon from '@atlaskit/icon/glyph/star';
+import StarFilledIcon from '@atlaskit/icon/glyph/star-filled';
+import React, { Component } from 'react';
+import type { Dispatch } from 'redux';
 
-import { createFeedbackOpenEvent, sendAnalytics } from "../../analytics";
-import { Dialog } from "../../base/dialog";
-import { translate } from "../../base/i18n";
-import { connect } from "../../base/redux";
-import { cancelFeedback, submitFeedback } from "../actions";
+import {
+    createFeedbackOpenEvent,
+    sendAnalytics
+} from '../../analytics';
+import { Dialog } from '../../base/dialog';
+import { isMobileBrowser } from '../../base/environment/utils';
+import { translate } from '../../base/i18n';
+import { connect } from '../../base/redux';
+import { cancelFeedback, submitFeedback } from '../actions';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -103,49 +107,230 @@ type State = {
  * @extends Component
  */
 class FeedbackDialog extends Component<Props, State> {
-  /**
-   * An array of objects with click handlers for each of the scores listed in
-   * the constant SCORES. This pattern is used for binding event handlers only
-   * once for each score selection icon.
-   */
-  _scoreClickConfigurations: Array<Object>;
+    /**
+     * An array of objects with click handlers for each of the scores listed in
+     * the constant SCORES. This pattern is used for binding event handlers only
+     * once for each score selection icon.
+     */
+    _scoreClickConfigurations: Array<Object>;
 
-  /**
-   * Initializes a new {@code FeedbackDialog} instance.
-   *
-   * @param {Object} props - The read-only React {@code Component} props with
-   * which the new instance is to be initialized.
-   */
-  constructor(props: Props) {
-    super(props);
+    /**
+     * Initializes a new {@code FeedbackDialog} instance.
+     *
+     * @param {Object} props - The read-only React {@code Component} props with
+     * which the new instance is to be initialized.
+     */
+    constructor(props: Props) {
+        super(props);
 
-    const { _message, _score } = this.props;
+        const { _message, _score } = this.props;
 
-    this.state = {
-      /**
-       * The currently entered feedback message.
-       *
-       * @type {string}
-       */
-      message: _message,
+        this.state = {
+            /**
+             * The currently entered feedback message.
+             *
+             * @type {string}
+             */
+            message: _message,
 
-      /**
-       * The score selection index which is currently being hovered. The
-       * value -1 is used as a sentinel value to match store behavior of
-       * using -1 for no score having been selected.
-       *
-       * @type {number}
-       */
-      mousedOverScore: -1,
+            /**
+             * The score selection index which is currently being hovered. The
+             * value -1 is used as a sentinel value to match store behavior of
+             * using -1 for no score having been selected.
+             *
+             * @type {number}
+             */
+            mousedOverScore: -1,
 
-      /**
-       * The currently selected score selection index. The score will not
-       * be 0 indexed so subtract one to map with SCORES.
-       *
-       * @type {number}
-       */
-      score: _score > -1 ? _score - 1 : _score,
-    };
+            /**
+             * The currently selected score selection index. The score will not
+             * be 0 indexed so subtract one to map with SCORES.
+             *
+             * @type {number}
+             */
+            score: _score > -1 ? _score - 1 : _score
+        };
+
+        this._scoreClickConfigurations = SCORES.map((textKey, index) => {
+            return {
+                _onClick: () => this._onScoreSelect(index),
+                _onKeyPres: e => {
+                    if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        this._onScoreSelect(index);
+                    }
+                },
+                _onMouseOver: () => this._onScoreMouseOver(index)
+            };
+        });
+
+        // Bind event handlers so they are only bound once for every instance.
+        this._onCancel = this._onCancel.bind(this);
+        this._onMessageChange = this._onMessageChange.bind(this);
+        this._onScoreContainerMouseLeave
+            = this._onScoreContainerMouseLeave.bind(this);
+        this._onSubmit = this._onSubmit.bind(this);
+    }
+
+    /**
+     * Emits an analytics event to notify feedback has been opened.
+     *
+     * @inheritdoc
+     */
+    componentDidMount() {
+        sendAnalytics(createFeedbackOpenEvent());
+        if (typeof APP !== 'undefined') {
+            APP.API.notifyFeedbackPromptDisplayed();
+        }
+    }
+
+    /**
+     * Invokes the onClose callback, if defined, to notify of the close event.
+     *
+     * @inheritdoc
+     */
+    componentWillUnmount() {
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
+    }
+
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {ReactElement}
+     */
+    render() {
+        const { message, mousedOverScore, score } = this.state;
+        const scoreToDisplayAsSelected
+            = mousedOverScore > -1 ? mousedOverScore : score;
+
+        const { t } = this.props;
+
+        const scoreIcons = this._scoreClickConfigurations.map(
+            (config, index) => {
+                const isFilled = index <= scoreToDisplayAsSelected;
+                const activeClass = isFilled ? 'active' : '';
+                const className
+                    = `star-btn ${scoreAnimationClass} ${activeClass}`;
+
+                return (
+                    <span
+                        aria-label = { t(SCORES[index]) }
+                        className = { className }
+                        key = { index }
+                        onClick = { config._onClick }
+                        onKeyPress = { config._onKeyPres }
+                        role = 'button'
+                        tabIndex = { 0 }
+                        { ...(isMobileBrowser() ? {} : {
+                            onMouseOver: config._onMouseOver
+                        }) }>
+                        { isFilled
+                            ? <StarFilledIcon
+                                label = 'star-filled'
+                                size = 'xlarge' />
+                            : <StarIcon
+                                label = 'star'
+                                size = 'xlarge' /> }
+                    </span>
+                );
+            });
+
+
+        return (
+            <Dialog
+                okKey = 'dialog.Submit'
+                onCancel = { this._onCancel }
+                onSubmit = { this._onSubmit }
+                titleKey = 'feedback.rateExperience'>
+                <div className = 'feedback-dialog'>
+                    <div className = 'rating'>
+                        <div
+                            aria-label = { this.props.t('feedback.star') }
+                            className = 'star-label' >
+                            <p id = 'starLabel'>
+                                { t(SCORES[scoreToDisplayAsSelected]) }
+                            </p>
+                        </div>
+                        <div
+                            className = 'stars'
+                            onMouseLeave = { this._onScoreContainerMouseLeave }>
+                            { scoreIcons }
+                        </div>
+                    </div>
+                    <div className = 'details'>
+                        <FieldTextAreaStateless
+                            autoFocus = { true }
+                            className = 'input-control'
+                            id = 'feedbackTextArea'
+                            label = { t('feedback.detailsLabel') }
+                            onChange = { this._onMessageChange }
+                            shouldFitContainer = { true }
+                            value = { message } />
+                    </div>
+                </div>
+            </Dialog>
+        );
+    }
+
+    _onCancel: () => boolean;
+
+    /**
+     * Dispatches an action notifying feedback was not submitted. The submitted
+     * score will have one added as the rest of the app does not expect 0
+     * indexing.
+     *
+     * @private
+     * @returns {boolean} Returns true to close the dialog.
+     */
+    _onCancel() {
+        const { message, score } = this.state;
+        const scoreToSubmit = score > -1 ? score + 1 : score;
+
+        this.props.dispatch(cancelFeedback(scoreToSubmit, message));
+
+        return true;
+    }
+
+    _onMessageChange: (Object) => void;
+
+    /**
+     * Updates the known entered feedback message.
+     *
+     * @param {Object} event - The DOM event from updating the textfield for the
+     * feedback message.
+     * @private
+     * @returns {void}
+     */
+    _onMessageChange(event) {
+        this.setState({ message: event.target.value });
+    }
+
+    /**
+     * Updates the currently selected score.
+     *
+     * @param {number} score - The index of the selected score in SCORES.
+     * @private
+     * @returns {void}
+     */
+    _onScoreSelect(score) {
+        this.setState({ score });
+    }
+
+    _onScoreContainerMouseLeave: () => void;
+
+    /**
+     * Sets the currently hovered score to null to indicate no hover is
+     * occurring.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onScoreContainerMouseLeave() {
+        this.setState({ mousedOverScore: -1 });
+    }
 
     this._scoreClickConfigurations = SCORES.map((textKey, index) => {
       return {

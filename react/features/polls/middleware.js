@@ -1,24 +1,31 @@
 // @flow
 
-import { openDialog } from '../base/dialog';
 import { MiddlewareRegistry } from '../base/redux';
+import { playSound } from '../base/sounds';
+import { INCOMING_MSG_SOUND_ID } from '../chat/constants';
 
 import { RECEIVE_POLL } from './actionTypes';
-import { PollAnswerDialog } from './components';
 
 
-MiddlewareRegistry.register(({ dispatch }) => next => action => {
+MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
     const result = next(action);
 
     switch (action.type) {
 
     // Middleware triggered when a poll is received
     case RECEIVE_POLL: {
-        const { pollId } = action;
 
-        dispatch(openDialog(PollAnswerDialog, { pollId }));
+        const state = getState();
+        const isChatOpen: boolean = state['features/chat'].isOpen;
+        const isPollsTabFocused: boolean = state['features/chat'].isPollsTabFocused;
+
+        // Finally, we notify user they received a new poll if their pane is not opened
+        if (action.notify && (!isChatOpen || !isPollsTabFocused)) {
+            dispatch(playSound(INCOMING_MSG_SOUND_ID));
+        }
         break;
     }
+
     }
 
     return result;

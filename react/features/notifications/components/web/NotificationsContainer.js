@@ -3,7 +3,8 @@
 import { FlagGroup } from "@atlaskit/flag";
 import React from "react";
 
-import { connect } from "../../../base/redux";
+import { translate } from '../../../base/i18n';
+import { connect } from '../../../base/redux';
 import AbstractNotificationsContainer, {
     _abstractMapStateToProps,
     type Props as AbstractProps,
@@ -15,7 +16,12 @@ type Props = AbstractProps & {
     /**
      * Whether we are a SIP gateway or not.
      */
-    _iAmSipGateway: boolean,
+     _iAmSipGateway: boolean,
+
+     /**
+     * Invoked to obtain translated strings.
+     */
+     t: Function
 };
 
 /**
@@ -40,6 +46,7 @@ class NotificationsContainer extends AbstractNotificationsContainer<Props> {
         return (
             <FlagGroup
                 id = 'notifications-container'
+                label = { this.props.t('notify.groupTitle') }
                 onDismissed = { this._onDismissed }>
                 { this._renderFlags() }
             </FlagGroup>
@@ -71,7 +78,6 @@ class NotificationsContainer extends AbstractNotificationsContainer<Props> {
                     key = { uid }
                     onDismissed = { this._onDismissed }
                     uid = { uid } />
-
             );
         });
     }
@@ -93,4 +99,5 @@ function _mapStateToProps(state) {
     };
 }
 
-export default connect(_mapStateToProps)(NotificationsContainer);
+
+export default translate(connect(_mapStateToProps)(NotificationsContainer));

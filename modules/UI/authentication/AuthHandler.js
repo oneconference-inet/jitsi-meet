@@ -2,11 +2,19 @@
 
 import Logger from "jitsi-meet-logger";
 
-import { openConnection } from "../../../connection";
-import { setJWT } from "../../../react/features/base/jwt";
-import { toJid } from "../../../react/features/base/connection/functions";
-import { JitsiConnectionErrors } from "../../../react/features/base/lib-jitsi-meet";
-import UIUtil from "../util/UIUtil";
+import { openConnection } from '../../../connection';
+import {
+    openAuthDialog,
+    openLoginDialog } from '../../../react/features/authentication/actions.web';
+import { WaitForOwnerDialog } from '../../../react/features/authentication/components';
+import {
+    isTokenAuthEnabled,
+    getTokenAuthUrl
+} from '../../../react/features/authentication/functions';
+import { getReplaceParticipant } from '../../../react/features/base/config/functions';
+import { isDialogOpen } from '../../../react/features/base/dialog';
+import { setJWT } from '../../../react/features/base/jwt';
+import UIUtil from '../util/UIUtil';
 
 import infoConf from "../../../infoConference";
 import authXmpp from "../../../authXmpp";
@@ -263,7 +271,9 @@ function logout(room) {
     }).then((url) => {
         // de-authenticate conference on the fly
         if (room.isJoined()) {
-            room.join();
+            const replaceParticipant = getReplaceParticipant(APP.store.getState());
+
+            room.join(null, replaceParticipant);
         }
 
         return url;

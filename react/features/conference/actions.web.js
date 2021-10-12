@@ -20,6 +20,10 @@ import { NOTIFICATION_TYPE, showNotification } from "../notifications";
 export function notifyKickedOut(participant: Object, _: ?Function) {
     // eslint-disable-line no-unused-vars
     return (dispatch: Dispatch<any>, getState: Function) => {
+        if (!participant || (participant.isReplaced && participant.isReplaced())) {
+            return;
+        }
+
         const args = {
             participantDisplayName: getParticipantDisplayName(
                 getState,
