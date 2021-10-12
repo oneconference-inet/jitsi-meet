@@ -22,10 +22,17 @@ import Tooltip from "@atlaskit/tooltip";
 import { Label } from "../../../base/label";
 import infoConf from "../../../../../infoConference";
 
+import Axios from "axios";
+
 /**
  * The type of the React {@code Component} props of {@link Subject}.
  */
 type Props = {
+    /**
+     * Number of the conference participants.
+     */
+    _count: string,
+
     /**
      * Whether the info should span across the full width.
      */
@@ -91,8 +98,44 @@ function ConferenceInfo(props: Props) {
         _subject,
         _fullWidth,
         _visible,
+<<<<<<< HEAD
         _recordingLabel
+=======
+        _count
+>>>>>>> origin/dev-5870-oneconf-mm-migration-test
     } = props;
+
+    if (_count === 1) {
+        // If participant==1 use set end-meet time API
+        Axios.post(
+            interfaceConfig.DOMAIN + "/backend/api/rooms/settimelastuser",
+            {
+                meetingid: infoConf.getMeetingId(),
+                time: Date.now(),
+            },
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + interfaceConfig.SECRET_KEY_ONECONF,
+                },
+            }
+        );
+    } else if (_count === 2) {
+        // If participant!=1 give reset end-meet time API
+        Axios.post(
+            interfaceConfig.DOMAIN + "/backend/api/rooms/settimelastuser",
+            {
+                meetingid: infoConf.getMeetingId(),
+                time: 0,
+            },
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + interfaceConfig.SECRET_KEY_ONECONF,
+                },
+            }
+        );
+    }
 
     return (
         <div className = { `subject ${_recordingLabel ? 'recording' : ''} ${_visible ? 'visible' : ''}` }>
@@ -179,7 +222,11 @@ function _mapStateToProps(state) {
         _showParticipantCount: participantCount > 2 && !hideParticipantsStats,
         _subject: hideConferenceSubject ? '' : getConferenceName(state),
         _visible: isToolboxVisible(state),
+<<<<<<< HEAD
         _recordingLabel: (isFileRecording || isStreamRecording || isEngaged) && !shouldHideRecordingLabel
+=======
+        _count: getParticipantCount(state),
+>>>>>>> origin/dev-5870-oneconf-mm-migration-test
     };
 }
 
