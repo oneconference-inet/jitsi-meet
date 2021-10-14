@@ -2285,7 +2285,7 @@ export default {
             } else {
                 logger.info('My role changed, new role: Participant');
                 logger.info('1111Participant id', id);
-                APP.store.dispatch(participantRoleChanged(id, 'participant'));
+                // APP.store.dispatch(participantRoleChanged(id, 'participant'));
             }
         });
 
