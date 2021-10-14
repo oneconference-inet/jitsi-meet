@@ -2277,12 +2277,15 @@ export default {
         room.on(JitsiConferenceEvents.USER_ROLE_CHANGED, (id, role) => {
             if (this.isLocalId(id) && infoConf.getIsModerator()) {
                 logger.info(`My role changed, new role: ${role}`);
+                logger.info('1111Mod id', id);
+                logger.info('1111Mod role', role);
 
                 APP.store.dispatch(localParticipantRoleChanged(role));
                 APP.API.notifyUserRoleChanged(id, role);
             } else {
                 logger.info('My role changed, new role: Participant');
-                APP.store.dispatch(localParticipantRoleChanged('participant'));
+                logger.info('1111Participant id', id);
+                APP.store.dispatch(participantRoleChanged(id, 'participant'));
             }
         });
 
