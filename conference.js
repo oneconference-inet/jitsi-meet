@@ -2282,7 +2282,7 @@ export default {
                 APP.API.notifyUserRoleChanged(id, role);
             } else {
                 logger.info('My role changed, new role: Participant');
-                APP.store.dispatch(participantRoleChanged(id, 'participant'));
+                APP.store.dispatch(localParticipantRoleChanged('participant'));
             }
         });
 
