@@ -1,14 +1,16 @@
 // @flow
 
+import React, { Component } from 'react';
+
 import { translate } from '../../base/i18n';
 import {
+    Icon,
     IconVideoQualityAudioOnly,
     IconVideoQualityHD,
     IconVideoQualityLD,
     IconVideoQualitySD
 } from '../../base/icons';
 import { connect } from '../../base/redux';
-import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
 import { VIDEO_QUALITY_LEVELS } from '../constants';
 import { findNearestQualityLevel } from '../functions';
 
@@ -27,9 +29,9 @@ const VIDEO_QUALITY_TO_ICON = {
 
 /**
  * The type of the React {@code Component} props of
- * {@link VideoQualityButton}.
+ * {@link OverflowMenuVideoQualityItem}.
  */
-type Props = AbstractButtonProps & {
+type Props = {
 
     /**
      * Whether or not audio only mode is currently enabled.
@@ -43,9 +45,9 @@ type Props = AbstractButtonProps & {
     _videoQuality: number,
 
     /**
-     * Callback to invoke when {@link VideoQualityButton} is clicked.
+     * Callback to invoke when {@link OverflowMenuVideoQualityItem} is clicked.
      */
-     handleClick: Function,
+    onClick: Function,
 
     /**
      * Invoked to obtain translated strings.
@@ -60,50 +62,40 @@ type Props = AbstractButtonProps & {
  *
  * @extends Component
  */
-class VideoQualityButton extends AbstractButton<Props, *> {
-    accessibilityLabel = 'toolbar.accessibilityLabel.callQuality';
-    label = 'toolbar.callQuality';
-    tooltip = 'toolbar.callQuality';
-
+class OverflowMenuVideoQualityItem extends Component<Props> {
     /**
-     * Dynamically retrieves the icon.
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {ReactElement}
      */
-    get icon() {
+    render() {
         const { _audioOnly, _videoQuality } = this.props;
-
         const videoQualityLevel = findNearestQualityLevel(_videoQuality);
-
         const icon = _audioOnly || !videoQualityLevel
             ? IconVideoQualityAudioOnly
             : VIDEO_QUALITY_TO_ICON[videoQualityLevel];
 
-        return icon;
-    }
-
-    /**
-     * Required by linter due to AbstractButton overwritten prop being writable.
-     *
-     * @param {string} value - The icon value.
-     */
-    set icon(value) {
-        return value;
-    }
-
-    /**
-     * Handles clicking / pressing the button.
-     *
-     * @override
-     * @protected
-     * @returns {void}
-     */
-    _handleClick() {
-        this.props.handleClick();
+        return (
+            <li
+                aria-label =
+                    { this.props.t('toolbar.accessibilityLabel.callQuality') }
+                className = 'overflow-menu-item'
+                onClick = { this.props.onClick }>
+                <span className = 'overflow-menu-item-icon'>
+                    <Icon src = { icon } />
+                </span>
+                <span className = 'profile-text'>
+                    { this.props.t('toolbar.callQuality') }
+                </span>
+            </li>
+        );
     }
 }
 
 /**
  * Maps (parts of) the Redux state to the associated props for the
- * {@code VideoQualityButton} component.
+ * {@code OverflowMenuVideoQualityItem} component.
  *
  * @param {Object} state - The Redux state.
  * @private
@@ -120,4 +112,4 @@ function _mapStateToProps(state) {
 }
 
 export default translate(
-    connect(_mapStateToProps)(VideoQualityButton));
+    connect(_mapStateToProps)(OverflowMenuVideoQualityItem));

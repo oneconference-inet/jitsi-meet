@@ -14,8 +14,7 @@ export const VIDEO_QUALITY_LEVELS = {
     ULTRA: 2160,
     HIGH: 720,
     STANDARD: 360,
-    LOW: 180,
-    NONE: 0
+    LOW: 180
 };
 
 /**
