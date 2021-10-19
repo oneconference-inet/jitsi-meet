@@ -43,7 +43,7 @@ var config = {
 
         // P2P test mode disables automatic switching to P2P when there are 2
         // participants in the conference.
-        p2pTestMode: false
+        p2pTestMode: false,
 
         // Enables the test specific features consumed by jitsi-meet-torture
         // testMode: false
@@ -59,7 +59,7 @@ var config = {
         // the probability for this to be enabled. This setting has been deprecated.
         // desktopSharingFrameRate.max now determines whether simulcast will be enabled
         // or disabled for the screenshare.
-        // capScreenshareBitrate: 1 // 0 to disable - deprecated.
+        capScreenshareBitrate: 1 // 0 to disable - deprecated.
 
         // Enable callstats only for a percentage of users.
         // This takes a value between 0 and 100 which determines the probability for
@@ -167,7 +167,7 @@ var config = {
     // },
 
     // Enable / disable simulcast support.
-    disableSimulcast: true,
+    // disableSimulcast: true,
 
     // Enable / disable layer suspension.  If enabled, endpoints whose HD layers are not in use will be suspended
     // (no longer sent) until they are requested again. This is enabled by default. This must be enabled for screen
