@@ -255,7 +255,7 @@ export default class LargeVideoManager {
                         // send the event
                         sendAnalytics(createScreenSharingIssueEvent({
                             source: 'large-video',
-                            connectionStatus,
+                            connectionStatus: 'active',
                             isVideoMuted,
                             isAudioOnly,
                             isVideoContainer,
