@@ -276,7 +276,7 @@ export default class LargeVideoManager {
             }
 
             const messageKey
-                = connectionStatus === JitsiParticipantConnectionStatus.INACTIVE ? 'connection.LOW_BANDWIDTH' : null;
+                =  null;
 
             // Do not show connection status message in the audio only mode,
             // because it's based on the video playback status.
