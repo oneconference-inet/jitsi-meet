@@ -6,7 +6,7 @@ var config = {
 
     hosts: {
         // XMPP domain.
-        domain: 'jitsi-meet.example.com',
+        domain: "jitsi-meet.example.com",
 
         // When using authentication, domain for guest users.
         // anonymousdomain: 'guest.example.com',
@@ -18,11 +18,11 @@ var config = {
         // focus: 'focus.jitsi-meet.example.com',
 
         // XMPP MUC domain. FIXME: use XEP-0030 to discover it.
-        muc: 'conference.jitsi-meet.example.com'
+        muc: "conference.jitsi-meet.example.com",
     },
 
     // BOSH URL. FIXME: use XEP-0156 to discover it.
-    bosh: '//jitsi-meet.example.com/http-bind',
+    bosh: "//jitsi-meet.example.com/http-bind",
 
     // Websocket URL
     // websocket: 'wss://jitsi-meet.example.com/xmpp-websocket',
@@ -31,7 +31,6 @@ var config = {
     // Do not change username - FIXME: Make focus username configurable
     // https://github.com/jitsi/jitsi-meet/issues/7376
     // focusUserJid: 'focus@auth.jitsi-meet.example.com',
-
 
     // Testing / experimental features.
     //
@@ -59,7 +58,7 @@ var config = {
         // the probability for this to be enabled. This setting has been deprecated.
         // desktopSharingFrameRate.max now determines whether simulcast will be enabled
         // or disabled for the screenshare.
-        capScreenshareBitrate: 1 // 0 to disable - deprecated.
+        capScreenshareBitrate: 1, // 0 to disable - deprecated.
 
         // Enable callstats only for a percentage of users.
         // This takes a value between 0 and 100 which determines the probability for
@@ -80,7 +79,6 @@ var config = {
     // Disables ICE/TCP by filtering out local and remote TCP candidates in
     // signalling.
     // webrtcIceTcpDisable: false,
-
 
     // Media
     //
@@ -278,7 +276,7 @@ var config = {
     // 'SelectedEndpointsChangedEvent' and 'ReceiverVideoConstraint' into the new 'ReceiverVideoConstraints' message
     // that invokes the new bandwidth allocation algorithm in the bridge which is described here
     // - https://github.com/jitsi/jitsi-videobridge/blob/master/doc/allocation.md.
-    // useNewBandwidthAllocationStrategy: false,
+    useNewBandwidthAllocationStrategy: true,
 
     // Specify the settings for video quality optimizations on the client.
     // videoQuality: {
@@ -577,7 +575,6 @@ var config = {
     // will not function.
     // disableThirdPartyRequests: false,
 
-
     // Peer-To-Peer mode: used (if enabled) when there are just 2 participants.
     //
 
@@ -622,41 +619,33 @@ var config = {
 
         // The STUN servers that will be used in the peer to peer connections
         stunServers: [
-
             // { urls: 'stun:jitsi-meet.example.com:3478' },
-            { urls: 'stun:meet-jit-si-turnrelay.jitsi.net:443' }
-        ]
+            { urls: "stun:meet-jit-si-turnrelay.jitsi.net:443" },
+        ],
     },
 
     analytics: {
         // True if the analytics should be disabled
         // disabled: false,
-
         // The Google Analytics Tracking ID:
         // googleAnalyticsTrackingId: 'your-tracking-id-UA-123456-1'
-
         // Matomo configuration:
         // matomoEndpoint: 'https://your-matomo-endpoint/',
         // matomoSiteID: '42',
-
         // The Amplitude APP Key:
         // amplitudeAPPKey: '<APP_KEY>'
-
         // Configuration for the rtcstats server:
         // By enabling rtcstats server every time a conference is joined the rtcstats
         // module connects to the provided rtcstatsEndpoint and sends statistics regarding
         // PeerConnection states along with getStats metrics polled at the specified
         // interval.
         // rtcstatsEnabled: true,
-
         // In order to enable rtcstats one needs to provide a endpoint url.
         // rtcstatsEndpoint: wss://rtcstats-server-pilot.jitsi.net/,
-
         // The interval at which rtcstats will poll getStats, defaults to 1000ms.
         // If the value is set to 0 getStats won't be polled and the rtcstats client
         // will only send data related to RTCPeerConnection events.
         // rtcstatsPolIInterval: 1000,
-
         // Array of script URLs to load as lib-jitsi-meet "analytics handlers".
         // scriptURLs: [
         //      "libs/analytics-ga.min.js", // google-analytics
@@ -979,7 +968,7 @@ var config = {
 
     // Allow all above example options to include a trailing comma and
     // prevent fear when commenting out the last value.
-    makeJsonParserHappy: 'even if last key had a trailing comma'
+    makeJsonParserHappy: "even if last key had a trailing comma",
 
     // no configuration value should follow this line.
 };
