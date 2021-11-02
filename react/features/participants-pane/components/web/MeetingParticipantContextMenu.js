@@ -334,7 +334,7 @@ class MeetingParticipantContextMenu extends Component<Props, State> {
                                         <>
                                             {
                                                 !_isParticipantAudioMuted
-                                                && <ContextMenuItem onClick = { muteAudio(_participant) }>
+                                                && <ContextMenuItem onClick = { muteAudio(_participant.id) }>
                                                     <ContextMenuIcon src = { IconMicDisabled } />
                                                     <span>{t('dialog.muteParticipantButton')}</span>
                                                 </ContextMenuItem>
