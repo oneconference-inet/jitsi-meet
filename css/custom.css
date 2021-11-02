@@ -55,11 +55,11 @@ ul.poll-answer-list {
     order: 1;
 }
 
-.vertical-filmstrip .filmstrip #filmstripRemoteVideos {
+.vertical-filmstrip .filmstrip__videos #filmstripRemoteVideos #remoteVideos {
     flex-direction: column;
 }
 
-.vertical-filmstrip .filmstrip #filmstripRemoteVideos #filmstripRemoteVideosContainer {
+.vertical-filmstrip .filmstrip__videos #filmstripRemoteVideos #filmstripRemoteVideosContainer #remoteVideos {
     flex-direction: column;
 }
 
