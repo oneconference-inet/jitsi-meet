@@ -51,6 +51,9 @@ import {
 } from './functions';
 import { PARTICIPANT_JOINED_FILE, PARTICIPANT_LEFT_FILE } from './sounds';
 import socketIOClient from 'socket.io-client';
+import {
+    participantRoleChanged,
+} from './react/features/base/participants';
 
 declare var APP: Object;
 
