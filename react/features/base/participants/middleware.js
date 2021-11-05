@@ -110,10 +110,11 @@ MiddlewareRegistry.register(store => next => action => {
     }
 
     case KICK_PARTICIPANT: {
-        const socket = socketIOClient(endpoint)
         const { conference } = store.getState()['features/base/conference'];
+        console.log('1111kick working here!');
         /// emit to socket kick event
-        socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
+        // socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
+        APP.store.dispatch(participantRoleChanged(action.id, 'participant'));
         conference.kickParticipant(action.id);
         break;
     }
