@@ -50,6 +50,7 @@ import {
     getRemoteParticipants
 } from './functions';
 import { PARTICIPANT_JOINED_FILE, PARTICIPANT_LEFT_FILE } from './sounds';
+import socketIOClient from 'socket.io-client';
 
 declare var APP: Object;
 
@@ -109,6 +110,7 @@ MiddlewareRegistry.register(store => next => action => {
     }
 
     case KICK_PARTICIPANT: {
+        const socket = socketIOClient(endpoint)
         const { conference } = store.getState()['features/base/conference'];
         /// emit to socket kick event
         socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
