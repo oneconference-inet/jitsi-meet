@@ -285,13 +285,13 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
                 );
             }
 
-            // if (!_disableKick) {
-            //     buttons.push(
-            //         <KickButton
-            //             key = 'kick'
-            //             participantID = { participantID } />
-            //     );
-            // }
+            if (!_disableKick && !_disableGrantModerator) {
+                buttons.push(
+                    <KickButton
+                        key = 'kick'
+                        participantID = { participantID } />
+                );
+            }
         }
 
         if (_remoteControlState) {
