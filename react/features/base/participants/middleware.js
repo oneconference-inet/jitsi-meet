@@ -115,7 +115,6 @@ MiddlewareRegistry.register(store => next => action => {
         console.log('1111kick working here!');
         /// emit to socket kick event
         // socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
-        APP.store.dispatch(participantRoleChanged(action.id, 'participant'));
         conference.kickParticipant(action.id);
         break;
     }
