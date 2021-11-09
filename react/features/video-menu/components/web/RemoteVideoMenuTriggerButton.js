@@ -285,7 +285,7 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
                 );
             }
 
-            if (!_disableKick && !_disableGrantModerator) {
+            if (!_disableKick) {
                 buttons.push(
                     <KickButton
                         key = 'kick'
