@@ -250,7 +250,8 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
             initialVolumeValue,
             onVolumeChange,
             _remoteControlState,
-            participantID
+            participantID,
+            _participantRole
         } = this.props;
 
         const buttons = [];
