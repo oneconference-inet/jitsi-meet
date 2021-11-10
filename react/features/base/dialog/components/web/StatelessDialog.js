@@ -165,12 +165,11 @@ class StatelessDialog extends Component<Props> {
                     Header: customHeader ? customHeader : props => (
                         <ModalHeader
                             { ...props }
-                            heading = { titleString || t(titleKey) }
+                            heading={customHeader ? undefined : titleString || t(titleKey)}
                             hideCloseIconButton = { hideCloseIconButton } />
                     )
                 }}
                 footer = { this._renderFooter }
-                heading={customHeader ? undefined : titleString || t(titleKey)}
                 i18n = { this.props.i18n }
                 onClose = { this._onDialogDismissed }
                 onDialogDismissed = { this._onDialogDismissed }
