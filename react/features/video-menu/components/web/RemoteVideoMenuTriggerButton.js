@@ -290,7 +290,7 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
                 );
             }
 
-            if (!_disableKick) {
+            if (!_disableKick && _participantRole !== 'moderator') {
                 buttons.push(
                     <KickButton
                         key = 'kick'
@@ -367,6 +367,7 @@ function _mapStateToProps(state, ownProps) {
     const { disableKick, disableGrantModerator } = remoteVideoMenu;
     let _remoteControlState = null;
     const participant = getParticipantById(state, participantID);
+    const _participantRole = participant.role;
     const _participantDisplayName = participant.name;
     const _isRemoteControlSessionActive = participant?.remoteControlSessionStatus ?? false;
     const _supportsRemoteControl = participant?.supportsRemoteControl ?? false;
@@ -414,7 +415,7 @@ function _mapStateToProps(state, ownProps) {
         _participantDisplayName,
         _disableGrantModerator: Boolean(disableGrantModerator),
         _showConnectionInfo: showConnectionInfo,
-        _participantRole: participant.role
+        _participantRole
     };
 }
 
