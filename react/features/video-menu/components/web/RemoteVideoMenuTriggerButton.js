@@ -188,10 +188,12 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        const { _showConnectionInfo, _participantDisplayName, participantID } = this.props;
+        const { _showConnectionInfo, _participantDisplayName, participantID, _participantRole } = this.props;
         const content = _showConnectionInfo
             ? <ConnectionIndicatorContent participantId = { participantID } />
             : this._renderRemoteVideoMenu();
+
+        console.log('1111log _participantRole', _participantRole);
 
         if (!content) {
             return null;
@@ -257,7 +259,6 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
         const buttons = [];
 
         if (_isModerator) {
-            console.log('1111participant log:', _participantRole);
             if (!_disableRemoteMute) {
                 buttons.push(
                     <MuteButton
