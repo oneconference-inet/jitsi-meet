@@ -371,6 +371,8 @@ function _mapStateToProps(state, ownProps) {
     const { overflowDrawer } = state['features/toolbox'];
     const { showConnectionInfo } = state['features/base/connection'];
 
+    console.log('1111logparticipant', participant);
+
     if (_supportsRemoteControl
             && ((!active && !_isRemoteControlSessionActive) || activeParticipant === participantID)) {
         if (requestedParticipant === participantID) {
