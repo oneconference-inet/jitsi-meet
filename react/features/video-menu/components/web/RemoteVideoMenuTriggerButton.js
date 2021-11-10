@@ -103,6 +103,8 @@ type Props = {
      */
     participantID: string,
 
+    _participantRole: string,
+
     /**
      * The ID for the participant on which the remote video menu will act.
      */
@@ -254,6 +256,7 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
         const buttons = [];
 
         if (_isModerator) {
+            console.log('1111participant log:', _participantRole);
             if (!_disableRemoteMute) {
                 buttons.push(
                     <MuteButton
@@ -371,8 +374,6 @@ function _mapStateToProps(state, ownProps) {
     const { overflowDrawer } = state['features/toolbox'];
     const { showConnectionInfo } = state['features/base/connection'];
 
-    console.log('1111logparticipant', participant);
-
     if (_supportsRemoteControl
             && ((!active && !_isRemoteControlSessionActive) || activeParticipant === participantID)) {
         if (requestedParticipant === participantID) {
@@ -410,7 +411,8 @@ function _mapStateToProps(state, ownProps) {
         _overflowDrawer: overflowDrawer,
         _participantDisplayName,
         _disableGrantModerator: Boolean(disableGrantModerator),
-        _showConnectionInfo: showConnectionInfo
+        _showConnectionInfo: showConnectionInfo,
+        _participantRole: participant.role
     };
 }
 
