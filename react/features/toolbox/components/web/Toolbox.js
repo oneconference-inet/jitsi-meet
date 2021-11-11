@@ -103,6 +103,7 @@ import infoConf from '../../../../../infoConference';
 import infoUser from "../../../../../infoUser";
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
+import { _endJoin } from '../HangupButton'
 
 import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
 import UIEvents from "../../../../../service/UI/UIEvents";
@@ -428,6 +429,10 @@ class Toolbox extends Component<Props, State> {
                             APP.UI.emitEvent(UIEvents.LOGOUT);
                         }
                         break;
+                case 'invitedOut':
+                    logger.log("invitedOut: ", infoUser.getUserId())
+                    await _endJoin()
+                    break;
                 default:
                     logger.warn('Event coming is not defined!!')
                 }

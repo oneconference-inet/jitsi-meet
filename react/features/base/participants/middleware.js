@@ -54,6 +54,7 @@ import { PARTICIPANT_JOINED_FILE, PARTICIPANT_LEFT_FILE } from './sounds';
 import socketIOClient from 'socket.io-client';
 
 declare var APP: Object;
+declare var interfaceConfig: Object;
 
 /**
  * Middleware that captures CONFERENCE_JOINED and CONFERENCE_LEFT actions and
@@ -114,7 +115,9 @@ MiddlewareRegistry.register(store => next => action => {
         const { conference } = store.getState()['features/base/conference'];
         console.log('1111kick working here!');
         /// emit to socket kick event
-        // socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
+        const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
+        const socket = socketIOClient(endpoint)
+        socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
         conference.kickParticipant(action.id);
         break;
     }
