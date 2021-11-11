@@ -53,6 +53,8 @@ import {
 import { PARTICIPANT_JOINED_FILE, PARTICIPANT_LEFT_FILE } from './sounds';
 import socketIOClient from 'socket.io-client';
 
+import infoConf from '../../../../infoConference';
+
 declare var APP: Object;
 declare var interfaceConfig: Object;
 
@@ -117,7 +119,8 @@ MiddlewareRegistry.register(store => next => action => {
         /// emit to socket kick event
         const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
         const socket = socketIOClient(endpoint)
-        socket.emit('kickUser', { meetingId: meetingid, toId: action.id, eventName: 'invitedOut' });
+        const meetingId = infoConf.getMeetingId()
+        socket.emit('kickUser', { meetingId: meetingId, toId: action.id, eventName: 'invitedOut' });
         conference.kickParticipant(action.id);
         break;
     }
