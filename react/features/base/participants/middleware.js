@@ -120,7 +120,10 @@ MiddlewareRegistry.register(store => next => action => {
         const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
         const socket = socketIOClient(endpoint)
         const meetingId = infoConf.getMeetingId()
-        socket.emit('kickUser', { meetingId: meetingId, toId: action.id, eventName: 'invitedOut' });
+        socket.emit('invitedOut', {
+            meetingId: meetingId,
+            toId: action.id,
+        });
         conference.kickParticipant(action.id);
         break;
     }
