@@ -212,6 +212,7 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
                     }
                 );
             } else {
+                console.log('1111this?');
                 await axios.post(interfaceConfig.DOMAIN + '/endmeeting', {
                     meetingid: infoConf.getMeetingId(),
                     user_endmeeting: infoUser.getName()
