@@ -115,7 +115,6 @@ MiddlewareRegistry.register(store => next => action => {
 
     case KICK_PARTICIPANT: {
         const { conference } = store.getState()['features/base/conference'];
-        console.log('1111kick working here!');
         /// emit to socket kick event
         const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
         const socket = socketIOClient(endpoint)

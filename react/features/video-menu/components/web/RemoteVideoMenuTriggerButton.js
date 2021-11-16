@@ -193,8 +193,6 @@ class RemoteVideoMenuTriggerButton extends Component<Props> {
             ? <ConnectionIndicatorContent participantId = { participantID } />
             : this._renderRemoteVideoMenu();
 
-        console.log('1111log _participantRole', _participantRole);
-
         if (!content) {
             return null;
         }
