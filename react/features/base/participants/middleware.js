@@ -115,11 +115,12 @@ MiddlewareRegistry.register(store => next => action => {
 
     case KICK_PARTICIPANT: {
         const { conference } = store.getState()['features/base/conference'];
+        const participant = getParticipantById(action.id);
         /// emit to socket kick event
         const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
         const socket = socketIOClient(endpoint)
         const meetingId = infoConf.getMeetingId()
-        console.log('1111kickparti', action);
+        console.log('1111kickparticipant', participant);
         console.log('1111kickId', action.id);
         socket.emit('invitedOut', {
             meetingId: meetingId,
