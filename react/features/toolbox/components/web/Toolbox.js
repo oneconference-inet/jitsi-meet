@@ -430,9 +430,11 @@ class Toolbox extends Component<Props, State> {
                         }
                         break;
                 case 'invitedOut':
-                    logger.log("invitedOut11112: ", infoUser.getUserId())
-                    logger.log("invitedOut1111: ", payload.participantID)
-                    if (payload.participantID === infoUser.getUserId()) {
+                    logger.log("invitedOut: ", infoUser.getUserId())
+                    console.log("1111invitedOut: ", infoUser.getUserId())
+                    console.log("1111invitedOut2: ", payload.participantID)
+                    console.log("1111invitedOut3: ", localParticipant)
+                    if (payload.participantID === localParticipant.id) {
                         await _endJoin()
                     }
                     break;
