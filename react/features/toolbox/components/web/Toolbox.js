@@ -430,7 +430,8 @@ class Toolbox extends Component<Props, State> {
                         }
                         break;
                 case 'invitedOut':
-                    logger.log("invitedOut: ", infoUser.getUserId())
+                    logger.log("invitedOut11112: ", infoUser.getUserId())
+                    logger.log("invitedOut1111: ", payload.participantID)
                     if (payload.participantID === infoUser.getUserId()) {
                         await _endJoin()
                     }
