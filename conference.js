@@ -146,6 +146,7 @@ import * as JitsiMeetConferenceEvents from './ConferenceEvents';
 import infoConf from './infoConference';
 import infoUser from './infoUser';
 import authXmpp from './authXmpp';
+import { _endJoin } from './react/features/toolbox/components/HangupButton'
 
 const logger = Logger.getLogger(__filename);
 
@@ -2451,7 +2452,7 @@ export default {
         // });
 
         room.on(JitsiConferenceEvents.KICKED, (participant, reason, isReplaced) => {
-            console.log('1111PARTICIPANT_KICKEDFunct', participant);
+            console.log('1111PARTICIPANT_KICKEDFunction', participant);
             if (isReplaced) {
                 // this event triggers when the local participant is kicked, `participant`
                 // is the kicker. In replace participant case, kicker is undefined,
@@ -2468,13 +2469,12 @@ export default {
                 // we send readyToClose when kicked participant is replace so that
                 // embedding app can choose to dispose the iframe API on the handler.
                 APP.API.notifyReadyToClose();
+                await _endJoin()
             }
             APP.store.dispatch(kickedOut(room, participant));
         });
 
         room.on(JitsiConferenceEvents.PARTICIPANT_KICKED, (kicker, kicked) => {
-            console.log('1111PARTICIPANT_KICKER', kicker);
-            console.log('1111PARTICIPANT_KICKED', kicked);
             APP.store.dispatch(participantKicked(kicker, kicked));
         });
 
