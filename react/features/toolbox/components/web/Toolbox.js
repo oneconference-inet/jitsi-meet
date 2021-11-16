@@ -432,11 +432,7 @@ class Toolbox extends Component<Props, State> {
                 case 'invitedOut':
                     logger.log("invitedOut: ", infoUser.getUserId())
                     if (payload.participantID === infoUser.getUserId()) {
-                        // await _endJoin()
-                        await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
-                            user_id: infoUser.getUserId(),
-                            meeting_id: meetingId,
-                        });
+                        await _endJoin()
                     }
                     break;
                 default:
