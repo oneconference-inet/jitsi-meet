@@ -431,11 +431,13 @@ class Toolbox extends Component<Props, State> {
                         break;
                 case 'invitedOut':
                     logger.log("invitedOut: ", infoUser.getUserId())
-                    // await _endJoin()
-                    await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
-                        user_id: infoUser.getUserId(),
-                        meeting_id: meetingId,
-                    });
+                    if (payload.participantID === infoUser.getUserId()) {
+                        // await _endJoin()
+                        await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
+                            user_id: infoUser.getUserId(),
+                            meeting_id: meetingId,
+                        });
+                    }
                     break;
                 default:
                     logger.warn('Event coming is not defined!!')
