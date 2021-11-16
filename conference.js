@@ -2451,6 +2451,7 @@ export default {
         // });
 
         room.on(JitsiConferenceEvents.KICKED, (participant, reason, isReplaced) => {
+            console.log('1111PARTICIPANT_KICKEDFunct', participant);
             if (isReplaced) {
                 // this event triggers when the local participant is kicked, `participant`
                 // is the kicker. In replace participant case, kicker is undefined,
