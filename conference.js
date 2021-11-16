@@ -2209,7 +2209,7 @@ export default {
     /**
      * Setup interaction between conference and UI.
      */
-    _setupListeners() {
+    async _setupListeners() {
         // add local streams when joined to the conference
         room.on(JitsiConferenceEvents.CONFERENCE_JOINED, () => {
             this._onConferenceJoined();
@@ -2461,9 +2461,6 @@ export default {
                 // as being replaced based on jwt.
                 const localParticipant = getLocalParticipant(APP.store.getState());
 
-                _endJoin();
-                console.log('1111endJoin?');
-
                 APP.store.dispatch(participantUpdated({
                     conference: room,
                     id: localParticipant.id,
@@ -2475,6 +2472,8 @@ export default {
                 APP.API.notifyReadyToClose();
             }
             console.log('1111isReplaced?');
+            await _endJoin()
+            console.log('1111_endJoin?');
             APP.store.dispatch(kickedOut(room, participant));
         });
 
