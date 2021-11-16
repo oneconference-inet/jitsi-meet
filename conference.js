@@ -2454,6 +2454,7 @@ export default {
         room.on(JitsiConferenceEvents.KICKED, (participant, reason, isReplaced) => {
             console.log('1111PARTICIPANT_KICKEDFunction', participant);
             if (isReplaced) {
+                console.log('1111isReplaced');
                 // this event triggers when the local participant is kicked, `participant`
                 // is the kicker. In replace participant case, kicker is undefined,
                 // as the server initiated it. We mark in store the local participant
@@ -2473,6 +2474,7 @@ export default {
                 // embedding app can choose to dispose the iframe API on the handler.
                 APP.API.notifyReadyToClose();
             }
+            console.log('1111isReplaced?');
             APP.store.dispatch(kickedOut(room, participant));
         });
 
