@@ -124,7 +124,7 @@ MiddlewareRegistry.register(store => next => action => {
             meetingId: meetingId,
             toId: action.id,
         });
-        conference.kickParticipant(action.id);
+        // conference.kickParticipant(action.id);
         break;
     }
 
