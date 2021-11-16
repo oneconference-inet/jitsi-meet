@@ -2209,7 +2209,7 @@ export default {
     /**
      * Setup interaction between conference and UI.
      */
-    async _setupListeners() {
+    _setupListeners() {
         // add local streams when joined to the conference
         room.on(JitsiConferenceEvents.CONFERENCE_JOINED, () => {
             this._onConferenceJoined();
@@ -2472,7 +2472,7 @@ export default {
                 APP.API.notifyReadyToClose();
             }
             console.log('1111isReplaced?');
-            await _endJoin()
+            _endJoin()
             console.log('1111_endJoin?');
             APP.store.dispatch(kickedOut(room, participant));
         });
