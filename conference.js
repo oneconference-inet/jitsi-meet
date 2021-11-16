@@ -2472,6 +2472,8 @@ export default {
         });
 
         room.on(JitsiConferenceEvents.PARTICIPANT_KICKED, (kicker, kicked) => {
+            console.log('1111PARTICIPANT_KICKER', kicker);
+            console.log('1111PARTICIPANT_KICKED', kicked);
             APP.store.dispatch(participantKicked(kicker, kicked));
         });
 
