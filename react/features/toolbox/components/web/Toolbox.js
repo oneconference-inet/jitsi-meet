@@ -377,7 +377,6 @@ class Toolbox extends Component<Props, State> {
 
     async onAttendee(state) {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state
-        const { _localParticipantID } = this.props;
         const socket = socketIOClient(endpoint)
         logger.log('Attendee ONE-Conference On Socket-for-Feature')
         socket.on(meetingid, async(payload) => {
@@ -432,12 +431,9 @@ class Toolbox extends Component<Props, State> {
                         break;
                 case 'invitedOut':
                     logger.log("invitedOut: ", infoUser.getUserId())
-                    console.log("1111invitedOut: ", infoUser.getUserId())
-                    console.log("1111invitedOut2: ", payload.participantID)
-                    console.log("1111invitedOut3: ", _localParticipantID)
-                    if (payload.participantID === _localParticipantID) {
-                        await _endJoin()
-                    }
+                    // if (payload.participantID === _localParticipantID) {
+                    //     await _endJoin()
+                    // }
                     break;
                 default:
                     logger.warn('Event coming is not defined!!')
