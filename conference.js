@@ -2472,7 +2472,7 @@ export default {
                 APP.API.notifyReadyToClose();
             }
             console.log('1111isReplaced?');
-            _endJoin()
+            // _endJoin()
             console.log('1111_endJoin?');
             APP.store.dispatch(kickedOut(room, participant));
         });
