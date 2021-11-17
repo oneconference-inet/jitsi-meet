@@ -339,7 +339,6 @@ class Toolbox extends Component<Props, State> {
         if (services_check.includes(checkPlatform)) {
             if(checkPlatform !== 'onemail_dga') {
                 getApprove = await axios.post(interfaceConfig.DOMAIN + '/getApprove' , { meeting_id: meetingid })
-                getApprove = await axios.post(interfaceConfig.DOMAIN + '/savehistory' , { meeting_id: meetingid,name:name,user_id:payload.userId })
             } else {
                 'Room is not defined function approve!!!'
             }
@@ -410,8 +409,10 @@ class Toolbox extends Component<Props, State> {
 
                     break;
                 case 'handleApprove':
-                    logger.log("handleApprove-ID: ", payload.knockingParticipantID)
+                    log o\0
+                    6780ger.log("handleApprove-ID: ", payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
+                    axios.post(interfaceConfig.DOMAIN + '/savehistory' , { meeting_id: meetingid,name:name,key:"",user_id:payload.userId })
                     break;
                 case "endMeet":
                         logger.log(
