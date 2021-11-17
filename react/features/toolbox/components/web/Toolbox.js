@@ -431,9 +431,6 @@ class Toolbox extends Component<Props, State> {
                         break;
                 case 'invitedOut':
                     logger.log("invitedOut: ", infoUser.getUserId())
-                    // if (payload.participantID === _localParticipantID) {
-                    //     await _endJoin()
-                    // }
                     break;
                 default:
                     logger.warn('Event coming is not defined!!')
