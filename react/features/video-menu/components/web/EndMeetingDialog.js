@@ -117,6 +117,7 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             dispatch(endAllParticipants(exclude));
 
             console.log(service, "service=>>>>>>>>>>");
+            return;
 
             if (service == "onechat") {
                 domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
