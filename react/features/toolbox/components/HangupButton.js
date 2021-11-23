@@ -149,8 +149,6 @@ export async function _endJoin() {
             infoConf.setIsHostHangup();
         }
 
-        console.log(nameJoin, "nameJoin =>>>>>>>>>> Overhere");
-
         if (service == "onechat") {
             await axios.post(
                 domainEnd + "/service/endjoin",
@@ -299,6 +297,6 @@ export async function _endJoin() {
 
         APP.store.dispatch(disconnect(true));
     } catch (error) {
-        console.log(error);
+        console.log(error,'ERROR นะจ๊ะๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆ');
     }
 }
