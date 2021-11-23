@@ -86,6 +86,8 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
      * @returns {boolean}
      */
     async _onSubmit() {
+        console.log(_onSubmit, "_onSubmit=>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
         try {
             const conference = APP;
             const { dispatch, exclude } = this.props;
@@ -115,9 +117,6 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
 
             infoConf.setIsHostEndmeet();
             dispatch(endAllParticipants(exclude));
-
-            console.log(service, "service=>>>>>>>>>>");
-            return;
 
             if (service == "onechat") {
                 domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
