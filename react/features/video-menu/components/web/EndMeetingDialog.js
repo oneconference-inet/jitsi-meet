@@ -116,8 +116,9 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             infoConf.setIsHostEndmeet();
             dispatch(endAllParticipants(exclude));
 
+            console.log(service, "service=>>>>>>>>>>");
+
             if (service == "onechat") {
-                console.log(service, "service=>>>>>>>>>>");
                 domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
