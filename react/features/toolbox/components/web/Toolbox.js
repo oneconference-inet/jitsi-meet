@@ -360,7 +360,6 @@ class Toolbox extends Component<Props, State> {
                 case "endMeet":
                     logger.log("Host endMeet");
                     APP.UI.emitEvent(UIEvents.LOGOUT);
-                    console.log("test Host log Over here");
                     break;
                 default:
                     logger.warn("Event coming is not defined!!");
