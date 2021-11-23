@@ -297,6 +297,6 @@ export async function _endJoin() {
 
         APP.store.dispatch(disconnect(true));
     } catch (error) {
-        console.log(error,'ERROR นะจ๊ะๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆ');
+        console.log(error);
     }
 }
