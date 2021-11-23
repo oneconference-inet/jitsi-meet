@@ -86,7 +86,6 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
      * @returns {boolean}
      */
     async _onSubmit() {
-        console.log(_onSubmit, "_onSubmit=>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
         try {
             const conference = APP;
