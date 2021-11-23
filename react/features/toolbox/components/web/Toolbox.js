@@ -1,6 +1,8 @@
 // @flow
 
 import React, { Component, Fragment } from 'react';
+import axios from 'axios'
+import { _endJoin } from '../HangupButton';
 
 import keyboardShortcut from '../../../../../modules/keyboardshortcut/keyboardshortcut';
 import {
@@ -92,6 +94,7 @@ import Separator from './Separator';
 import ShareDesktopButton from './ShareDesktopButton';
 import ToggleCameraButton from './ToggleCameraButton';
 import VideoSettingsButton from './VideoSettingsButton';
+import infoUser from '../../../../../infoUser';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
@@ -384,6 +387,7 @@ class Toolbox extends Component<Props, State> {
                 case 'handleApprove':
                     logger.log("handleApprove-ID: ", payload.knockingParticipantID)
                     APP.store.dispatch(knockingParticipantLeft(payload.knockingParticipantID));
+                    axios.post(interfaceConfig.DOMAIN + '/savehistory' , { meeting_id: meetingid,name:name,key:"",user_id:payload.userId })
                     break;
                 case "endMeet":
                         logger.log(
@@ -401,6 +405,18 @@ class Toolbox extends Component<Props, State> {
                             APP.UI.emitEvent(UIEvents.LOGOUT);
                         }
                         break;
+
+                case "kickOut":             // Case KickUser
+                    logger.log(
+                        "kickOut",
+                        infoUser.getUserId()
+                    );
+                    if(
+                        payload.userId != infoUser.getUserId()
+                    )
+                    _endjoin();
+                    break;
+
                 default:
                     logger.warn('Event coming is not defined!!')
                 }
