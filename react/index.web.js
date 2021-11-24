@@ -46,6 +46,7 @@ if (OS === 'ios') {
  * page.
  */
 window.addEventListener('beforeunload', () => {
+    console.log('1111test log bful');
     // Stop the LogCollector
     if (APP.logCollectorStarted) {
         APP.logCollector.stop();
