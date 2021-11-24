@@ -144,11 +144,11 @@ export function setToolboxTimeoutMS(timeoutMS: number): Object {
  */
 export function setToolboxVisible(visible: boolean): Object {
     const [HideVisible, setHideVisible] = useState(visible);
-    useEffect(() => {
-        setTimeout(() => {
-            setHideVisible(false);
-        }, 3000);
-    }, [visible]);
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setHideVisible(false);
+    //     }, 3000);
+    // }, [visible]);
     console.log(visible, "visible=>>>>>>");
     return {
         // type: SET_TOOLBOX_VISIBLE,
