@@ -11,6 +11,8 @@ import { Platform } from './features/base/react';
 import { getJitsiMeetGlobalNS } from './features/base/util';
 import PrejoinApp from './features/prejoin/components/PrejoinApp';
 
+import { _endJoin } from './features/toolbox/components/HangupButton';
+
 const logger = getLogger('index.web');
 const OS = Platform.OS;
 
@@ -46,7 +48,8 @@ if (OS === 'ios') {
  * page.
  */
 window.addEventListener('beforeunload', () => {
-    console.log('1111test log bful');
+    console.log('1111test log bful???');
+    _endJoin()
     // Stop the LogCollector
     if (APP.logCollectorStarted) {
         APP.logCollector.stop();
