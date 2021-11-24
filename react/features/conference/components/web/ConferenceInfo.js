@@ -131,10 +131,20 @@ function ConferenceInfo(props: Props) {
     }
 
     return (
-        <div className = { `subject ${_recordingLabel ? 'recording' : ''} ${_visible ? 'visible' : ''}` }>
+        <div className={`subject ${_visible ? "visible" : ""}`}>
             <div
                 className = { `subject-info-container${_fullWidth ? ' subject-info-container--full-width' : ''}` }
                 id = 'subject-container'>
+                {!_hideConferenceNameAndTimer && (
+                    <div className="subject-info">
+                        {_subject && (
+                            <span className="subject-text">{_subject}</span>
+                        )}
+                        {!_hideConferenceTimer && <ConferenceTimer />}
+                    </div>
+                )}
+                {_showParticipantCount && <ParticipantsCount />}
+                <E2EELabel />
                 {!_hideRecordingLabel && <div
                     className = 'show-always'
                     id = 'rec-container'
@@ -147,29 +157,14 @@ function ConferenceInfo(props: Props) {
                     <LocalRecordingLabel />
                 </div>
                 }
-                <div
-                    className = 'subject-details-container'
-                    id = 'subject-details-container'>
-                    {
-                        !_hideConferenceNameAndTimer
-                            && <div className = 'subject-info'>
-                                { _subject && <span className = 'subject-text'>{ _subject }</span>}
-                                { !_hideConferenceTimer && <ConferenceTimer /> }
-                            </div>
-                    }
-                    { _showParticipantCount && <ParticipantsCount /> }
-                    <E2EELabel />
-                    {_hideRecordingLabel && (
-                        <>
-                            <RecordingLabel mode = { JitsiRecordingConstants.mode.FILE } />
-                            <RecordingLabel mode = { JitsiRecordingConstants.mode.STREAM } />
-                            <LocalRecordingLabel />
-                        </>
-                    )}
-                    <TranscribingLabel />
-                    <VideoQualityLabel />
-                    <InsecureRoomNameLabel />
-                </div>
+                <TranscribingLabel />
+                <VideoQualityLabel />
+                {infoConf.getIsSecretRoom() ? (
+                    <Tooltip content={"Secret Room"} position={"right"}>
+                        <Label className={"secret-room"} text={"SC"} />
+                    </Tooltip>
+                ) : null}
+                <InsecureRoomNameLabel />
             </div>
         </div>
     );
