@@ -1,5 +1,3 @@
-import React, { Component, Fragment, useEffect } from "react";
-import axios from "axios";
 /* @flow */
 
 import {
@@ -143,18 +141,10 @@ export function setToolboxTimeoutMS(timeoutMS: number): Object {
  * }}
  */
 export function setToolboxVisible(visible: boolean): Object {
-    const [HideVisible, setHideVisible] = useState(visible);
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setHideVisible(false);
-    //     }, 3000);
-    // }, [visible]);
     console.log(visible, "visible=>>>>>>");
     return {
-        // type: SET_TOOLBOX_VISIBLE,
-        // visible
         type: SET_TOOLBOX_VISIBLE,
-        HideVisible,
+        visible
     };
 }
 
