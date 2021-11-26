@@ -539,6 +539,11 @@ class Toolbox extends Component<Props, State> {
      */
     componentDidUpdate(prevProps) {
         // Ensure the dialog is closed when the toolbox becomes hidden.
+        console.log(prevProps, "prevProps=>>>>>>>>>>>>>");
+        console.log(
+            this._onSetOverflowVisible,
+            "_onSetOverflowVisible=>>>>>>>>>>>"
+        );
         if (prevProps._overflowMenuVisible && !this.props._visible) {
             this._onSetOverflowVisible(false);
         }
@@ -548,7 +553,8 @@ class Toolbox extends Component<Props, State> {
             !prevProps._dialog &&
             this.props._dialog
         ) {
-            this._onSetOverflowVisible(false);
+            // this._onSetOverflowVisible(false);
+            this._onSetOverflowVisible(true);
             this.props.dispatch(setToolbarHovered(false));
         }
 
