@@ -48,7 +48,7 @@ if (OS === 'ios') {
  * page.
  */
 window.addEventListener('beforeunload', () => {
-    _endJoin()
+    // _endJoin()
     // Stop the LogCollector
     if (APP.logCollectorStarted) {
         APP.logCollector.stop();
