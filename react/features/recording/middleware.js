@@ -171,7 +171,7 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
                 sendAnalytics(createRecordingEvent('start', mode));
 
                 let meetingid = infoConf.getMeetingId()
-                axios.post(interfaceConfig.DOMAIN + '/checkRecord' , { meeting_id: meetingid })
+                axios.post(interfaceConfig.DOMAIN + '/api/rooms/checkRecord' , { meeting_id: meetingid })
 
                 if (disableRecordAudioNotification) {
                     break;
