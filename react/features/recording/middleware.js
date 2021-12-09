@@ -44,6 +44,9 @@ import {
     RECORDING_OFF_SOUND_FILE,
     RECORDING_ON_SOUND_FILE
 } from './sounds';
+import axios from "axios";
+
+import infoConf from '../../../infoConference';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -166,6 +169,9 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
                 }
 
                 sendAnalytics(createRecordingEvent('start', mode));
+
+                let meetingid = infoConf.getMeetingId()
+                axios.post(interfaceConfig.DOMAIN + '/checkRecord' , { meeting_id: meetingid })
 
                 if (disableRecordAudioNotification) {
                     break;
