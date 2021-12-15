@@ -128,8 +128,8 @@ export function mapStateToProps(state: Object): $Shape<Props> {
 
     return {
         _participants: knockingParticipants,
-        _visible: isLocalParticipantModerator(state) && Boolean(knockingParticipants.length)
-        // _visible: lobbyEnabled && isLocalParticipantModerator(state)
-        //   && Boolean(knockingParticipants && knockingParticipants.length)
+        // _visible: isLocalParticipantModerator(state) && Boolean(knockingParticipants.length)
+        _visible: lobbyEnabled && isLocalParticipantModerator(state)
+          && Boolean(knockingParticipants && knockingParticipants.length)
     };
 }
