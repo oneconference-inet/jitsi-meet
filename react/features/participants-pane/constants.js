@@ -67,21 +67,22 @@ export const QUICK_ACTION_BUTTON: {
     NONE: "None",
 };
 
-console.log(MediaState, "MediaState=>>>>>>>>");
-console.log(MUTED, "MUTED=>>>>>");
-
 /**
  * Icon mapping for possible participant audio states.
  */
 export const AudioStateIcons: { [MediaState]: React$Element<any> | null } = {
     [MEDIA_STATE.DOMINANT_SPEAKER]: (
-        <Icon size={16} src={IconMicrophoneEmptySlash} />
+        <Icon
+            className="jitsi-icon-dominant-speaker"
+            size={30}
+            src={IconMicrophoneEmpty}
+        />
     ),
     [MEDIA_STATE.FORCE_MUTED]: (
-        <Icon color="#E04757" size={16} src={IconMicrophoneEmptySlash} />
+        <Icon color="#E04757" size={30} src={IconMicrophoneEmptySlash} />
     ),
-    [MEDIA_STATE.MUTED]: <Icon size={16} src={IconMicrophoneEmptySlash} />,
-    [MEDIA_STATE.UNMUTED]: <Icon size={16} src={IconMicrophoneEmpty} />,
+    [MEDIA_STATE.MUTED]: <Icon size={30} src={IconMicrophoneEmptySlash} />,
+    [MEDIA_STATE.UNMUTED]: <Icon size={30} src={IconMicrophoneEmpty} />,
     [MEDIA_STATE.NONE]: null,
 };
 
