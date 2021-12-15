@@ -334,7 +334,15 @@ class Toolbox extends Component<Props, State> {
      async onSocketHost(state) {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state
         const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || []
-        const socket = socketIOClient(endpoint)
+        // const socket = socketIOClient(endpoint)
+
+        // update redis emitter
+        const { Emitter } = require("@socket.io/redis-emitter");
+        const { createClient } = require("redis");
+
+        const redisClient = createClient({ host: "192.168.90.32", port: 30369 });
+        const socket = new Emitter(redisClient);
+
         // Get approve incomming conference
         let getApprove
         if (services_check.includes(checkPlatform)) {
