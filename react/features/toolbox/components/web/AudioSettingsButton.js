@@ -99,7 +99,8 @@ class AudioSettingsButton extends Component<Props> {
                     ariaHasPopup = { true }
                     ariaLabel = { t('toolbar.audioSettings') }
                     icon = { IconArrowUp }
-                    iconDisabled = { settingsDisabled }
+                    // iconDisabled = { settingsDisabled }
+                    iconDisabled = { false }
                     iconId = 'audio-settings-button'
                     iconTooltip = { t('toolbar.audioSettings') }
                     onIconClick = { onAudioOptionsClick }
