@@ -137,7 +137,7 @@ function MeetingParticipantList({ participantsCount, showInviteButton, sortedPar
             {sortedParticipantIds.map(renderParticipant)}
         </div>
         <MeetingParticipantContextMenu
-            // muteAudio = { muteAudio }
+            muteAudio = { muteAudio }
             onEnter = { menuEnter }
             onLeave = { menuLeave }
             onSelect = { lowerMenu }
