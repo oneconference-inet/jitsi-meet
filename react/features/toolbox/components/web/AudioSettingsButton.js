@@ -100,7 +100,7 @@ class AudioSettingsButton extends Component<Props> {
                     ariaLabel = { t('toolbar.audioSettings') }
                     icon = { IconArrowUp }
                     // iconDisabled = { settingsDisabled }
-                    iconDisabled = { false }
+                    iconDisabled = { true }
                     iconId = 'audio-settings-button'
                     iconTooltip = { t('toolbar.audioSettings') }
                     onIconClick = { onAudioOptionsClick }
