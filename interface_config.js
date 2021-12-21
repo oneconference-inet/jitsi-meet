@@ -234,7 +234,7 @@ var interfaceConfig = {
      */
     SUPPORT_URL: "https://inet.co.th",
 
-    TOOLBAR_ALWAYS_VISIBLE: true, //DEV for Toolbar
+    TOOLBAR_ALWAYS_VISIBLE: false, //DEV for Toolbar
 
     /**
      * DEPRECATED!
