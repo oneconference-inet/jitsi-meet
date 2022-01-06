@@ -64,7 +64,8 @@ const PollResults = (props: AbstractProps) => {
                         onClick = { toggleIsDetailed }>
                         {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
                     </a>
-                ) : null}
+                ) : <div className = { 'poll-detail-link' }>
+                    </div>}
                 {/* <a
                     className = { 'poll-detail-link' }
                     onClick = { toggleIsDetailed }>
