@@ -11,18 +11,19 @@ import { LoginDialog } from "./react/features/authentication/components";
 import { isTokenAuthEnabled } from "./react/features/authentication/functions";
 import {
     connectionEstablished,
-    connectionFailed
-} from './react/features/base/connection/actions';
-import { openDialog } from './react/features/base/dialog/actions';
-import { setJWT } from './react/features/base/jwt';
+    connectionFailed,
+} from "./react/features/base/connection/actions";
+import { openDialog } from "./react/features/base/dialog/actions";
+import { setJWT } from "./react/features/base/jwt";
 import {
     isFatalJitsiConnectionError,
     JitsiConnectionErrors,
-    JitsiConnectionEvents
-} from './react/features/base/lib-jitsi-meet';
-import { getCustomerDetails } from './react/features/jaas/actions.any';
-import { isVpaasMeeting, getJaasJWT } from './react/features/jaas/functions';
-import { setPrejoinDisplayNameRequired } from './react/features/prejoin/actions';
+    JitsiConnectionEvents,
+} from "./react/features/base/lib-jitsi-meet";
+import { getCustomerDetails } from "./react/features/jaas/actions.any";
+import { isVpaasMeeting, getJaasJWT } from "./react/features/jaas/functions";
+import { setPrejoinDisplayNameRequired } from "./react/features/prejoin/actions";
+
 const logger = Logger.getLogger(__filename);
 
 /**
@@ -93,8 +94,8 @@ function checkForAttachParametersAndConnect(id, password, connection) {
 export async function connect(id, password, roomName) {
     const connectionConfig = Object.assign({}, config);
     const state = APP.store.getState();
-    let { jwt } = state['features/base/jwt'];
-    const { iAmRecorder, iAmSipGateway } = state['features/base/config'];
+    let { jwt } = state["features/base/jwt"];
+    const { iAmRecorder, iAmSipGateway } = state["features/base/config"];
 
     if (!iAmRecorder && !iAmSipGateway && isVpaasMeeting(state)) {
         await APP.store.dispatch(getCustomerDetails());
@@ -110,6 +111,9 @@ export async function connect(id, password, roomName) {
     let serviceUrl = connectionConfig.websocket || connectionConfig.bosh;
 
     serviceUrl += `?room=${roomName}`;
+
+    App.store.dispatch(servicUrl())
+
 
     // FIXME Remove deprecated 'bosh' option assignment at some point(LJM will be accepting only 'serviceUrl' option
     //  in future). It's included for the time being for Jitsi Meet and lib-jitsi-meet versions interoperability.
