@@ -5,6 +5,8 @@ import React from 'react';
 import AbstractPollResults from '../AbstractPollResults';
 import type { AbstractProps } from '../AbstractPollResults';
 
+import infoConf from "../../../../../infoConference";
+
 
 /**
  * Component that renders the poll results.
@@ -56,11 +58,18 @@ const PollResults = (props: AbstractProps) => {
                 )}
             </ol>
             <div className = { 'poll-result-links' }>
-                <a
+                {!infoConf.getIsSecretRoom() ? (
+                    <a
+                        className = { 'poll-detail-link' }
+                        onClick = { toggleIsDetailed }>
+                        {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
+                    </a>
+                ) : null}
+                {/* <a
                     className = { 'poll-detail-link' }
                     onClick = { toggleIsDetailed }>
                     {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
-                </a>
+                </a> */}
                 <a
                     className = { 'poll-change-vote-link' }
                     onClick = { changeVote }>

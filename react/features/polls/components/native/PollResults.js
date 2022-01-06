@@ -96,20 +96,14 @@ const PollResults = (props: AbstractProps) => {
                 keyExtractor = { (item, index) => index.toString() }
                 renderItem = { answer => renderRow(answer.item) } />
             <View style = { chatStyles.bottomLinks }>
-                {/* {infoConf && !infoConf.getIsSecretRoom() ? (
+                {!infoConf.getIsSecretRoom() ? (
                     <TouchableOpacity onPress = { toggleIsDetailed }>
                         <Text
                             style = { chatStyles.toggleText }>
                             {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
                         </Text>
                     </TouchableOpacity>
-                ) : null} */}
-                {/* <TouchableOpacity onPress = { toggleIsDetailed }>
-                    <Text
-                        style = { chatStyles.toggleText }>
-                        {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
-                    </Text>
-                </TouchableOpacity> */}
+                ) : null}
                 <TouchableOpacity onPress = { changeVote }>
                     <Text
                         style = { chatStyles.toggleText }>
