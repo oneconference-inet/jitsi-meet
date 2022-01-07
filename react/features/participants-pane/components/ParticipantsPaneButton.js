@@ -60,7 +60,7 @@ class ParticipantsPaneButton extends AbstractButton<Props, *> {
         return this.props._isOpen;
     }
 
-    if(serviceChecker = "onemeet") {
+    if(serviceChecker == "onemeet") {
         console.log(serviceChecker, "serviceChecker=>>>>");
         return this.props._isOpen;
     }
