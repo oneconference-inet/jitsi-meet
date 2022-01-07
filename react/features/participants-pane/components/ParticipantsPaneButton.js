@@ -1,15 +1,17 @@
 // @flow
 
-import { translate } from '../../base/i18n';
-import { IconParticipants } from '../../base/icons';
-import { connect } from '../../base/redux';
-import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
+import { translate } from "../../base/i18n";
+import { IconParticipants } from "../../base/icons";
+import { connect } from "../../base/redux";
+import {
+    AbstractButton,
+    type AbstractButtonProps,
+} from "../../base/toolbox/components";
 
 /**
  * The type of the React {@code Component} props of {@link ParticipantsPaneButton}.
  */
 type Props = AbstractButtonProps & {
-
     /**
      * Whether or not the participants pane is open.
      */
@@ -18,17 +20,24 @@ type Props = AbstractButtonProps & {
     /**
      * External handler for click action.
      */
-    handleClick: Function
+    handleClick: Function,
 };
 
 /**
  * Implementation of a button for accessing participants pane.
  */
+
+const serviceUrl = APP.store.getState(serviceUrl);
+
+console.log(serviceUrl, "serviceUrl=>>>>>");
+
 class ParticipantsPaneButton extends AbstractButton<Props, *> {
-    accessibilityLabel = 'toolbar.accessibilityLabel.participants';
+    accessibilityLabel = "toolbar.accessibilityLabel.participants";
     icon = IconParticipants;
-    label = 'toolbar.participants';
-    tooltip = 'toolbar.participants';
+    label = "toolbar.participants";
+    tooltip = "toolbar.participants";
+
+    serviceChecker = "onemeet";
 
     /**
      * Handles clicking / pressing the button, and opens the appropriate dialog.
@@ -50,6 +59,11 @@ class ParticipantsPaneButton extends AbstractButton<Props, *> {
     _isToggled() {
         return this.props._isOpen;
     }
+
+    if(serviceChecker = "onemeet") {
+        console.log(serviceChecker, "serviceChecker=>>>>");
+        return this.props._isOpen;
+    }
 }
 
 /**
@@ -59,10 +73,10 @@ class ParticipantsPaneButton extends AbstractButton<Props, *> {
  * @returns {Props}
  */
 function mapStateToProps(state) {
-    const { isOpen } = state['features/participants-pane'];
+    const { isOpen } = state["features/participants-pane"];
 
     return {
-        _isOpen: isOpen
+        _isOpen: isOpen,
     };
 }
 

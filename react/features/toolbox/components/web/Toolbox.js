@@ -284,9 +284,6 @@ class Toolbox extends Component<Props, State> {
      * which the new instance is to be initialized.
      */
     constructor(props: Props) {
-        
-        const serviceUrl = APP.store.getState()["features/base/jwt"];
-
         super(props);
 
         this.state = {

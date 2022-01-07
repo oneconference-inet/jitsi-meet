@@ -112,7 +112,7 @@ export async function connect(id, password, roomName) {
 
     serviceUrl += `?room=${roomName}`;
 
-    App.store.dispatch(servicUrl())
+    App.store.dispatch(serviceUrl(serviceUrl))
 
 
     // FIXME Remove deprecated 'bosh' option assignment at some point(LJM will be accepting only 'serviceUrl' option
