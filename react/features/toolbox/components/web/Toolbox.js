@@ -483,6 +483,9 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
+
+        console.log(checkPlatform, "checkPlatform=>>>>>>>>>>>");
+
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
