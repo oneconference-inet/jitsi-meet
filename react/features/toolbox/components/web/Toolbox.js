@@ -474,18 +474,13 @@ class Toolbox extends Component<Props, State> {
 
         // const serviceChecker = App.store.getState(serviceUrl(serviceUrl))
         const serviceChecker = "onemeet";
-        console.log(serviceChecker, "serviceChecker=>>>>>>");
 
         if (serviceChecker === "onemeet") {
-            console.log(serviceChecker, "IFFFFFFFservice=>>>>>>");
             dispatch(openParticipantsPane());
         }
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
-
-        console.log(checkPlatform, "checkPlatform=>>>>>>>>>>>");
-
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
