@@ -472,8 +472,8 @@ class Toolbox extends Component<Props, State> {
             _participantCount,
         } = this.props;
 
-        // const serviceChecker = App.store.getState(serviceUrl(serviceUrl))
-        const serviceChecker = "onemeet";
+        const serviceChecker = App.store.getState(serviceUrl(serviceUrl))
+        // const serviceChecker = "onemeet";
 
         if (serviceChecker === "onemeet") {
             dispatch(openParticipantsPane());
