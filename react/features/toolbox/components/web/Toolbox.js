@@ -444,11 +444,11 @@ class Toolbox extends Component<Props, State> {
     }
 
     componentDidMount() {
-
         const serviceChecker = "onemeet";
         console.log(serviceChecker, "serviceChecker=>>>>>");
 
         if (serviceChecker === "onemeet") {
+            console.log(serviceChecker, "serviceCheckerif=>>>>>");
             dispatch(openParticipantsPane());
         }
 
