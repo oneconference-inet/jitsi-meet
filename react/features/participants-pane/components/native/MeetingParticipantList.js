@@ -173,12 +173,6 @@ function _mapStateToProps(state): Object {
     const _participantsCount = getParticipantCountWithFake(state);
     const { remoteParticipants } = state['features/filmstrip'];
     const _showInviteButton = shouldRenderInviteButton(state);
-    console.log(_showInviteButton,'_showInviteButton=>>>>>')
-
-    const showInviteButton
-    if(_ServiceChecker==='onemeet'){
-        showInviteButton = ' '
-    }
 
     return {
         _participantsCount,

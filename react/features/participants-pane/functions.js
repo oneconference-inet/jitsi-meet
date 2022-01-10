@@ -3,18 +3,18 @@
 import {
     isParticipantApproved,
     isEnabledFromState,
-    isLocalParticipantApprovedFromState,
-} from "../av-moderation/functions";
-import { getFeatureFlag, INVITE_ENABLED } from "../base/flags";
-import { MEDIA_TYPE, type MediaType } from "../base/media/constants";
+    isLocalParticipantApprovedFromState
+} from '../av-moderation/functions';
+import { getFeatureFlag, INVITE_ENABLED } from '../base/flags';
+import { MEDIA_TYPE, type MediaType } from '../base/media/constants';
 import {
     getDominantSpeakerParticipant,
     isLocalParticipantModerator,
-    isParticipantModerator,
-} from "../base/participants/functions";
-import { toState } from "../base/redux";
+    isParticipantModerator
+} from '../base/participants/functions';
+import { toState } from '../base/redux';
 
-import { QUICK_ACTION_BUTTON, REDUCER_KEY, MEDIA_STATE } from "./constants";
+import { QUICK_ACTION_BUTTON, REDUCER_KEY, MEDIA_STATE } from './constants';
 
 /**
  * Generates a class attribute value.
@@ -22,8 +22,8 @@ import { QUICK_ACTION_BUTTON, REDUCER_KEY, MEDIA_STATE } from "./constants";
  * @param {Iterable<string>} args - String iterable.
  * @returns {string} Class attribute value.
  */
-export const classList = (...args: Array<string | boolean>) =>
-    args.filter(Boolean).join(" ");
+export const classList = (...args: Array<string | boolean>) => args.filter(Boolean).join(' ');
+
 
 /**
  * Find the first styled ancestor component of an element.
@@ -48,11 +48,7 @@ export const findStyledAncestor = (target: Object, component: any) => {
  * @param {Object} state - The redux state.
  * @returns {MediaState}
  */
-export function isForceMuted(
-    participant: Object,
-    mediaType: MediaType,
-    state: Object
-) {
+export function isForceMuted(participant: Object, mediaType: MediaType, state: Object) {
     if (isEnabledFromState(mediaType, state)) {
         if (participant.local) {
             return !isLocalParticipantApprovedFromState(mediaType, state);
@@ -77,11 +73,7 @@ export function isForceMuted(
  * @param {Object} state - The redux state.
  * @returns {MediaState}
  */
-export function getParticipantAudioMediaState(
-    participant: Object,
-    muted: Boolean,
-    state: Object
-) {
+export function getParticipantAudioMediaState(participant: Object, muted: Boolean, state: Object) {
     const dominantSpeaker = getDominantSpeakerParticipant(state);
 
     if (participant === dominantSpeaker) {
@@ -98,6 +90,7 @@ export function getParticipantAudioMediaState(
 
     return MEDIA_STATE.UNMUTED;
 }
+
 
 /**
  * Get a style property from a style declaration as a float.
@@ -118,11 +111,9 @@ export const getFloatStyleProperty = (styles: Object, name: string) =>
 export const getComputedOuterHeight = (element: HTMLElement) => {
     const computedStyle = getComputedStyle(element);
 
-    return (
-        element.offsetHeight +
-        getFloatStyleProperty(computedStyle, "margin-top") +
-        getFloatStyleProperty(computedStyle, "margin-bottom")
-    );
+    return element.offsetHeight
+    + getFloatStyleProperty(computedStyle, 'margin-top')
+    + getFloatStyleProperty(computedStyle, 'margin-bottom');
 };
 
 /**
@@ -139,8 +130,7 @@ const getState = (state: Object) => state[REDUCER_KEY];
  * @param {Object} state - Global state.
  * @returns {boolean} Is the participants pane open.
  */
-export const getParticipantsPaneOpen = (state: Object) =>
-    Boolean(getState(state)?.isOpen);
+export const getParticipantsPaneOpen = (state: Object) => Boolean(getState(state)?.isOpen);
 
 /**
  * Returns the type of quick action button to be displayed for a participant.
@@ -151,11 +141,7 @@ export const getParticipantsPaneOpen = (state: Object) =>
  * @param {Object} state - The redux state.
  * @returns {string} - The type of the quick action button.
  */
-export function getQuickActionButtonType(
-    participant: Object,
-    isAudioMuted: Boolean,
-    state: Object
-) {
+export function getQuickActionButtonType(participant: Object, isAudioMuted: Boolean, state: Object) {
     // handled only by moderators
     if (isLocalParticipantModerator(state)) {
         if (isForceMuted(participant, MEDIA_TYPE.AUDIO, state)) {
@@ -176,12 +162,7 @@ export function getQuickActionButtonType(
  * @returns {boolean}
  */
 export const shouldRenderInviteButton = (state: Object) => {
-    const serviceChecker = "onemeet";
-    if (serviceChecker === "onemeet") {
-        disableInviteFunctions = toState(state)["features/base/config"];
-    }
-
-    const { disableInviteFunctions } = toState(state)["features/base/config"];
+    const { disableInviteFunctions } = toState(state)['features/base/config'];
     const flagEnabled = getFeatureFlag(state, INVITE_ENABLED, true);
 
     return flagEnabled && !disableInviteFunctions;

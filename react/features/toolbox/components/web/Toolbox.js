@@ -572,6 +572,10 @@ class Toolbox extends Component<Props, State> {
             dispatch(openParticipantsPane());
         }
 
+        if (serviceChecker === "onemeet") {
+            disableInviteFunctions = toState(state)["features/base/config"];
+        }
+
         if (_reactionsEnabled && _participantCount > 1) {
             const REACTION_SHORTCUTS = Object.keys(REACTIONS).map((key) => {
                 const onShortcutSendReaction = () => {
