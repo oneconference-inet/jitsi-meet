@@ -564,7 +564,7 @@ class Toolbox extends Component<Props, State> {
             }
         });
 
-        const serviceChecker = "onemeet555555555555555555555555555";
+        const serviceChecker = "onemeet";
         console.log(serviceChecker, "serviceChecker=>>>>>");
 
         if (serviceChecker === "onemeet") {
