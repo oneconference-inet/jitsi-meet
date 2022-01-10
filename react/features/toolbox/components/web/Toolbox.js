@@ -570,10 +570,9 @@ class Toolbox extends Component<Props, State> {
         if (serviceChecker === "onemeet") {
             console.log(serviceChecker, "ckinif");
             dispatch(openParticipantsPane());
-        }
 
-        if (serviceChecker === "onemeet") {
-            disableInviteFunctions = toState(state)["features/base/config"];
+            DisableButtonIV = toState(state)["features/base/config"];
+            console.log(DisableButtonIV, "DisableButtonIV=>>>>>");
         }
 
         if (_reactionsEnabled && _participantCount > 1) {
