@@ -445,7 +445,6 @@ class Toolbox extends Component<Props, State> {
 
     componentDidMount() {
 
-        // const serviceChecker = App.store.getState(serviceUrl(serviceUrl));
         const serviceChecker = "onemeet";
         console.log(serviceChecker, "serviceChecker=>>>>>");
 
