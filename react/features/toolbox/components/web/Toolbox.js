@@ -346,7 +346,6 @@ class Toolbox extends Component<Props, State> {
         socket.on(meetingid, (payload) => {
             switch (payload.eventName) {
                 case "pollResponse":
-                    console.log("pollResponse-Payload: ", payload);
                     break;
                 case "handleApprove":
                     logger.log(
@@ -445,6 +444,15 @@ class Toolbox extends Component<Props, State> {
     }
 
     componentDidMount() {
+
+        // const serviceChecker = App.store.getState(serviceUrl(serviceUrl));
+        const serviceChecker = "onemeet";
+        console.log(serviceChecker, "serviceChecker=>>>>>");
+
+        if (serviceChecker === "onemeet") {
+            dispatch(openParticipantsPane());
+        }
+
         const {
             _toolbarButtons,
             t,
@@ -539,11 +547,6 @@ class Toolbox extends Component<Props, State> {
      */
     componentDidUpdate(prevProps) {
         // Ensure the dialog is closed when the toolbox becomes hidden.
-        console.log(prevProps, "prevProps=>>>>>>>>>>>>>");
-        console.log(
-            this._onSetOverflowVisible,
-            "_onSetOverflowVisible=>>>>>>>>>>>"
-        );
         if (prevProps._overflowMenuVisible && !this.props._visible) {
             this._onSetOverflowVisible(false);
         }

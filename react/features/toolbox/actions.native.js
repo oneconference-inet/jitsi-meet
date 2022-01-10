@@ -67,7 +67,6 @@ export function setToolbarHovered(hovered: boolean): Object {
  * }}
  */
 export function setToolboxAlwaysVisible(alwaysVisible: boolean): Object {
-    console.log(alwaysVisible, "alwaysVisible=>>>>>>>>");
     return {
         type: SET_TOOLBOX_ALWAYS_VISIBLE,
         alwaysVisible,
@@ -142,7 +141,6 @@ export function setToolboxTimeoutMS(timeoutMS: number): Object {
  * }}
  */
 export function setToolboxVisible(visible: boolean): Object {
-    console.log(visible, "visible=>>>>>>");
     return {
         type: SET_TOOLBOX_VISIBLE,
         visible,

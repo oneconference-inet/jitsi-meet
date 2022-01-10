@@ -59,8 +59,6 @@ function onLoad() {
 
             element.classList.add("hide");
             insertTextMsg("hintMessage", interfaceConfig.CLOSE_PAGE_GUEST_HINT);
-            _endJoin();
-            console.log(_endjoin, "API _endjoin");
             return;
         }
     }
