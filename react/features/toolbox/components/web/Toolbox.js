@@ -444,14 +444,6 @@ class Toolbox extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const serviceChecker = "onemeet";
-        console.log(serviceChecker, "serviceChecker=>>>>>");
-
-        if (serviceChecker === "onemeet") {
-            console.log(serviceChecker, "serviceCheckerif=>>>>>");
-            dispatch(openParticipantsPane());
-        }
-
         const {
             _toolbarButtons,
             t,
@@ -459,6 +451,7 @@ class Toolbox extends Component<Props, State> {
             _reactionsEnabled,
             _participantCount,
         } = this.props;
+
         const KEYBOARD_SHORTCUTS = [
             isToolbarButtonEnabled("videoquality", _toolbarButtons) && {
                 character: "A",
@@ -496,6 +489,13 @@ class Toolbox extends Component<Props, State> {
                 helpDescription: "toolbar.tileViewToggle",
             },
         ];
+        const serviceChecker = "onemeet";
+        console.log(serviceChecker, "serviceChecker=>>>>>");
+
+        if (serviceChecker === "onemeet") {
+            console.log(serviceChecker, "serviceCheckerif=>>>>>");
+            dispatch(openParticipantsPane());
+        }
 
         KEYBOARD_SHORTCUTS.forEach((shortcut) => {
             if (typeof shortcut === "object") {
