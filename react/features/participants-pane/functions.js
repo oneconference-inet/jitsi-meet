@@ -178,8 +178,5 @@ export function getQuickActionButtonType(
 export const shouldRenderInviteButton = (state: Object) => {
     const { disableInviteFunctions } = toState(state)["features/base/config"];
     const flagEnabled = getFeatureFlag(state, INVITE_ENABLED, true);
-
-    console.log(disableInviteFunctions, "disableInviteFunctions=>>>>>");
-
     return flagEnabled && !disableInviteFunctions;
 };
