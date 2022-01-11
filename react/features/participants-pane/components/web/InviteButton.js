@@ -20,7 +20,7 @@ export const InviteButton = () => {
     }, [dispatch]);
 
     return (
-        <div style={{ display: "none" }}>
+        // <div style={{ display: "none" }}>
             <ParticipantInviteButton
                 aria-label={t("participantsPane.actions.invite")}
                 onClick={onInvite}
@@ -28,6 +28,6 @@ export const InviteButton = () => {
                 <Icon size={20} src={IconInviteMore} />
                 <span>{t("participantsPane.actions.invite")}</span>
             </ParticipantInviteButton>
-        </div>
+        // </div>
     );
 };
