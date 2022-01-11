@@ -18,16 +18,29 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
+    const typemeet = "onemeet";
 
     return (
-        // <div style={{ display: "none" }}>
-            <ParticipantInviteButton
-                aria-label={t("participantsPane.actions.invite")}
-                onClick={onInvite}
-            >
-                <Icon size={20} src={IconInviteMore} />
-                <span>{t("participantsPane.actions.invite")}</span>
-            </ParticipantInviteButton>
-        // </div>
+        <div>
+            {typemeet == "onemeet" ? (
+                <div style={{ display: "none" }}>
+                    <ParticipantInviteButton
+                        aria-label={t("participantsPane.actions.invite")}
+                        onClick={onInvite}
+                    >
+                        <Icon size={20} src={IconInviteMore} />
+                        <span>{t("participantsPane.actions.invite")}</span>
+                    </ParticipantInviteButton>
+                </div>
+            ) : (
+                <ParticipantInviteButton
+                    aria-label={t("participantsPane.actions.invite")}
+                    onClick={onInvite}
+                >
+                    <Icon size={20} src={IconInviteMore} />
+                    <span>{t("participantsPane.actions.invite")}</span>
+                </ParticipantInviteButton>
+            )}
+        </div>
     );
 };
