@@ -18,7 +18,7 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    const typemeet = "onemeet";
+    const typemeet = "55555";
 
     return (
         <div>
