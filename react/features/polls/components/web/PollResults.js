@@ -58,7 +58,7 @@ const PollResults = (props: AbstractProps) => {
                 )}
             </ol>
             <div className = { 'poll-result-links' }>
-                {!infoConf.getIsSecretRoom() ? (
+                {infoConf && !infoConf.getIsSecretRoom() ? (
                     <a
                         className = { 'poll-detail-link' }
                         onClick = { toggleIsDetailed }>
