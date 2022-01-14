@@ -240,6 +240,39 @@ var interfaceConfig = {
      */
     // TOOLBAR_BUTTONS: [],
 
+    
+    TOOLBAR_BUTTONS: [
+        "microphone",
+        "camera",
+        "closedcaptions",
+        "desktop",
+        "fullscreen",
+        "fodeviceselection",
+        "hangup",
+        "profile",
+        "chat",
+        "recording",
+        "endmeeting",
+        "note",
+        "livestreaming",
+        "etherpad",
+        "sharedvideo",
+        "settings",
+        "raisehand",
+        "videoquality",
+        "filmstrip",
+        "invite",
+        "feedback",
+        "shortcuts",
+        "tileview",
+        "download",
+        "help",
+        "mute-everyone",
+        "security",
+        "poll"
+    ],
+
+
     TOOLBAR_TIMEOUT: 4000,
 
     // Browsers, in addition to those which do not fully support WebRTC, that
