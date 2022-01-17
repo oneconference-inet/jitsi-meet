@@ -128,7 +128,13 @@ export async function createHandlers({ getState }: { getState: Function }) {
     logger.log("Data Decode: ", dataDecode);
 
 
-    APP.store.dispatch(dataDecode(dataDecode));
+    // APP.store.dispatch(dataDecode(dataDecode));
+
+    const serviceCheckerData = dataDecode;
+
+    App.store.dispatch(serviceCheckerData(serviceCheckerData));
+
+    console.log(serviceCheckerData,'serviceCheckerData=>>>>>>')
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
