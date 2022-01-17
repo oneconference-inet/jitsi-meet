@@ -564,7 +564,7 @@ class Toolbox extends Component<Props, State> {
             }
         });
 
-        const serviceChecker = App.store.getState(serviceUrl(serviceUrl));
+        const serviceChecker = APP.store.getState(serviceUrl(serviceUrl));
 
         // const serviceChecker = APP.store.getState(dataDecode(dataDecode));
 
