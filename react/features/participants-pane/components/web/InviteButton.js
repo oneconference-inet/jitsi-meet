@@ -21,15 +21,13 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    const typemeet = infoConf.getService();
     const typeOption = infoConf.getVoice();
 
-    console.log(typemeet, 'typemeet=>>>>>>')
     console.log(typeOption,'typeOption=>>>>>')
 
     return (
         <div>
-            {typemeet.service == "onemeet" && typeOption.option.audio == true ? (
+            {typeOption.option.audio == true ? (
                 <div style={{ display: "none" }}>
                     <ParticipantInviteButton
                         aria-label={t("participantsPane.actions.invite")}
