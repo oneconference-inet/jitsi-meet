@@ -114,9 +114,9 @@ export async function connect(id, password, roomName) {
     {
         serviceUrl == "onemeet" && option == "voice"
             ? (App.store.dispatch(serviceUrl(serviceUrl)),
-              console.log(serviceUrl, "serviceUrl=>>>>>"))
+              console.log(serviceUrl, "serviceUrl111111=>>>>>"))
             : ((serviceUrl += `?room=${roomName}`),
-              console.log(serviceUrl, "serviceUrl=>>>>>"));
+              console.log(serviceUrl, "serviceUrl222222=>>>>>"));
     }
 
     // FIXME Remove deprecated 'bosh' option assignment at some point(LJM will be accepting only 'serviceUrl' option
