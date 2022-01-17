@@ -566,16 +566,8 @@ class Toolbox extends Component<Props, State> {
 
         // const serviceChecker = App.store.getState(serviceUrl(serviceUrl));
 
-        // const serviceChecker22222 = App.store.getState(dataDecode(dataDecode));
-        // logger.log("Data Decode at Toolbox ", serviceChecker22222);
 
-        // const Decode123 = APP.store.getState(dataDecode(dataDecode));
-        
-        // const Decode123 = App.store.getState(serviceCheckerData(serviceCheckerData));
-
-        // console.log(Decode123, "Decode123=>>>>>>>>");
-
-        const serviceChecker = APP.store.getState(dataDecode)
+        const serviceChecker = APP.store.getState(dataDecode(dataDecode));
 
         // const serviceChecker = "onemeet";
         console.log(serviceChecker, "serviceChecker=>>>>>");
