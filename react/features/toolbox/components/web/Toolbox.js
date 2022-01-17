@@ -474,6 +474,8 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
+
+        console.log(infoConf,'infoConf=>>>>>>')
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
@@ -565,9 +567,9 @@ class Toolbox extends Component<Props, State> {
         });
 
 
-        const serviceChecker = APP.store.getState(dataDecode(dataDecode));
+        // const serviceChecker = APP.store.getState(dataDecode(dataDecode));
 
-        // const serviceChecker = "onemeet";
+        const serviceChecker = "onemeet";
         console.log(serviceChecker, "serviceChecker=>>>>>");
 
         if (serviceChecker === "onemeet") {
