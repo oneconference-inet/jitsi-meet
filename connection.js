@@ -111,15 +111,6 @@ export async function connect(id, password, roomName) {
 
     serviceUrl += `?room=${roomName}`;
     
-
-    // {
-    //     serviceUrl == "onemeet" && option == "voice"
-    //         ? (App.store.dispatch(serviceUrl(serviceUrl)),
-    //           console.log(serviceUrl, "serviceUrl111111=>>>>>"))
-    //         : ((serviceUrl += `?room=${roomName}`),
-    //           console.log(serviceUrl, "serviceUrl222222=>>>>>"));
-    // }
-
     // FIXME Remove deprecated 'bosh' option assignment at some point(LJM will be accepting only 'serviceUrl' option
     //  in future). It's included for the time being for Jitsi Meet and lib-jitsi-meet versions interoperability.
     connectionConfig.serviceUrl = connectionConfig.bosh = serviceUrl;
