@@ -128,8 +128,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
     logger.log("Data Decode: ", dataDecode);
 
 
-    APP.store.dispatch(dataDecode)
-
+    App.store.dispatch(dataDecode(dataDecode));
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
