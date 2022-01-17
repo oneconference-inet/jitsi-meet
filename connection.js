@@ -112,7 +112,7 @@ export async function connect(id, password, roomName) {
     // serviceUrl += `?room=${roomName}`;
 
     {
-        serviceUrl == "onemeet" && option == "voice"
+        serviceUrl == "onemeet" /*&& option == "voice"*/
             ? (App.store.dispatch(serviceUrl(serviceUrl)),
               console.log(serviceUrl, "serviceUrl111111=>>>>>"))
             : ((serviceUrl += `?room=${roomName}`),
