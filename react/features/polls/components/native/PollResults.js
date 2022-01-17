@@ -96,7 +96,7 @@ const PollResults = (props: AbstractProps) => {
                 keyExtractor = { (item, index) => index.toString() }
                 renderItem = { answer => renderRow(answer.item) } />
             <View style = { chatStyles.bottomLinks }>
-                {!infoConf.getIsSecretRoom() ? (
+                {infoConf && !infoConf.getIsSecretRoom() ? (
                     <TouchableOpacity onPress = { toggleIsDetailed }>
                         <Text
                             style = { chatStyles.toggleText }>
