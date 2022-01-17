@@ -566,13 +566,9 @@ class Toolbox extends Component<Props, State> {
             }
         });
 
-        // const serviceChecker = App.store.getState(serviceUrl(serviceUrl));
 
-        const serviceChecker = "onemeet";
-        console.log(serviceChecker, "serviceChecker=>>>>>");
-
-        if (serviceChecker === "onemeet") {
-            console.log(serviceChecker, "ckinif");
+        if (checkPlatform === "onemeet") {
+            console.log(checkPlatform, "ckinif");
             dispatch(openParticipantsPane());
         }
 
