@@ -11,11 +11,11 @@ var listUrl = {
   isSecretRoom: false,
   isHostHangup: false,
   userRole: "",
-  voiceCheck: "",
+  option: "",
 };
 
-function setVoice(voiceCheck){
-  listUrl.voiceCheck = voiceCheck;
+function setVoice(option){
+  listUrl.option = option;
 }
 
 function setRoomName(roomname) {
@@ -71,7 +71,7 @@ function setUserRole(role) {
 }
 
 function getVoice() {
-  return listUrl.voiceCheck;
+  return listUrl.option;
 }
 
 function getRoomName() {

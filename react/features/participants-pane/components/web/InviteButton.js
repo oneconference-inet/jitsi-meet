@@ -10,6 +10,9 @@ import { beginAddPeople } from "../../../invite";
 
 import { ParticipantInviteButton } from "./styled";
 
+import infoConf from "../../../../../infoConference";
+
+
 export const InviteButton = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -18,11 +21,15 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    const typemeet = "55555";
+    const typemeet = infoConf.getService();
+    const typeOption = infoConf.getVoice();
+
+    console.log(typemeet, 'typemeet=>>>>>>')
+    console.log(typeOption,'typeOption=>>>>>')
 
     return (
         <div>
-            {typemeet == "onemeet" ? (
+            {typemeet.service == "onemeet" && typeOption.option.audio == true ? (
                 <div style={{ display: "none" }}>
                     <ParticipantInviteButton
                         aria-label={t("participantsPane.actions.invite")}

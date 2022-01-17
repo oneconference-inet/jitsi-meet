@@ -476,7 +476,7 @@ class Toolbox extends Component<Props, State> {
         const checkPlatform = infoConf.getService();
         const checkVoice = infoConf.getVoice();
 
-        console.log(infoConf,'infoConf=>>>>>>')
+        console.log(infoConf,'infoConf ToolBox=>>>>>>')
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
@@ -570,7 +570,7 @@ class Toolbox extends Component<Props, State> {
 
         if (checkPlatform === "onemeet" && checkVoice === "voice" ) {
             console.log(checkPlatform, "ckinif");
-            console.log(checkVoice, 'checkVoice=>>>>')
+            console.log(checkVoice, 'ck Voiceee=>>>>')
             dispatch(openParticipantsPane());
         }
 
