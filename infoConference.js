@@ -70,6 +70,10 @@ function setUserRole(role) {
     listUrl.userRole = role;
 }
 
+function getVoice() {
+  return listUrl.voiceCheck;
+}
+
 function getRoomName() {
   return listUrl.roomname;
 }
@@ -155,4 +159,5 @@ export default {
   setUserRole,
   getUserRole,
   setVoice,
+  getVoice,
 };

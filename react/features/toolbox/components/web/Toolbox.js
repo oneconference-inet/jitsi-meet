@@ -474,7 +474,7 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
-        const checkVoice = infoConf.getService(setVoice);
+        const checkVoice = infoConf.getVoice();
 
         console.log(infoConf,'infoConf=>>>>>>')
         this.setState(
