@@ -134,7 +134,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
     App.store.dispatch(serviceCheckerData(serviceCheckerData));
 
-    console.log(serviceCheckerData,'serviceCheckerData=>>>>>>')
+    APP.store.dispatch(
+        serviceCheckerData("static/errorServer.html")
+    );
+
+    logger.log('serviceCheckerData=>>>>>>> ',serviceCheckerData)
+
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
