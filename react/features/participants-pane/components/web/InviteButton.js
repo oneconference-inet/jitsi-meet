@@ -27,7 +27,7 @@ export const InviteButton = () => {
 
     return (
         <div>
-            {/* {typeOption.option.audio == true ? (
+            {typeOption.option.audio == true ? (
                 <div style={{ display: "none" }}>
                     <ParticipantInviteButton
                         aria-label={t("participantsPane.actions.invite")}
@@ -37,7 +37,7 @@ export const InviteButton = () => {
                         <span>{t("participantsPane.actions.invite")}</span>
                     </ParticipantInviteButton>
                 </div>
-            ) : ( */}
+            ) : (
                 <ParticipantInviteButton
                     aria-label={t("participantsPane.actions.invite")}
                     onClick={onInvite}
@@ -45,7 +45,7 @@ export const InviteButton = () => {
                     <Icon size={20} src={IconInviteMore} />
                     <span>{t("participantsPane.actions.invite")}</span>
                 </ParticipantInviteButton>
-            {/* // )} */}
+            )}
         </div>
     );
 };
