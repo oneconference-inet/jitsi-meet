@@ -27,7 +27,7 @@ export const InviteButton = () => {
 
     return (
         <div>
-            {typeOption.option.audio == true ? (
+            {typeOption == true ? (
                 <div style={{ display: "none" }}>
                     <ParticipantInviteButton
                         aria-label={t("participantsPane.actions.invite")}
