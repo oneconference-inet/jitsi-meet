@@ -193,13 +193,21 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                     infoConf.seturlInvite(keydb.data.urlInvite);
                 }
-            } catch (error) {
-                console.log(dataDecode,'token');
-                // console.error("Server is not defined ERROR: ", error);
-                // APP.store.dispatch(
-                //     redirectToStaticPage("static/errorServer.html")
-                // );
-            }
+            // } catch (error) {
+            //     console.log(dataDecode,'token');
+            //     // console.error("Server is not defined ERROR: ", error);
+            //     // APP.store.dispatch(
+            //     //     redirectToStaticPage("static/errorServer.html")
+            //     // );
+                
+            // }
+        } catch {
+            console.log(dataDecode,'token');
+            // console.error("Server is not defined ERROR: ", error);
+            // APP.store.dispatch(
+            //     redirectToStaticPage("static/errorServer.html")
+            // );
+        }
         } else if (
             dataDecode.role == "attendee" &&
             meetingIdForCheck == dataDecode.meetingId
