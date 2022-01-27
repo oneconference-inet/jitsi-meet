@@ -210,7 +210,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                 
             // }
         } catch {
-            console.log(dataDecode,'token');
+            logger.log("6 ");
             // console.error("Server is not defined ERROR: ", error);
             // APP.store.dispatch(
             //     redirectToStaticPage("static/errorServer.html")
