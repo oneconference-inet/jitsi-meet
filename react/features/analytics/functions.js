@@ -123,6 +123,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
     const tokenDecode = locationURL.href.split("?")[1];
     const dataDecode = decode(tokenDecode, repeatAccess);
+    logger.log("tokenDecode: ", tokenDecode);
     const tokenAccess = Boolean(tokenDecode != undefined || repeatAccess);
     const int_service = interfaceConfig.SERVICE_INT;
     logger.log("Data Decode: ", dataDecode);
