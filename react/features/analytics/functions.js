@@ -130,6 +130,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
+        logger.log("Data Decode:1 ", dataDecode);
         infoConf.setMeetingId(dataDecode.meetingId);
         infoConf.setRoomName(dataDecode.roomname);
         sessionStorage.setItem(
@@ -137,6 +138,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
             tokenDecode || sessionStorage.getItem("token_Access")
         ); // Set token for Reload page
         if (
+
             dataDecode.role == "moderator" &&
             meetingIdForCheck == dataDecode.meetingId
         ) {
@@ -151,10 +153,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
             authXmpp.setUser(dataDecode.userXmpAuth);
             authXmpp.setPass(dataDecode.passXmpAuth);
             infoConf.setUserRole(dataDecode.role);
+            logger.log("1 ");
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
                     infoConf.setService(dataDecode.service);
+                    logger.log("2 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_BACK + "/checkkey",
                         {
@@ -165,6 +169,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                     // optioncon.seturlInvite(keydb.data.urlInvite)
                 } else if (dataDecode.service == "onemail") {
+                    logger.log("3 ");
                     infoConf.setService(dataDecode.service);
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL + "/checkkey",
@@ -175,6 +180,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                         }
                     );
                 } else if (dataDecode.service == "onemail_dga") {
+                    logger.log("4 ");
                     infoConf.setService(dataDecode.service);
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL_DGA + "/checkkey",
@@ -185,6 +191,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                 } else {
                     infoConf.setService("oneconference");
+                    logger.log("5 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN + "/checkkey",
                         {
@@ -221,10 +228,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
             infoUser.setUserId(dataDecode.clientid);
             infoUser.setRedirect(dataDecode.redirect);
             infoConf.setUserRole(dataDecode.role);
+            logger.log("5 ");
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
                     infoConf.setService(dataDecode.service);
+                    logger.log("6 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_BACK + "/checkkey",
                         {
@@ -235,6 +244,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                 } else if (dataDecode.service == "onemail") {
                     infoConf.setService(dataDecode.service);
+                    logger.log("7 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL + "/checkkey",
                         {
@@ -244,6 +254,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                 } else if (dataDecode.service == "onemail_dga") {
                     infoConf.setService(dataDecode.service);
+                    logger.log("8 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL_DGA + "/checkkey",
                         {
