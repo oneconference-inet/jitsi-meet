@@ -194,7 +194,8 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     infoConf.seturlInvite(keydb.data.urlInvite);
                 }
             } catch (error) {
-                console.error("Server is not defined ERROR: ", error);
+                console.log(dataDecode,'token');
+                // console.error("Server is not defined ERROR: ", error);
                 APP.store.dispatch(
                     redirectToStaticPage("static/errorServer.html")
                 );
