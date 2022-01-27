@@ -202,11 +202,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     infoConf.seturlInvite(keydb.data.urlInvite);
                 }
             } catch (error) {
-                logger.log("catch");
-                console.error("Server is not defined ERROR: ", error);
-                APP.store.dispatch(
-                    redirectToStaticPage("static/errorServer.html")
-                );
+                logger.log("6 ");
+                // logger.log("catch");
+                // console.error("Server is not defined ERROR: ", error);
+                // APP.store.dispatch(
+                //     redirectToStaticPage("static/errorServer.html")
+                // );
                 
             }
         // } catch {
