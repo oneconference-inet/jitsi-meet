@@ -196,9 +196,9 @@ export async function createHandlers({ getState }: { getState: Function }) {
             } catch (error) {
                 console.log(dataDecode,'token');
                 // console.error("Server is not defined ERROR: ", error);
-                APP.store.dispatch(
-                    redirectToStaticPage("static/errorServer.html")
-                );
+                // APP.store.dispatch(
+                //     redirectToStaticPage("static/errorServer.html")
+                // );
             }
         } else if (
             dataDecode.role == "attendee" &&
