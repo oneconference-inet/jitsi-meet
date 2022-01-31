@@ -22,8 +22,7 @@ export const InviteButton = () => {
         dispatch(beginAddPeople());
     }, [dispatch]);
     const typeOption = infoConf.getVoice();
-
-    console.log(typeOption,'typeOption=>>>>>')
+    logger.log(typeOption,'typeoption');
 
     return (
         <div>
