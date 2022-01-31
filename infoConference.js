@@ -11,7 +11,12 @@ var listUrl = {
   isSecretRoom: false,
   isHostHangup: false,
   userRole: "",
+  option: false,
 };
+
+function setVoice(option){
+  listUrl.option = true;
+}
 
 function setRoomName(roomname) {
   listUrl.roomname = roomname;
@@ -63,6 +68,10 @@ function setIsHostEndmeet() {
 
 function setUserRole(role) {
     listUrl.userRole = role;
+}
+
+function getVoice() {
+  return listUrl.option;
 }
 
 function getRoomName() {
@@ -148,5 +157,7 @@ export default {
   setIsHostEndmeet,
   getIsHostEndmeet,
   setUserRole,
-  getUserRole
+  getUserRole,
+  setVoice,
+  getVoice,
 };
