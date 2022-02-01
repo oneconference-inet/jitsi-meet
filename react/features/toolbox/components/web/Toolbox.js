@@ -358,7 +358,7 @@ class Toolbox extends Component<Props, State> {
             }
             // console.log("Approve: ", getApprove)
             if (getApprove.data.approve) {
-                logger.log("Room is require approve to join.");
+                // logger.log("Room is require approve to join.");
                 APP.store.dispatch(setLobbyModeEnabled(true));
                 onSocketReqJoin(meetingid, endpoint, this.props);
             } else {
@@ -366,7 +366,7 @@ class Toolbox extends Component<Props, State> {
             }
         }
         // On socket for Host
-        logger.log("Moderator ONE-Conference On Socket-for-Feature");
+        // logger.log("Moderator ONE-Conference On Socket-for-Feature");
         socket.emit("createRoom", {
             meetingId: meetingid,
             roomname: roomname,
@@ -399,7 +399,7 @@ class Toolbox extends Component<Props, State> {
     async onAttendee(state) {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state;
         const socket = socketIOClient(endpoint);
-        logger.log("Attendee ONE-Conference On Socket-for-Feature");
+        // logger.log("Attendee ONE-Conference On Socket-for-Feature");
         socket.on(meetingid, async (payload) => {
             logger.log("Socket-payload: ", payload);
             switch (payload.eventName) {

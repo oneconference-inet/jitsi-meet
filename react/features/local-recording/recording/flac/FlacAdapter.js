@@ -119,7 +119,7 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
 
         if (track.enabled !== shouldEnable) {
             track.enabled = shouldEnable;
-            logger.log(muted ? "Mute" : "Unmute");
+            // logger.log(muted ? "Mute" : "Unmute");
         }
 
         return Promise.resolve();

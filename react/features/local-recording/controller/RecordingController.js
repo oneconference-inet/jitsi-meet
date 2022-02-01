@@ -359,11 +359,11 @@ class RecordingController {
 
             if (this._state === ControllerState.RECORDING) {
                 // sessionManager.endSegment(this._currentSessionToken);
-                logger.log("Before switching microphone...");
+                // logger.log("Before switching microphone...");
                 this._adapters[this._currentSessionToken]
                     .setMicDevice(this._micDeviceId)
                     .then(() => {
-                        logger.log("Finished switching microphone.");
+                        // logger.log("Finished switching microphone.");
 
                         // sessionManager.beginSegment(this._currentSesoken);
                     })
@@ -371,7 +371,7 @@ class RecordingController {
                         logger.error("Failed to switch microphone");
                     });
             }
-            logger.log(`Switch microphone to ${this._micDeviceId}`);
+            // logger.log(`Switch microphone to ${this._micDeviceId}`);
         }
     }
 
@@ -398,12 +398,12 @@ class RecordingController {
      */
     switchFormat(newFormat: string) {
         if (!RECORDING_FORMATS.has(newFormat)) {
-            logger.log(`Unknown format ${newFormat}. Ignoring...`);
+            // logger.log(`Unknown format ${newFormat}. Ignoring...`);
 
             return;
         }
         this._format = newFormat;
-        logger.log(`Recording format switched to ${newFormat}`);
+        // logger.log(`Recording format switched to ${newFormat}`);
 
         // the new format will be used in the next recording session
     }
@@ -470,10 +470,10 @@ class RecordingController {
      */
     _changeState(newState: Symbol) {
         if (this._state !== newState) {
-            logger.log(
-                `state change: ${this._state.toString()} -> ` +
-                    `${newState.toString()}`
-            );
+            // logger.log(
+            //     `state change: ${this._state.toString()} -> ` +
+            //         `${newState.toString()}`
+            // );
             this._state = newState;
         }
     }
@@ -556,7 +556,7 @@ class RecordingController {
      */
     _onPingCommand() {
         if (this._conference.isModerator()) {
-            logger.log("Received ping, sending pong.");
+            // logger.log("Received ping, sending pong.");
             this._conference.sendCommandOnce(COMMAND_PONG, {});
         }
     }
@@ -588,7 +588,7 @@ class RecordingController {
                 .then(() => {
                     this._changeState(ControllerState.RECORDING);
                     sessionManager.beginSegment(this._currentSessionToken);
-                    logger.log("Local recording engaged.");
+                    // logger.log("Local recording engaged.");
 
                     if (this._onNotify) {
                         this._onNotify("localRecording.messages.engaged");
@@ -623,7 +623,7 @@ class RecordingController {
                 .then(() => {
                     this._changeState(ControllerState.IDLE);
                     sessionManager.endSegment(this._currentSessionToken);
-                    logger.log("Local recording unengaged.");
+                    // logger.log("Local recording unengaged.");
                     this.downloadRecordedData(token);
 
                     const messageKey = this._conference.isModerator()
@@ -664,10 +664,10 @@ class RecordingController {
     _switchToNewSession(sessionToken, format) {
         this._format = format;
         this._currentSessionToken = sessionToken;
-        logger.log(
-            `New session: ${this._currentSessionToken}, ` +
-                `format: ${this._format}`
-        );
+        // logger.log(
+        //     `New session: ${this._currentSessionToken}, ` +
+        //         `format: ${this._format}`
+        // );
         this._adapters[sessionToken] = this._createRecordingAdapter();
         sessionManager.createSession(sessionToken, this._format);
     }
