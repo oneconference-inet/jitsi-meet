@@ -127,6 +127,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const tokenAccess = Boolean(tokenDecode != undefined || repeatAccess);
     const int_service = interfaceConfig.SERVICE_INT;
     logger.log("Data Decode:123456 ", dataDecode);
+    logger.log("Option Data Decodre",dataDecode.option)
 
 
     // console.log("token Access: ", tokenAccess);
