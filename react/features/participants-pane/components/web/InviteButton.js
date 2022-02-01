@@ -14,8 +14,9 @@ import infoConf from "../../../../../infoConference";
 
 // import {createHandlers} from "D:\INET\Project\jitsi-meet\react\features\analytics\functions.js";
 import { createHandlers } from "../../../../features/analytics/functions.js";
+import logger from "../../../analytics/logger";
 
-export const InviteButton = () => {
+export const InviteButton = ({ getState }: { getState: Function }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
@@ -26,7 +27,14 @@ export const InviteButton = () => {
     const typeOption = infoConf.getVoice();
     logger.log(typeOption, "typeoption");
 
-    logger.log(createHandlers, "createHandlers=>>>>>>>>>");
+    const state = getState();
+    const config = state["features/base/config"];
+    const { locationURL } = state["features/base/connection"];
+    const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
+    const tokenDecode = locationURL.href.split("?")[1];
+    const dataDecode = decode(tokenDecode, true);
+
+    logger.log("dataDecode inviteButton=>>>>>>>>>>>>", dataDecode);
 
     return (
         <div>
