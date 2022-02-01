@@ -27,14 +27,16 @@ export const InviteButton = ({ getState }: { getState: Function }) => {
     const typeOption = infoConf.getVoice();
     logger.log(typeOption, "typeoption");
 
-    const state = getState();
-    const config = state["features/base/config"];
-    const { locationURL } = state["features/base/connection"];
-    const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
-    const tokenDecode = locationURL.href.split("?")[1];
-    const dataDecode = decode(tokenDecode, true);
 
-    logger.log("dataDecode inviteButton=>>>>>>>>>>>>", dataDecode);
+
+    // const state = getState();
+    // const config = state["features/base/config"];
+    // const { locationURL } = state["features/base/connection"];
+    // const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
+    // const tokenDecode = locationURL.href.split("?")[1];
+    // const dataDecode = decode(tokenDecode, true);
+
+    logger.log("dataDecode inviteButton=>>>>>>>>>>>>");
 
     return (
         <div>
