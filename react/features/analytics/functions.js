@@ -100,6 +100,7 @@ function decode(data, checkReload) {
 }
 
 export function handleDecode(data, checkReload) {
+    const { locationURL } = state["features/base/connection"];
     const repeatAccess = reloadPage();
     const tokenDecode = locationURL.href.split("?")[1];
     return decode(tokenDecode, repeatAccess);
