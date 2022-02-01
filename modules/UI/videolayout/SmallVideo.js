@@ -1,42 +1,42 @@
 /* global $, APP, config, interfaceConfig */
 
 /* eslint-disable no-unused-vars */
-import { AtlasKitThemeProvider } from '@atlaskit/theme';
-import Logger from 'jitsi-meet-logger';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { I18nextProvider } from 'react-i18next';
-import { Provider } from 'react-redux';
+import { AtlasKitThemeProvider } from "@atlaskit/theme";
+import Logger from "jitsi-meet-logger";
+import React from "react";
+import ReactDOM from "react-dom";
+import { I18nextProvider } from "react-i18next";
+import { Provider } from "react-redux";
 
-import { AudioLevelIndicator } from '../../../react/features/audio-level-indicator';
-import { Avatar as AvatarDisplay } from '../../../react/features/base/avatar';
-import { i18next } from '../../../react/features/base/i18n';
-import { MEDIA_TYPE } from '../../../react/features/base/media';
+import { AudioLevelIndicator } from "../../../react/features/audio-level-indicator";
+import { Avatar as AvatarDisplay } from "../../../react/features/base/avatar";
+import { i18next } from "../../../react/features/base/i18n";
+import { MEDIA_TYPE } from "../../../react/features/base/media";
 import {
     getLocalParticipant,
     getParticipantById,
     getParticipantCount,
     getPinnedParticipant,
-    pinParticipant
-} from '../../../react/features/base/participants';
+    pinParticipant,
+} from "../../../react/features/base/participants";
 import {
     getTrackByMediaTypeAndParticipant,
     isLocalTrackMuted,
-    isRemoteTrackMuted
-} from '../../../react/features/base/tracks';
-import { ConnectionIndicator } from '../../../react/features/connection-indicator';
-import { DisplayName } from '../../../react/features/display-name';
+    isRemoteTrackMuted,
+} from "../../../react/features/base/tracks";
+import { ConnectionIndicator } from "../../../react/features/connection-indicator";
+import { DisplayName } from "../../../react/features/display-name";
 import {
     DominantSpeakerIndicator,
     RaisedHandIndicator,
-    StatusIndicators
-} from '../../../react/features/filmstrip';
+    StatusIndicators,
+} from "../../../react/features/filmstrip";
 import {
     LAYOUTS,
     getCurrentLayout,
     setTileView,
-    shouldDisplayTileView
-} from '../../../react/features/video-layout';
+    shouldDisplayTileView,
+} from "../../../react/features/video-layout";
 /* eslint-enable no-unused-vars */
 
 const logger = Logger.getLogger(__filename);
@@ -80,7 +80,6 @@ const DISPLAY_VIDEO_WITH_NAME = 3;
  */
 const DISPLAY_AVATAR_WITH_NAME = 4;
 
-
 /**
  *
  */
@@ -101,7 +100,8 @@ export default class SmallVideo {
          * @private
          * @type {boolean}
          */
-        this._showConnectionIndicator = !interfaceConfig.CONNECTION_INDICATOR_DISABLED;
+        this._showConnectionIndicator =
+            !interfaceConfig.CONNECTION_INDICATOR_DISABLED;
 
         /**
          * Whether or not the dominant speaker indicator should be displayed.
@@ -141,7 +141,7 @@ export default class SmallVideo {
      * <tt>false</tt> - otherwise.
      */
     isVisible() {
-        return this.$container.is(':visible');
+        return this.$container.is(":visible");
     }
 
     /**
@@ -149,11 +149,16 @@ export default class SmallVideo {
      */
     static createStreamElement(stream) {
         const isVideo = stream.isVideoTrack();
-        const element = isVideo ? document.createElement('video') : document.createElement('audio');
+        const element = isVideo
+            ? document.createElement("video")
+            : document.createElement("audio");
 
         if (isVideo) {
-            element.setAttribute('muted', 'true');
-            element.setAttribute('playsInline', 'true'); /* for Safari on iOS to work */
+            element.setAttribute("muted", "true");
+            element.setAttribute(
+                "playsInline",
+                "true"
+            ); /* for Safari on iOS to work */
         } else if (config.startSilent) {
             element.muted = true;
         }
@@ -168,7 +173,10 @@ export default class SmallVideo {
      * Returns the element id for a particular MediaStream.
      */
     static getStreamElementID(stream) {
-        return (stream.isVideoTrack() ? 'remoteVideo_' : 'remoteAudio_') + stream.getId();
+        return (
+            (stream.isVideoTrack() ? "remoteVideo_" : "remoteAudio_") +
+            stream.getId()
+        );
     }
 
     /**
@@ -207,20 +215,22 @@ export default class SmallVideo {
      * @returns {void}
      */
     updateStatusBar() {
-        const statusBarContainer = this.container.querySelector('.videocontainer__toolbar');
+        const statusBarContainer = this.container.querySelector(
+            ".videocontainer__toolbar"
+        );
 
         if (!statusBarContainer) {
             return;
         }
 
         ReactDOM.render(
-            <Provider store = { APP.store }>
-                <I18nextProvider i18n = { i18next }>
-                    <StatusIndicators
-                        participantID = { this.id } />
+            <Provider store={APP.store}>
+                <I18nextProvider i18n={i18next}>
+                    <StatusIndicators participantID={this.id} />
                 </I18nextProvider>
             </Provider>,
-            statusBarContainer);
+            statusBarContainer
+        );
     }
 
     /**
@@ -235,8 +245,8 @@ export default class SmallVideo {
             return;
         }
 
-        audioLevelContainer = document.createElement('span');
-        audioLevelContainer.className = 'audioindicator-container';
+        audioLevelContainer = document.createElement("span");
+        audioLevelContainer.className = "audioindicator-container";
         this.container.appendChild(audioLevelContainer);
         this.updateAudioLevelIndicator();
     }
@@ -264,7 +274,10 @@ export default class SmallVideo {
         const audioLevelContainer = this._getAudioLevelContainer();
 
         if (audioLevelContainer) {
-            ReactDOM.render(<AudioLevelIndicator audioLevel = { lvl }/>, audioLevelContainer);
+            ReactDOM.render(
+                <AudioLevelIndicator audioLevel={lvl} />,
+                audioLevelContainer
+            );
         }
     }
 
@@ -275,7 +288,7 @@ export default class SmallVideo {
      * @returns {HTMLElement} The DOM element that holds the AudioLevelIndicator.
      */
     _getAudioLevelContainer() {
-        return this.container.querySelector('.audioindicator-container');
+        return this.container.querySelector(".audioindicator-container");
     }
 
     /**
@@ -289,7 +302,7 @@ export default class SmallVideo {
      * array (after checking its length of course!).
      */
     selectVideoElement() {
-        return $($(this.container).find('video')[0]);
+        return $($(this.container).find("video")[0]);
     }
 
     /**
@@ -299,7 +312,7 @@ export default class SmallVideo {
      * element which displays the user's avatar.
      */
     $avatar() {
-        return this.$container.find('.avatar-container');
+        return this.$container.find(".avatar-container");
     }
 
     /**
@@ -309,7 +322,7 @@ export default class SmallVideo {
      * the video thumbnail
      */
     $displayName() {
-        return this.$container.find('.displayNameContainer');
+        return this.$container.find(".displayNameContainer");
     }
 
     /**
@@ -321,16 +334,19 @@ export default class SmallVideo {
      * @returns {void}
      */
     _renderDisplayName(props) {
-        const displayNameContainer = this.container.querySelector('.displayNameContainer');
+        const displayNameContainer = this.container.querySelector(
+            ".displayNameContainer"
+        );
 
         if (displayNameContainer) {
             ReactDOM.render(
-                <Provider store = { APP.store }>
-                    <I18nextProvider i18n = { i18next }>
-                        <DisplayName { ...props } />
+                <Provider store={APP.store}>
+                    <I18nextProvider i18n={i18next}>
+                        <DisplayName {...props} />
                     </I18nextProvider>
                 </Provider>,
-                displayNameContainer);
+                displayNameContainer
+            );
         }
     }
 
@@ -341,7 +357,9 @@ export default class SmallVideo {
      * @returns {void}
      */
     removeDisplayName() {
-        const displayNameContainer = this.container.querySelector('.displayNameContainer');
+        const displayNameContainer = this.container.querySelector(
+            ".displayNameContainer"
+        );
 
         if (displayNameContainer) {
             ReactDOM.unmountComponentAtNode(displayNameContainer);
@@ -355,7 +373,7 @@ export default class SmallVideo {
      * @param isFocused indicates if the thumbnail should be focused/pinned or not
      */
     focus(isFocused) {
-        const focusedCssClass = 'videoContainerFocused';
+        const focusedCssClass = "videoContainerFocused";
         const isFocusClassEnabled = this.$container.hasClass(focusedCssClass);
 
         if (!isFocused && isFocusClassEnabled) {
@@ -380,7 +398,10 @@ export default class SmallVideo {
      * or <tt>false</tt> otherwise.
      */
     isCurrentlyOnLargeVideo() {
-        return APP.store.getState()['features/large-video']?.participantId === this.id;
+        return (
+            APP.store.getState()["features/large-video"]?.participantId ===
+            this.id
+        );
     }
 
     /**
@@ -392,17 +413,26 @@ export default class SmallVideo {
      */
     isVideoPlayable() {
         const state = APP.store.getState();
-        const tracks = state['features/base/tracks'];
-        const participant = this.id ? getParticipantById(state, this.id) : getLocalParticipant(state);
+        const tracks = state["features/base/tracks"];
+        const participant = this.id
+            ? getParticipantById(state, this.id)
+            : getLocalParticipant(state);
         let isVideoMuted = true;
 
         if (participant?.local) {
             isVideoMuted = isLocalTrackMuted(tracks, MEDIA_TYPE.VIDEO);
-        } else if (!participant?.isFakeParticipant) { // remote participants excluding shared video
-            isVideoMuted = isRemoteTrackMuted(tracks, MEDIA_TYPE.VIDEO, this.id);
+        } else if (!participant?.isFakeParticipant) {
+            // remote participants excluding shared video
+            isVideoMuted = isRemoteTrackMuted(
+                tracks,
+                MEDIA_TYPE.VIDEO,
+                this.id
+            );
         }
 
-        return this.videoStream && !isVideoMuted && !APP.conference.isAudioOnly();
+        return (
+            this.videoStream && !isVideoMuted && !APP.conference.isAudioOnly()
+        );
     }
 
     /**
@@ -416,8 +446,14 @@ export default class SmallVideo {
             return input.isHovered ? DISPLAY_AVATAR_WITH_NAME : DISPLAY_AVATAR;
         } else if (input.isCurrentlyOnLargeVideo && !input.tileViewActive) {
             // Display name is always and only displayed when user is on the stage
-            return input.isVideoPlayable && !input.isAudioOnly ? DISPLAY_BLACKNESS_WITH_NAME : DISPLAY_AVATAR_WITH_NAME;
-        } else if (input.isVideoPlayable && input.hasVideo && !input.isAudioOnly) {
+            return input.isVideoPlayable && !input.isAudioOnly
+                ? DISPLAY_BLACKNESS_WITH_NAME
+                : DISPLAY_AVATAR_WITH_NAME;
+        } else if (
+            input.isVideoPlayable &&
+            input.hasVideo &&
+            !input.isAudioOnly
+        ) {
             // check hovering and change state to video with name
             return input.isHovered ? DISPLAY_VIDEO_WITH_NAME : DISPLAY_VIDEO;
         }
@@ -437,11 +473,20 @@ export default class SmallVideo {
         const state = APP.store.getState();
         const participant = getParticipantById(state, this.id);
 
-        if (typeof participant !== 'undefined' && !participant.isFakeParticipant && !participant.local) {
-            const tracks = state['features/base/tracks'];
-            const track = getTrackByMediaTypeAndParticipant(tracks, MEDIA_TYPE.VIDEO, this.id);
+        if (
+            typeof participant !== "undefined" &&
+            !participant.isFakeParticipant &&
+            !participant.local
+        ) {
+            const tracks = state["features/base/tracks"];
+            const track = getTrackByMediaTypeAndParticipant(
+                tracks,
+                MEDIA_TYPE.VIDEO,
+                this.id
+            );
 
-            isScreenSharing = typeof track !== 'undefined' && track.videoType === 'desktop';
+            isScreenSharing =
+                typeof track !== "undefined" && track.videoType === "desktop";
             connectionStatus = participant.connectionStatus;
         }
 
@@ -456,7 +501,9 @@ export default class SmallVideo {
             canPlayEventReceived: this._canPlayEventReceived,
             videoStream: Boolean(this.videoStream),
             isScreenSharing,
-            videoStreamMuted: this.videoStream ? this.videoStream.isMuted() : 'no stream'
+            videoStreamMuted: this.videoStream
+                ? this.videoStream.isMuted()
+                : "no stream",
         };
     }
 
@@ -475,10 +522,11 @@ export default class SmallVideo {
      */
     updateView() {
         this.$container.removeClass((index, classNames) =>
-            classNames.split(' ').filter(name => name.startsWith('display-')));
+            classNames.split(" ").filter((name) => name.startsWith("display-"))
+        );
 
         const oldDisplayMode = this.displayMode;
-        let displayModeString = '';
+        let displayModeString = "";
 
         const displayModeInput = this.computeDisplayModeInput();
 
@@ -486,31 +534,35 @@ export default class SmallVideo {
         this.displayMode = this.selectDisplayMode(displayModeInput);
 
         switch (this.displayMode) {
-        case DISPLAY_AVATAR_WITH_NAME:
-            displayModeString = 'avatar-with-name';
-            this.$container.addClass('display-avatar-with-name');
-            break;
-        case DISPLAY_BLACKNESS_WITH_NAME:
-            displayModeString = 'blackness-with-name';
-            this.$container.addClass('display-name-on-black');
-            break;
-        case DISPLAY_VIDEO:
-            displayModeString = 'video';
-            this.$container.addClass('display-video');
-            break;
-        case DISPLAY_VIDEO_WITH_NAME:
-            displayModeString = 'video-with-name';
-            this.$container.addClass('display-name-on-video');
-            break;
-        case DISPLAY_AVATAR:
-        default:
-            displayModeString = 'avatar';
-            this.$container.addClass('display-avatar-only');
-            break;
+            case DISPLAY_AVATAR_WITH_NAME:
+                displayModeString = "avatar-with-name";
+                this.$container.addClass("display-avatar-with-name");
+                break;
+            case DISPLAY_BLACKNESS_WITH_NAME:
+                displayModeString = "blackness-with-name";
+                this.$container.addClass("display-name-on-black");
+                break;
+            case DISPLAY_VIDEO:
+                displayModeString = "video";
+                this.$container.addClass("display-video");
+                break;
+            case DISPLAY_VIDEO_WITH_NAME:
+                displayModeString = "video-with-name";
+                this.$container.addClass("display-name-on-video");
+                break;
+            case DISPLAY_AVATAR:
+            default:
+                displayModeString = "avatar";
+                this.$container.addClass("display-avatar-only");
+                break;
         }
 
         if (this.displayMode !== oldDisplayMode) {
-            logger.debug(`Displaying ${displayModeString} for ${this.id}, data: [${JSON.stringify(displayModeInput)}]`);
+            logger.debug(
+                `Displaying ${displayModeString} for ${
+                    this.id
+                }, data: [${JSON.stringify(displayModeInput)}]`
+            );
         }
     }
 
@@ -527,10 +579,11 @@ export default class SmallVideo {
             // Maybe add a special case for local participant, as on init of
             // LocalVideo.js the id is set to "local" but will get updated later.
             ReactDOM.render(
-                <Provider store = { APP.store }>
+                <Provider store={APP.store}>
                     <AvatarDisplay
-                        className = 'userAvatar'
-                        participantId = { this.id } />
+                        className="userAvatar"
+                        participantId={this.id}
+                    />
                 </Provider>,
                 thumbnail
             );
@@ -563,7 +616,9 @@ export default class SmallVideo {
         }
 
         if (!this.container) {
-            logger.warn(`Unable to set dominant speaker indicator - ${this.videoSpanId} does not exist`);
+            logger.warn(
+                `Unable to set dominant speaker indicator - ${this.videoSpanId} does not exist`
+            );
 
             return;
         }
@@ -572,7 +627,10 @@ export default class SmallVideo {
         }
 
         this._showDominantSpeaker = show;
-        this.$container.toggleClass('active-speaker', this._showDominantSpeaker);
+        this.$container.toggleClass(
+            "active-speaker",
+            this._showDominantSpeaker
+        );
         this.updateIndicators();
         this.updateView();
     }
@@ -583,8 +641,9 @@ export default class SmallVideo {
      */
     showRaisedHandIndicator(show) {
         if (!this.container) {
-            logger.warn(`Unable to raised hand indication - ${
-                this.videoSpanId} does not exist`);
+            logger.warn(
+                `Unable to raised hand indication - ${this.videoSpanId} does not exist`
+            );
 
             return;
         }
@@ -608,9 +667,12 @@ export default class SmallVideo {
     initBrowserSpecificProperties() {
         const userAgent = window.navigator.userAgent;
 
-        if (userAgent.indexOf('QtWebEngine') > -1
-                && (userAgent.indexOf('Windows') > -1 || userAgent.indexOf('Linux') > -1)) {
-            this.$container.css('overflow', 'hidden');
+        if (
+            userAgent.indexOf("QtWebEngine") > -1 &&
+            (userAgent.indexOf("Windows") > -1 ||
+                userAgent.indexOf("Linux") > -1)
+        ) {
+            this.$container.css("overflow", "hidden");
         }
     }
 
@@ -620,11 +682,12 @@ export default class SmallVideo {
      * @returns {void}
      */
     remove() {
-        logger.log('Remove thumbnail', this.id);
+        //logger.log('Remove thumbnail', this.id);
         this.removeAudioLevelIndicator();
 
-        const toolbarContainer
-            = this.container.querySelector('.videocontainer__toolbar');
+        const toolbarContainer = this.container.querySelector(
+            ".videocontainer__toolbar"
+        );
 
         if (toolbarContainer) {
             ReactDOM.unmountComponentAtNode(toolbarContainer);
@@ -662,7 +725,9 @@ export default class SmallVideo {
      * @returns {void}
      */
     updateIndicators() {
-        const indicatorToolbar = this.container.querySelector('.videocontainer__toptoolbar');
+        const indicatorToolbar = this.container.querySelector(
+            ".videocontainer__toptoolbar"
+        );
 
         if (!indicatorToolbar) {
             return;
@@ -670,46 +735,52 @@ export default class SmallVideo {
 
         const { NORMAL = 8 } = interfaceConfig.INDICATOR_FONT_SIZES || {};
         const iconSize = NORMAL;
-        const showConnectionIndicator = this.videoIsHovered || !interfaceConfig.CONNECTION_INDICATOR_AUTO_HIDE_ENABLED;
+        const showConnectionIndicator =
+            this.videoIsHovered ||
+            !interfaceConfig.CONNECTION_INDICATOR_AUTO_HIDE_ENABLED;
         const state = APP.store.getState();
         const currentLayout = getCurrentLayout(state);
         const participantCount = getParticipantCount(state);
         let statsPopoverPosition, tooltipPosition;
 
         if (currentLayout === LAYOUTS.TILE_VIEW) {
-            statsPopoverPosition = 'right top';
-            tooltipPosition = 'right';
+            statsPopoverPosition = "right top";
+            tooltipPosition = "right";
         } else if (currentLayout === LAYOUTS.VERTICAL_FILMSTRIP_VIEW) {
             statsPopoverPosition = this.statsPopoverLocation;
-            tooltipPosition = 'left';
+            tooltipPosition = "left";
         } else {
             statsPopoverPosition = this.statsPopoverLocation;
-            tooltipPosition = 'top';
+            tooltipPosition = "top";
         }
 
         ReactDOM.render(
-            <Provider store = { APP.store }>
-                <I18nextProvider i18n = { i18next }>
+            <Provider store={APP.store}>
+                <I18nextProvider i18n={i18next}>
                     <div>
-                        <AtlasKitThemeProvider mode = 'dark'>
-                            { this._showConnectionIndicator
-                                ? <ConnectionIndicator
-                                    alwaysVisible = { showConnectionIndicator }
-                                    iconSize = { iconSize }
-                                    isLocalVideo = { this.isLocal }
-                                    enableStatsDisplay = { true }
-                                    participantId = { this.id }
-                                    statsPopoverPosition = { statsPopoverPosition } />
-                                : null }
+                        <AtlasKitThemeProvider mode="dark">
+                            {this._showConnectionIndicator ? (
+                                <ConnectionIndicator
+                                    alwaysVisible={showConnectionIndicator}
+                                    iconSize={iconSize}
+                                    isLocalVideo={this.isLocal}
+                                    enableStatsDisplay={true}
+                                    participantId={this.id}
+                                    statsPopoverPosition={statsPopoverPosition}
+                                />
+                            ) : null}
                             <RaisedHandIndicator
-                                iconSize = { iconSize }
-                                participantId = { this.id }
-                                tooltipPosition = { tooltipPosition } />
-                            { this._showDominantSpeaker && participantCount > 2
-                                ? <DominantSpeakerIndicator
-                                    iconSize = { iconSize }
-                                    tooltipPosition = { tooltipPosition } />
-                                : null }
+                                iconSize={iconSize}
+                                participantId={this.id}
+                                tooltipPosition={tooltipPosition}
+                            />
+                            {this._showDominantSpeaker &&
+                            participantCount > 2 ? (
+                                <DominantSpeakerIndicator
+                                    iconSize={iconSize}
+                                    tooltipPosition={tooltipPosition}
+                                />
+                            ) : null}
                         </AtlasKitThemeProvider>
                     </div>
                 </I18nextProvider>
@@ -757,9 +828,11 @@ export default class SmallVideo {
         // the components share the same eventing system.
         const $source = $(event.target || event.srcElement);
 
-        return $source.parents('.displayNameContainer').length === 0
-            && $source.parents('.popover').length === 0
-            && !event.target.classList.contains('popover');
+        return (
+            $source.parents(".displayNameContainer").length === 0 &&
+            $source.parents(".popover").length === 0 &&
+            !event.target.classList.contains("popover")
+        );
     }
 
     /**
@@ -768,8 +841,12 @@ export default class SmallVideo {
      * @returns {void}
      */
     togglePin() {
-        const pinnedParticipant = getPinnedParticipant(APP.store.getState()) || {};
-        const participantIdToPin = pinnedParticipant && pinnedParticipant.id === this.id ? null : this.id;
+        const pinnedParticipant =
+            getPinnedParticipant(APP.store.getState()) || {};
+        const participantIdToPin =
+            pinnedParticipant && pinnedParticipant.id === this.id
+                ? null
+                : this.id;
 
         APP.store.dispatch(pinParticipant(participantIdToPin));
     }
@@ -782,7 +859,9 @@ export default class SmallVideo {
      * @returns {void}
      */
     _unmountIndicators() {
-        const indicatorToolbar = this.container.querySelector('.videocontainer__toptoolbar');
+        const indicatorToolbar = this.container.querySelector(
+            ".videocontainer__toptoolbar"
+        );
 
         if (indicatorToolbar) {
             ReactDOM.unmountComponentAtNode(indicatorToolbar);
@@ -794,61 +873,66 @@ export default class SmallVideo {
      */
     _setThumbnailSize() {
         const layout = getCurrentLayout(APP.store.getState());
-        const heightToWidthPercent = 100
-                / (this.isLocal ? interfaceConfig.LOCAL_THUMBNAIL_RATIO : interfaceConfig.REMOTE_THUMBNAIL_RATIO);
+        const heightToWidthPercent =
+            100 /
+            (this.isLocal
+                ? interfaceConfig.LOCAL_THUMBNAIL_RATIO
+                : interfaceConfig.REMOTE_THUMBNAIL_RATIO);
 
         switch (layout) {
-        case LAYOUTS.VERTICAL_FILMSTRIP_VIEW: {
-            this.$container.css('padding-top', `${heightToWidthPercent}%`);
-            this.$avatar().css({
-                height: '50%',
-                width: `${heightToWidthPercent / 2}%`
-            });
-            break;
-        }
-        case LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW: {
-            const state = APP.store.getState();
-            const { local, remote } = state['features/filmstrip'].horizontalViewDimensions;
-            const size = this.isLocal ? local : remote;
-
-            if (typeof size !== 'undefined') {
-                const { height, width } = size;
-                const avatarSize = height / 2;
-
-                this.$container.css({
-                    height: `${height}px`,
-                    'min-height': `${height}px`,
-                    'min-width': `${width}px`,
-                    width: `${width}px`
-                });
+            case LAYOUTS.VERTICAL_FILMSTRIP_VIEW: {
+                this.$container.css("padding-top", `${heightToWidthPercent}%`);
                 this.$avatar().css({
-                    height: `${avatarSize}px`,
-                    width: `${avatarSize}px`
+                    height: "50%",
+                    width: `${heightToWidthPercent / 2}%`,
                 });
+                break;
             }
-            break;
-        }
-        case LAYOUTS.TILE_VIEW: {
-            const state = APP.store.getState();
-            const { thumbnailSize } = state['features/filmstrip'].tileViewDimensions;
+            case LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW: {
+                const state = APP.store.getState();
+                const { local, remote } =
+                    state["features/filmstrip"].horizontalViewDimensions;
+                const size = this.isLocal ? local : remote;
 
-            if (typeof thumbnailSize !== 'undefined') {
-                const { height, width } = thumbnailSize;
-                const avatarSize = height / 2;
+                if (typeof size !== "undefined") {
+                    const { height, width } = size;
+                    const avatarSize = height / 2;
 
-                this.$container.css({
-                    height: `${height}px`,
-                    'min-height': `${height}px`,
-                    'min-width': `${width}px`,
-                    width: `${width}px`
-                });
-                this.$avatar().css({
-                    height: `${avatarSize}px`,
-                    width: `${avatarSize}px`
-                });
+                    this.$container.css({
+                        height: `${height}px`,
+                        "min-height": `${height}px`,
+                        "min-width": `${width}px`,
+                        width: `${width}px`,
+                    });
+                    this.$avatar().css({
+                        height: `${avatarSize}px`,
+                        width: `${avatarSize}px`,
+                    });
+                }
+                break;
             }
-            break;
-        }
+            case LAYOUTS.TILE_VIEW: {
+                const state = APP.store.getState();
+                const { thumbnailSize } =
+                    state["features/filmstrip"].tileViewDimensions;
+
+                if (typeof thumbnailSize !== "undefined") {
+                    const { height, width } = thumbnailSize;
+                    const avatarSize = height / 2;
+
+                    this.$container.css({
+                        height: `${height}px`,
+                        "min-height": `${height}px`,
+                        "min-width": `${width}px`,
+                        width: `${width}px`,
+                    });
+                    this.$avatar().css({
+                        height: `${avatarSize}px`,
+                        width: `${avatarSize}px`,
+                    });
+                }
+                break;
+            }
         }
     }
 }

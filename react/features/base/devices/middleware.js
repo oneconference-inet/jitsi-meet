@@ -338,7 +338,7 @@ function _useDevice({ dispatch }, devices) {
                 dispatch,
                 true,
                 device.label)
-                .then(() => logger.log('changed audio output device'))
+                .then(() => //logger.log('changed audio output device'))
                 .catch(err => {
                     logger.warn(
                         'Failed to change audio output device.',

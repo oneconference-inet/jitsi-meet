@@ -1,18 +1,17 @@
 /* global APP */
-import { jitsiLocalStorage } from '@jitsi/js-utils';
-import Logger from 'jitsi-meet-logger';
+import { jitsiLocalStorage } from "@jitsi/js-utils";
+import Logger from "jitsi-meet-logger";
 
 import {
     ACTION_SHORTCUT_PRESSED as PRESSED,
     ACTION_SHORTCUT_RELEASED as RELEASED,
     createShortcutEvent,
-    sendAnalytics
-} from '../../react/features/analytics';
-import { toggleDialog } from '../../react/features/base/dialog';
-import { clickOnVideo } from '../../react/features/filmstrip/actions';
-import { KeyboardShortcutsDialog }
-    from '../../react/features/keyboard-shortcuts';
-import { SpeakerStats } from '../../react/features/speaker-stats';
+    sendAnalytics,
+} from "../../react/features/analytics";
+import { toggleDialog } from "../../react/features/base/dialog";
+import { clickOnVideo } from "../../react/features/filmstrip/actions";
+import { KeyboardShortcutsDialog } from "../../react/features/keyboard-shortcuts";
+import { SpeakerStats } from "../../react/features/speaker-stats";
 
 const logger = Logger.getLogger(__filename);
 
@@ -32,7 +31,7 @@ const _shortcutsHelp = new Map();
 /**
  * The key used to save in local storage if keyboard shortcuts are enabled.
  */
-const _enableShortcutsKey = 'enableShortcuts';
+const _enableShortcutsKey = "enableShortcuts";
 
 /**
  * Prefer keyboard handling of these elements over global shortcuts.
@@ -40,33 +39,32 @@ const _enableShortcutsKey = 'enableShortcuts';
  * If an input element is focused and M is pressed it should not mute audio.
  */
 const _elementsBlacklist = [
-    'input',
-    'textarea',
-    'button',
-    '[role=button]',
-    '[role=menuitem]',
-    '[role=radio]',
-    '[role=tab]',
-    '[role=option]',
-    '[role=switch]',
-    '[role=range]',
-    '[role=log]'
+    "input",
+    "textarea",
+    "button",
+    "[role=button]",
+    "[role=menuitem]",
+    "[role=radio]",
+    "[role=tab]",
+    "[role=option]",
+    "[role=switch]",
+    "[role=range]",
+    "[role=log]",
 ];
 
 /**
  * An element selector for elements that have their own keyboard handling.
  */
-const _focusedElementsSelector = `:focus:is(${_elementsBlacklist.join(',')})`;
+const _focusedElementsSelector = `:focus:is(${_elementsBlacklist.join(",")})`;
 
 /**
  * Maps keycode to character, id of popover for given function and function.
  */
 const KeyboardShortcut = {
-
     init() {
         this._initGlobalShortcuts();
 
-        window.onkeyup = e => {
+        window.onkeyup = (e) => {
             if (!this.getEnabled()) {
                 return;
             }
@@ -82,23 +80,25 @@ const KeyboardShortcut = {
             }
         };
 
-        window.onkeydown = e => {
+        window.onkeydown = (e) => {
             if (!this.getEnabled()) {
                 return;
             }
-            const focusedElement = document.querySelector(_focusedElementsSelector);
+            const focusedElement = document.querySelector(
+                _focusedElementsSelector
+            );
 
             if (!focusedElement) {
-                if (this._getKeyboardKey(e).toUpperCase() === ' ') {
+                if (this._getKeyboardKey(e).toUpperCase() === " ") {
                     if (APP.conference.isLocalAudioMuted()) {
-                        sendAnalytics(createShortcutEvent(
-                            'push.to.talk',
-                            PRESSED));
-                        logger.log('Talk shortcut pressed');
+                        sendAnalytics(
+                            createShortcutEvent("push.to.talk", PRESSED)
+                        );
+                        //logger.log('Talk shortcut pressed');
                         APP.conference.muteAudio(false);
                     }
                 }
-            } else if (this._getKeyboardKey(e).toUpperCase() === 'ESCAPE') {
+            } else if (this._getKeyboardKey(e).toUpperCase() === "ESCAPE") {
                 // Allow to remove focus from selected elements using ESC key.
                 if (focusedElement && focusedElement.blur) {
                     focusedElement.blur();
@@ -118,7 +118,9 @@ const KeyboardShortcut = {
     getEnabled() {
         // Should be enabled if not explicitly set to false
         // eslint-disable-next-line no-unneeded-ternary
-        return jitsiLocalStorage.getItem(_enableShortcutsKey) === 'false' ? false : true;
+        return jitsiLocalStorage.getItem(_enableShortcutsKey) === "false"
+            ? false
+            : true;
     },
 
     /**
@@ -127,9 +129,11 @@ const KeyboardShortcut = {
      * @returns {void}
      */
     openDialog() {
-        APP.store.dispatch(toggleDialog(KeyboardShortcutsDialog, {
-            shortcutDescriptions: _shortcutsHelp
-        }));
+        APP.store.dispatch(
+            toggleDialog(KeyboardShortcutsDialog, {
+                shortcutDescriptions: _shortcutsHelp,
+            })
+        );
     },
 
     /**
@@ -144,21 +148,25 @@ const KeyboardShortcut = {
      * in the help menu
      * @param altKey whether or not the alt key must be pressed.
      */
-    registerShortcut(// eslint-disable-line max-params
-            shortcutChar,
-            shortcutAttr,
-            exec,
-            helpDescription,
-            altKey = false) {
+    registerShortcut( // eslint-disable-line max-params
+        shortcutChar,
+        shortcutAttr,
+        exec,
+        helpDescription,
+        altKey = false
+    ) {
         _shortcuts.set(altKey ? `:${shortcutChar}` : shortcutChar, {
             character: shortcutChar,
             function: exec,
             shortcutAttr,
-            altKey
+            altKey,
         });
 
         if (helpDescription) {
-            this._addShortcutToHelp(altKey ? `:${shortcutChar}` : shortcutChar, helpDescription);
+            this._addShortcutToHelp(
+                altKey ? `:${shortcutChar}` : shortcutChar,
+                helpDescription
+            );
         }
     },
 
@@ -183,7 +191,7 @@ const KeyboardShortcut = {
         // the char from the code. It also prefixes with a colon to differentiate
         // alt combo from simple keypress.
         if (e.altKey) {
-            const key = e.code.replace('Key', '');
+            const key = e.code.replace("Key", "");
 
             return `:${key}`;
         }
@@ -193,28 +201,29 @@ const KeyboardShortcut = {
         // and "?", when the browser cannot properly map a key press event to a
         // keyboard key. To be safe, when a key is "Unidentified" it must be
         // further analyzed by jitsi to a key using e.which.
-        if (typeof e.key === 'string' && e.key !== 'Unidentified') {
+        if (typeof e.key === "string" && e.key !== "Unidentified") {
             return e.key;
         }
-        if (e.type === 'keypress'
-                && ((e.which >= 32 && e.which <= 126)
-                    || (e.which >= 160 && e.which <= 255))) {
+        if (
+            e.type === "keypress" &&
+            ((e.which >= 32 && e.which <= 126) ||
+                (e.which >= 160 && e.which <= 255))
+        ) {
             return String.fromCharCode(e.which);
         }
 
         // try to fallback (0-9A-Za-z and QWERTY keyboard)
         switch (e.which) {
-        case 27:
-            return 'Escape';
-        case 191:
-            return e.shiftKey ? '?' : '/';
+            case 27:
+                return "Escape";
+            case 191:
+                return e.shiftKey ? "?" : "/";
         }
-        if (e.shiftKey || e.type === 'keypress') {
+        if (e.shiftKey || e.type === "keypress") {
             return String.fromCharCode(e.which);
         }
 
         return String.fromCharCode(e.which).toLowerCase();
-
     },
 
     /**
@@ -235,34 +244,46 @@ const KeyboardShortcut = {
      * triggered _only_ with a shortcut.
      */
     _initGlobalShortcuts() {
-        this.registerShortcut('?', null, () => {
-            sendAnalytics(createShortcutEvent('help'));
-            this.openDialog();
-        }, 'keyboardShortcuts.toggleShortcuts');
+        this.registerShortcut(
+            "?",
+            null,
+            () => {
+                sendAnalytics(createShortcutEvent("help"));
+                this.openDialog();
+            },
+            "keyboardShortcuts.toggleShortcuts"
+        );
 
         // register SPACE shortcut in two steps to insure visibility of help
         // message
-        this.registerShortcut(' ', null, () => {
-            sendAnalytics(createShortcutEvent('push.to.talk', RELEASED));
-            logger.log('Talk shortcut released');
+        this.registerShortcut(" ", null, () => {
+            sendAnalytics(createShortcutEvent("push.to.talk", RELEASED));
+            //logger.log('Talk shortcut released');
             APP.conference.muteAudio(true);
         });
-        this._addShortcutToHelp('SPACE', 'keyboardShortcuts.pushToTalk');
+        this._addShortcutToHelp("SPACE", "keyboardShortcuts.pushToTalk");
 
-        this.registerShortcut('T', null, () => {
-            sendAnalytics(createShortcutEvent('speaker.stats'));
-            APP.store.dispatch(toggleDialog(SpeakerStats, {
-                conference: APP.conference
-            }));
-        }, 'keyboardShortcuts.showSpeakerStats');
+        this.registerShortcut(
+            "T",
+            null,
+            () => {
+                sendAnalytics(createShortcutEvent("speaker.stats"));
+                APP.store.dispatch(
+                    toggleDialog(SpeakerStats, {
+                        conference: APP.conference,
+                    })
+                );
+            },
+            "keyboardShortcuts.showSpeakerStats"
+        );
 
         /**
          * FIXME: Currently focus keys are directly implemented below in
          * onkeyup. They should be moved to the SmallVideo instead.
          */
-        this._addShortcutToHelp('0', 'keyboardShortcuts.focusLocal');
-        this._addShortcutToHelp('1-9', 'keyboardShortcuts.focusRemote');
-    }
+        this._addShortcutToHelp("0", "keyboardShortcuts.focusLocal");
+        this._addShortcutToHelp("1-9", "keyboardShortcuts.focusRemote");
+    },
 };
 
 export default KeyboardShortcut;

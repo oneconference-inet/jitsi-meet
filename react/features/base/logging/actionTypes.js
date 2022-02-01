@@ -4,10 +4,10 @@
  *
  * {
  *     type: SET_LOG_COLLECTOR,
- *     logCollector: Logger.LogCollector
+ *     logCollector: //logger.logCollector
  * }
  */
-export const SET_LOG_COLLECTOR = 'SET_LOG_COLLECTOR';
+export const SET_LOG_COLLECTOR = "SET_LOG_COLLECTOR";
 
 /**
  * The type of redux action which sets the configuration of the feature
@@ -18,4 +18,4 @@ export const SET_LOG_COLLECTOR = 'SET_LOG_COLLECTOR';
  *     config: Object
  * }
  */
-export const SET_LOGGING_CONFIG = 'SET_LOGGING_CONFIG';
+export const SET_LOGGING_CONFIG = "SET_LOGGING_CONFIG";

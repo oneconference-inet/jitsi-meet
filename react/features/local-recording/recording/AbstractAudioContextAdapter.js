@@ -1,6 +1,6 @@
-import logger from '../logger';
+import logger from "../logger";
 
-import { RecordingAdapter } from './RecordingAdapter';
+import { RecordingAdapter } from "./RecordingAdapter";
 
 /**
  * Base class for {@code AudioContext}-based recording adapters.
@@ -46,7 +46,7 @@ export class AbstractAudioContextAdapter extends RecordingAdapter {
 
         this._audioContext = new AudioContext();
         this._sampleRate = this._audioContext.sampleRate;
-        logger.log(`Current sampleRate ${this._sampleRate}.`);
+        //logger.log(`Current sampleRate ${this._sampleRate}.`);
     }
 
     /**
@@ -59,25 +59,25 @@ export class AbstractAudioContextAdapter extends RecordingAdapter {
      * @returns {Promise}
      */
     _initializeAudioContext(micDeviceId, callback) {
-        if (typeof callback !== 'function') {
-            return Promise.reject('a callback function is required.');
+        if (typeof callback !== "function") {
+            return Promise.reject("a callback function is required.");
         }
 
         return this._getAudioStream(micDeviceId)
-        .then(stream => {
-            this._stream = stream;
-            this._audioSource
-                = this._audioContext.createMediaStreamSource(stream);
-            this._audioProcessingNode
-                = this._audioContext.createScriptProcessor(4096, 1, 1);
-            this._audioProcessingNode.onaudioprocess = callback;
-            logger.debug('AudioContext is set up.');
-        })
-        .catch(err => {
-            logger.error(`Error calling getUserMedia(): ${err}`);
+            .then((stream) => {
+                this._stream = stream;
+                this._audioSource =
+                    this._audioContext.createMediaStreamSource(stream);
+                this._audioProcessingNode =
+                    this._audioContext.createScriptProcessor(4096, 1, 1);
+                this._audioProcessingNode.onaudioprocess = callback;
+                logger.debug("AudioContext is set up.");
+            })
+            .catch((err) => {
+                logger.error(`Error calling getUserMedia(): ${err}`);
 
-            return Promise.reject(err);
-        });
+                return Promise.reject(err);
+            });
     }
 
     /**
@@ -113,9 +113,9 @@ export class AbstractAudioContextAdapter extends RecordingAdapter {
      */
     _replaceMic(micDeviceId) {
         if (this._audioContext && this._audioProcessingNode) {
-            return this._getAudioStream(micDeviceId).then(newStream => {
-                const newSource = this._audioContext
-                    .createMediaStreamSource(newStream);
+            return this._getAudioStream(micDeviceId).then((newStream) => {
+                const newSource =
+                    this._audioContext.createMediaStreamSource(newStream);
 
                 this._audioSource.disconnect();
                 newSource.connect(this._audioProcessingNode);

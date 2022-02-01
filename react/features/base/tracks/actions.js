@@ -339,7 +339,7 @@ function replaceStoredTracks(oldTrack, newTrack) {
                         newTrack.getType(),
                         'track.replaced',
                         isMuted));
-                    logger.log(`Replace ${newTrack.getType()} track - ${
+                    //logger.log(`Replace ${newTrack.getType()} track - ${
                         isMuted ? 'muted' : 'unmuted'}`);
 
                     return dispatch(setMuted(isMuted));

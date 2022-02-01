@@ -829,7 +829,7 @@ export default {
                 track.mute();
             }
         });
-        logger.log(`Initialized with ${tracks.length} local tracks`);
+        //logger.log(`Initialized with ${tracks.length} local tracks`);
 
         this._localTracksInitialized = true;
         con.addEventListener(
@@ -2137,7 +2137,7 @@ export default {
                     APP.store.dispatch(toggleScreenshotCaptureEffect(true));
                 }
                 sendAnalytics(createScreenSharingEvent('started'));
-                logger.log('Screen sharing started');
+                //logger.log('Screen sharing started');
             })
             .catch((error) => {
                 this.videoSwitchInProgress = false;
@@ -2250,7 +2250,7 @@ export default {
             }
 
             APP.store.dispatch(updateRemoteParticipantFeatures(user));
-            logger.log(`USER ${id} connnected:`, user);
+            //logger.log(`USER ${id} connnected:`, user);
             APP.UI.addUser(user);
         });
 
@@ -2262,7 +2262,7 @@ export default {
                 return;
             }
 
-            logger.log(`USER ${id} LEFT:`, user);
+            //logger.log(`USER ${id} LEFT:`, user);
         });
 
         room.on(JitsiConferenceEvents.USER_STATUS_CHANGED, (id, status) => {
@@ -2317,7 +2317,7 @@ export default {
             if (config.debug) {
                 this.audioLevelsMap[id] = newLvl;
                 if (config.debugAudioLevels) {
-                    logger.log(`AudioLevel:${id}/${newLvl}`);
+                    //logger.log(`AudioLevel:${id}/${newLvl}`);
                 }
             }
 
@@ -2612,7 +2612,7 @@ export default {
                     .then((effect) => this.localVideo.setEffect(effect))
                     .then(() => {
                         this.setVideoMuteStatus(false);
-                        logger.log('switched local video device');
+                        //logger.log('switched local video device');
                         this._updateVideoDeviceId();
                     })
                     .catch((err) => APP.store.dispatch(notifyCameraError(err)));
@@ -2621,7 +2621,7 @@ export default {
                 // id for video, dispose the existing presenter track and create a new effect
                 // that can be applied on un-mute.
             } else if (this.isSharingScreen && videoWasMuted) {
-                logger.log('switched local video device');
+                //logger.log('switched local video device');
                 const { height } = this.localVideo.track.getSettings();
 
                 this._updateVideoDeviceId();
@@ -2648,12 +2648,12 @@ export default {
                         return stream;
                     })
                     .then((stream) => {
-                        logger.log('Switching the local video device.');
+                        //logger.log('Switching the local video device.');
 
                         return this.useVideoStream(stream);
                     })
                     .then(() => {
-                        logger.log('Switched local video device.');
+                        //logger.log('Switched local video device.');
                         this._updateVideoDeviceId();
                     })
                     .catch((error) => {
@@ -2714,7 +2714,7 @@ export default {
                         this.localAudio._realDeviceId =
                             this.localAudio.deviceId = 'default';
                     }
-                    logger.log(
+                    //logger.log(
                         `switched local audio device: ${this.localAudio?.getDeviceId()}`
                     );
 
@@ -3151,7 +3151,7 @@ export default {
                                 'device list changed'
                             )
                         );
-                        logger.log('Audio mute: device list changed');
+                        //logger.log('Audio mute: device list changed');
                         muteLocalAudio(true);
                     }
 
@@ -3162,7 +3162,7 @@ export default {
                                 'device list changed'
                             )
                         );
-                        logger.log('Video mute: device list changed');
+                        //logger.log('Video mute: device list changed');
                         muteLocalVideo(true);
                     }
                 })

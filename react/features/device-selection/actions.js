@@ -56,7 +56,7 @@ export function submitDeviceSelectionTab(newState) {
                 dispatch,
                 true,
                 getDeviceLabelById(getState(), newState.selectedAudioOutputId, 'audioOutput'))
-                .then(() => logger.log('changed audio output device'))
+                .then(() => //logger.log('changed audio output device'))
                 .catch(err => {
                     logger.warn(
                         'Failed to change audio output device.',

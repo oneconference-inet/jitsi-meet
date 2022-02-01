@@ -1,12 +1,12 @@
 // @flow
 
-import VideoLayout from '../../../modules/UI/videolayout/VideoLayout';
-import JitsiMeetJS from '../base/lib-jitsi-meet';
+import VideoLayout from "../../../modules/UI/videolayout/VideoLayout";
+import JitsiMeetJS from "../base/lib-jitsi-meet";
 
-import { enableReceiver, stopReceiver } from './actions';
-import { REMOTE_CONTROL_MESSAGE_NAME, EVENTS } from './constants';
-import { keyboardEventToKey } from './keycodes';
-import logger from './logger';
+import { enableReceiver, stopReceiver } from "./actions";
+import { REMOTE_CONTROL_MESSAGE_NAME, EVENTS } from "./constants";
+import { keyboardEventToKey } from "./keycodes";
+import logger from "./logger";
 
 /**
  * Checks if the remote contrrol is enabled.
@@ -15,7 +15,10 @@ import logger from './logger';
  * @returns {boolean} - True if the remote control is enabled and false otherwise.
  */
 export function isRemoteControlEnabled(state: Object) {
-    return !state['features/base/config'].disableRemoteControl && JitsiMeetJS.isDesktopSharingEnabled();
+    return (
+        !state["features/base/config"].disableRemoteControl &&
+        JitsiMeetJS.isDesktopSharingEnabled()
+    );
 }
 
 /**
@@ -27,11 +30,15 @@ export function isRemoteControlEnabled(state: Object) {
  * @returns {boolean} - True if the message was sent successfully and false otherwise.
  */
 export function sendRemoteControlEndpointMessage(
-        conference: Object,
-        to: ?string,
-        event: Object) {
+    conference: Object,
+    to: ?string,
+    event: Object
+) {
     if (!to) {
-        logger.warn('Remote control: Skip sending remote control event. Params:', to);
+        logger.warn(
+            "Remote control: Skip sending remote control event. Params:",
+            to
+        );
 
         return false;
     }
@@ -39,41 +46,47 @@ export function sendRemoteControlEndpointMessage(
     try {
         conference.sendEndpointMessage(to, {
             name: REMOTE_CONTROL_MESSAGE_NAME,
-            ...event
+            ...event,
         });
 
         return true;
     } catch (error) {
-        logger.error('Failed to send EndpointMessage via the datachannels', error);
+        logger.error(
+            "Failed to send EndpointMessage via the datachannels",
+            error
+        );
 
         return false;
     }
 }
 
 /**
-* Handles remote control events from the external app. Currently only
-* events with type EVENTS.supported and EVENTS.stop are
-* supported.
-*
-* @param {RemoteControlEvent} event - The remote control event.
-* @param {Store} store - The redux store.
-* @returns {void}
-*/
-export function onRemoteControlAPIEvent(event: Object, { getState, dispatch }: Object) {
+ * Handles remote control events from the external app. Currently only
+ * events with type EVENTS.supported and EVENTS.stop are
+ * supported.
+ *
+ * @param {RemoteControlEvent} event - The remote control event.
+ * @param {Store} store - The redux store.
+ * @returns {void}
+ */
+export function onRemoteControlAPIEvent(
+    event: Object,
+    { getState, dispatch }: Object
+) {
     switch (event.type) {
-    case EVENTS.supported:
-        logger.log('Remote Control supported.');
-        if (isRemoteControlEnabled(getState())) {
-            dispatch(enableReceiver());
-        } else {
-            logger.log('Remote Control disabled.');
-        }
-        break;
-    case EVENTS.stop: {
-        dispatch(stopReceiver());
+        case EVENTS.supported:
+            //logger.log('Remote Control supported.');
+            if (isRemoteControlEnabled(getState())) {
+                dispatch(enableReceiver());
+            } else {
+                //logger.log('Remote Control disabled.');
+            }
+            break;
+        case EVENTS.stop: {
+            dispatch(stopReceiver());
 
-        break;
-    }
+            break;
+        }
     }
 }
 
@@ -85,7 +98,6 @@ export function onRemoteControlAPIEvent(event: Object, { getState, dispatch }: O
 export function getRemoteConrolEventCaptureArea() {
     return VideoLayout.getLargeVideoWrapper();
 }
-
 
 /**
  * Extract the keyboard key from the keyboard event.
@@ -107,22 +119,20 @@ export function getModifiers(event: Object) {
     const modifiers = [];
 
     if (event.shiftKey) {
-        modifiers.push('shift');
+        modifiers.push("shift");
     }
 
     if (event.ctrlKey) {
-        modifiers.push('control');
+        modifiers.push("control");
     }
 
-
     if (event.altKey) {
-        modifiers.push('alt');
+        modifiers.push("alt");
     }
 
     if (event.metaKey) {
-        modifiers.push('command');
+        modifiers.push("command");
     }
 
     return modifiers;
 }
-

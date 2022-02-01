@@ -1,27 +1,27 @@
 // @flow
 
-import { getCurrentConference } from '../base/conference';
-import { participantIsKnockingOrUpdated } from './actions';
-import socketIOClient from 'socket.io-client';
-import Logger from 'jitsi-meet-logger';
+import { getCurrentConference } from "../base/conference";
+import { participantIsKnockingOrUpdated } from "./actions";
+import socketIOClient from "socket.io-client";
+import Logger from "jitsi-meet-logger";
 /**
-* Selector to return lobby enable state.
-*
-* @param {any} state - State object.
-* @returns {boolean}
-*/
+ * Selector to return lobby enable state.
+ *
+ * @param {any} state - State object.
+ * @returns {boolean}
+ */
 export function getLobbyEnabled(state: any) {
-    return state['features/lobby'].lobbyEnabled;
+    return state["features/lobby"].lobbyEnabled;
 }
 
 /**
-* Selector to return a list of knocking participants.
-*
-* @param {any} state - State object.
-* @returns {Array<Object>}
-*/
+ * Selector to return a list of knocking participants.
+ *
+ * @param {any} state - State object.
+ * @returns {Array<Object>}
+ */
 export function getKnockingParticipants(state: any) {
-    return state['features/lobby'].knockingParticipants;
+    return state["features/lobby"].knockingParticipants;
 }
 
 /**
@@ -31,17 +31,17 @@ export function getKnockingParticipants(state: any) {
  * @returns {any}
  */
 export function getIsLobbyVisible(state: any) {
-    return state['features/lobby'].lobbyVisible;
+    return state["features/lobby"].lobbyVisible;
 }
 
 export function onSocketReqJoin(meetingId, endpoint, props) {
-    const { dispatch } = props
+    const { dispatch } = props;
     const logger = Logger.getLogger(__filename);
-    const socket = socketIOClient(endpoint)
-    socket.on(meetingId+'-requestjoin' , (incoming) => {
-        logger.log("Incoming-Join: ", incoming)
+    const socket = socketIOClient(endpoint);
+    socket.on(meetingId + "-requestjoin", (incoming) => {
+        //logger.log("Incoming-Join: ", incoming)
         dispatch(participantIsKnockingOrUpdated(incoming));
-    })
+    });
 }
 /**
  * Selector to return array with knocking participant ids.
@@ -50,5 +50,5 @@ export function onSocketReqJoin(meetingId, endpoint, props) {
  * @returns {Array}
  */
 export function getKnockingParticipantsById(state: any) {
-    return getKnockingParticipants(state).map(participant => participant.id);
+    return getKnockingParticipants(state).map((participant) => participant.id);
 }

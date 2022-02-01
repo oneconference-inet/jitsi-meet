@@ -1,12 +1,12 @@
 /* @flow */
 
-import { SET_LOG_COLLECTOR, SET_LOGGING_CONFIG } from './actionTypes';
+import { SET_LOG_COLLECTOR, SET_LOGGING_CONFIG } from "./actionTypes";
 
 /**
- * Stores a {@code Logger.LogCollector} instance which will be uploading logs
+ * Stores a {@code //logger.logCollector} instance which will be uploading logs
  * to CallStats.
  *
- * @param {Logger.LogCollector} logCollector - The log collector instance to be
+ * @param {//logger.logCollector} logCollector - The log collector instance to be
  * stored in the Redux state of base/logging feature.
  * @returns {{
  *     type,
@@ -16,7 +16,7 @@ import { SET_LOG_COLLECTOR, SET_LOGGING_CONFIG } from './actionTypes';
 export function setLogCollector(logCollector: ?Object) {
     return {
         type: SET_LOG_COLLECTOR,
-        logCollector
+        logCollector,
     };
 }
 
@@ -33,6 +33,6 @@ export function setLogCollector(logCollector: ?Object) {
 export function setLoggingConfig(config: Object) {
     return {
         type: SET_LOGGING_CONFIG,
-        config
+        config,
     };
 }

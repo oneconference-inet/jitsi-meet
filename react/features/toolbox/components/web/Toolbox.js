@@ -358,7 +358,7 @@ class Toolbox extends Component<Props, State> {
             }
             // console.log("Approve: ", getApprove)
             if (getApprove.data.approve) {
-                logger.log("Room is require approve to join.");
+                //logger.log("Room is require approve to join.");
                 APP.store.dispatch(setLobbyModeEnabled(true));
                 onSocketReqJoin(meetingid, endpoint, this.props);
             } else {
@@ -366,7 +366,7 @@ class Toolbox extends Component<Props, State> {
             }
         }
         // On socket for Host
-        logger.log("Moderator ONE-Conference On Socket-for-Feature");
+        //logger.log("Moderator ONE-Conference On Socket-for-Feature");
         socket.emit("createRoom", {
             meetingId: meetingid,
             roomname: roomname,
@@ -378,7 +378,7 @@ class Toolbox extends Component<Props, State> {
                     console.log("pollResponse-Payload: ", payload);
                     break;
                 case "handleApprove":
-                    logger.log(
+                    //logger.log(
                         "handleApprove-ID: ",
                         payload.knockingParticipantID
                     );
@@ -387,7 +387,7 @@ class Toolbox extends Component<Props, State> {
                     );
                     break;
                 case "endMeet":
-                    logger.log("Host endMeet");
+                    //logger.log("Host endMeet");
                     APP.UI.emitEvent(UIEvents.LOGOUT);
                     break;
                 default:
@@ -399,17 +399,17 @@ class Toolbox extends Component<Props, State> {
     async onAttendee(state) {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state;
         const socket = socketIOClient(endpoint);
-        logger.log("Attendee ONE-Conference On Socket-for-Feature");
+        //logger.log("Attendee ONE-Conference On Socket-for-Feature");
         socket.on(meetingid, async (payload) => {
-            logger.log("Socket-payload: ", payload);
+            //logger.log("Socket-payload: ", payload);
             switch (payload.eventName) {
                 case "trackMute":
-                    logger.log("trackMute-Payload: ", payload);
+                    //logger.log("trackMute-Payload: ", payload);
                     // attendee.setLockMute(payload.mute) //true or false
                     this.props.dispatch(setAudioMutedAll(payload.mute)); // Lock is button Audio
                     break;
                 case "coHost":
-                    logger.log("coHost Payload: ", payload);
+                    //logger.log("coHost Payload: ", payload);
                     APP.store.dispatch(
                         participantRoleChanged(
                             payload.participantID,
@@ -431,7 +431,7 @@ class Toolbox extends Component<Props, State> {
 
                     break;
                 case "handleApprove":
-                    logger.log(
+                    //logger.log(
                         "handleApprove-ID: ",
                         payload.knockingParticipantID
                     );
@@ -440,7 +440,7 @@ class Toolbox extends Component<Props, State> {
                     );
                     break;
                 case "endMeet":
-                    logger.log(
+                    //logger.log(
                         "coHost endMeet",
                         payload.isMod,
                         "end ",
@@ -456,7 +456,7 @@ class Toolbox extends Component<Props, State> {
                     }
                     break;
                 case "invitedOut":
-                    logger.log("invitedOut: ", infoUser.getUserId());
+                    //logger.log("invitedOut: ", infoUser.getUserId());
                     break;
                 default:
                     logger.warn("Event coming is not defined!!");

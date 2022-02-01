@@ -140,7 +140,7 @@ function _initLogging({ dispatch, getState }, loggingConfig, isTestingEnabled) {
     // initialized).
     if (!logCollector && !loggingConfig.disableLogCollector) {
         const _logCollector
-            = new Logger.LogCollector(new JitsiMeetLogStorage(getState));
+            = new //logger.logCollector(new JitsiMeetLogStorage(getState));
 
         const { apiLogLevels } = getState()['features/base/config'];
 
@@ -159,7 +159,7 @@ function _initLogging({ dispatch, getState }, loggingConfig, isTestingEnabled) {
         // the 'executeScript' method like it's done in torture tests for WEB.
         if (isTestingEnabled && typeof APP === 'object') {
             APP.debugLogs = new JitsiMeetInMemoryLogStorage();
-            const debugLogCollector = new Logger.LogCollector(
+            const debugLogCollector = new //logger.logCollector(
                 APP.debugLogs, { storeInterval: 1000 });
 
             Logger.addGlobalTransport(debugLogCollector);

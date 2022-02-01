@@ -1,5 +1,5 @@
-import logger from '../../logger';
-import { AbstractAudioContextAdapter } from '../AbstractAudioContextAdapter';
+import logger from "../../logger";
+import { AbstractAudioContextAdapter } from "../AbstractAudioContextAdapter";
 
 import {
     DEBUG,
@@ -7,15 +7,13 @@ import {
     MAIN_THREAD_INIT,
     MAIN_THREAD_NEW_DATA_ARRIVED,
     WORKER_BLOB_READY,
-    WORKER_LIBFLAC_READY
-} from './messageTypes';
-
+    WORKER_LIBFLAC_READY,
+} from "./messageTypes";
 
 /**
  * Recording adapter that uses libflac.js in the background.
  */
 export class FlacAdapter extends AbstractAudioContextAdapter {
-
     /**
      * Instance of WebWorker (flacEncodeWorker).
      */
@@ -68,17 +66,17 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
      */
     stop() {
         if (!this._encoder) {
-            logger.error('Attempting to stop but has nothing to stop.');
+            logger.error("Attempting to stop but has nothing to stop.");
 
             return Promise.reject();
         }
 
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this._initPromise = null;
             this._disconnectAudioGraph();
             this._stopPromiseResolver = resolve;
             this._encoder.postMessage({
-                command: MAIN_THREAD_FINISH
+                command: MAIN_THREAD_FINISH,
             });
         });
     }
@@ -92,11 +90,11 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
         if (this._data !== null) {
             return Promise.resolve({
                 data: this._data,
-                format: 'flac'
+                format: "flac",
             });
         }
 
-        return Promise.reject('No audio data recorded.');
+        return Promise.reject("No audio data recorded.");
     }
 
     /**
@@ -114,14 +112,14 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
         const track = this._stream.getAudioTracks()[0];
 
         if (!track) {
-            logger.error('Cannot mute/unmute. Track not found!');
+            logger.error("Cannot mute/unmute. Track not found!");
 
             return Promise.resolve();
         }
 
         if (track.enabled !== shouldEnable) {
             track.enabled = shouldEnable;
-            logger.log(muted ? 'Mute' : 'Unmute');
+            //logger.log(muted ? 'Mute' : 'Unmute');
         }
 
         return Promise.resolve();
@@ -167,19 +165,16 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
                 command: MAIN_THREAD_INIT,
                 config: {
                     sampleRate: this._sampleRate,
-                    bps: 16
-                }
+                    bps: 16,
+                },
             });
         });
 
         // Arrow function is used here because we want AudioContext to be
         // initialized only **after** promiseInitWorker is resolved.
-        return promiseInitWorker
-            .then(() =>
-                this._initializeAudioContext(
-                    micDeviceId,
-                    this._onAudioProcess
-                ));
+        return promiseInitWorker.then(() =>
+            this._initializeAudioContext(micDeviceId, this._onAudioProcess)
+        );
     }
 
     /**
@@ -197,7 +192,7 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
 
         this._encoder.postMessage({
             command: MAIN_THREAD_NEW_DATA_ARRIVED,
-            buf: channelLeft
+            buf: channelLeft,
         });
     }
 
@@ -210,28 +205,29 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
      */
     _onWorkerMessage(e) {
         switch (e.data.command) {
-        case WORKER_BLOB_READY:
-            // Received a Blob representing an encoded FLAC file.
-            this._data = e.data.buf;
-            if (this._stopPromiseResolver !== null) {
-                this._stopPromiseResolver();
-                this._stopPromiseResolver = null;
-                this._encoder.terminate();
-                this._encoder = null;
-            }
-            break;
-        case DEBUG:
-            logger.log(e.data);
-            break;
-        case WORKER_LIBFLAC_READY:
-            logger.log('libflac is ready.');
-            this._initWorkerPromiseResolver();
-            break;
-        default:
-            logger.error(
-                `Unknown event
-                from encoder (WebWorker): "${e.data.command}"!`);
-            break;
+            case WORKER_BLOB_READY:
+                // Received a Blob representing an encoded FLAC file.
+                this._data = e.data.buf;
+                if (this._stopPromiseResolver !== null) {
+                    this._stopPromiseResolver();
+                    this._stopPromiseResolver = null;
+                    this._encoder.terminate();
+                    this._encoder = null;
+                }
+                break;
+            case DEBUG:
+                //logger.log(e.data);
+                break;
+            case WORKER_LIBFLAC_READY:
+                //logger.log('libflac is ready.');
+                this._initWorkerPromiseResolver();
+                break;
+            default:
+                logger.error(
+                    `Unknown event
+                from encoder (WebWorker): "${e.data.command}"!`
+                );
+                break;
         }
     }
 
@@ -249,13 +245,17 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
         // only when flac recording is in use.
         try {
             // try load the minified version first
-            this._encoder = new Worker('/libs/flacEncodeWorker.min.js', { name: 'FLAC encoder worker' });
+            this._encoder = new Worker("/libs/flacEncodeWorker.min.js", {
+                name: "FLAC encoder worker",
+            });
         } catch (exception1) {
             // if failed, try unminified version
             try {
-                this._encoder = new Worker('/libs/flacEncodeWorker.js', { name: 'FLAC encoder worker' });
+                this._encoder = new Worker("/libs/flacEncodeWorker.js", {
+                    name: "FLAC encoder worker",
+                });
             } catch (exception2) {
-                throw new Error('Failed to load flacEncodeWorker.');
+                throw new Error("Failed to load flacEncodeWorker.");
             }
         }
     }

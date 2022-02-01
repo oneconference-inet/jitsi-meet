@@ -1,27 +1,29 @@
 /* global APP, $, config */
 
-
 const UI = {};
 
-import EventEmitter from 'events';
-import Logger from 'jitsi-meet-logger';
+import EventEmitter from "events";
+import Logger from "jitsi-meet-logger";
 
-import { isMobileBrowser } from '../../react/features/base/environment/utils';
-import { setColorAlpha } from '../../react/features/base/util';
-import { setDocumentUrl } from '../../react/features/etherpad';
-import { setFilmstripVisible } from '../../react/features/filmstrip';
-import { joinLeaveNotificationsDisabled, setNotificationsEnabled } from '../../react/features/notifications';
+import { isMobileBrowser } from "../../react/features/base/environment/utils";
+import { setColorAlpha } from "../../react/features/base/util";
+import { setDocumentUrl } from "../../react/features/etherpad";
+import { setFilmstripVisible } from "../../react/features/filmstrip";
+import {
+    joinLeaveNotificationsDisabled,
+    setNotificationsEnabled,
+} from "../../react/features/notifications";
 import {
     dockToolbox,
     setToolboxEnabled,
-    showToolbox
-} from '../../react/features/toolbox/actions.web';
-import UIEvents from '../../service/UI/UIEvents';
+    showToolbox,
+} from "../../react/features/toolbox/actions.web";
+import UIEvents from "../../service/UI/UIEvents";
 
-import EtherpadManager from './etherpad/Etherpad';
-import messageHandler from './util/MessageHandler';
-import UIUtil from './util/UIUtil';
-import VideoLayout from './videolayout/VideoLayout';
+import EtherpadManager from "./etherpad/Etherpad";
+import messageHandler from "./util/MessageHandler";
+import UIUtil from "./util/UIUtil";
+import VideoLayout from "./videolayout/VideoLayout";
 
 const logger = Logger.getLogger(__filename);
 
@@ -36,11 +38,9 @@ let etherpadManager;
 const UIListeners = new Map([
     [
         UIEvents.ETHERPAD_CLICKED,
-        () => etherpadManager && etherpadManager.toggleEtherpad()
-    ], [
-        UIEvents.TOGGLE_FILMSTRIP,
-        () => UI.toggleFilmstrip()
-    ]
+        () => etherpadManager && etherpadManager.toggleEtherpad(),
+    ],
+    [UIEvents.TOGGLE_FILMSTRIP, () => UI.toggleFilmstrip()],
 ]);
 
 /**
@@ -49,38 +49,38 @@ const UIListeners = new Map([
  * @return {boolean} {true} to indicate that we're currently in full screen
  * mode, {false} otherwise
  */
-UI.isFullScreen = function() {
+UI.isFullScreen = function () {
     return UIUtil.isFullScreen();
 };
 
 /**
  * Notify user that server has shut down.
  */
-UI.notifyGracefulShutdown = function() {
+UI.notifyGracefulShutdown = function () {
     messageHandler.showError({
-        descriptionKey: 'dialog.gracefulShutdown',
-        titleKey: 'dialog.serviceUnavailable'
+        descriptionKey: "dialog.gracefulShutdown",
+        titleKey: "dialog.serviceUnavailable",
     });
 };
 
 /**
  * Notify user that reservation error happened.
  */
-UI.notifyReservationError = function(code, msg) {
+UI.notifyReservationError = function (code, msg) {
     messageHandler.showError({
         descriptionArguments: {
             code,
-            msg
+            msg,
         },
-        descriptionKey: 'dialog.reservationErrorMsg',
-        titleKey: 'dialog.reservationError'
+        descriptionKey: "dialog.reservationErrorMsg",
+        titleKey: "dialog.reservationError",
     });
 };
 
 /**
  * Initialize conference UI.
  */
-UI.initConference = function() {
+UI.initConference = function () {
     UI.showToolbar();
 };
 
@@ -90,7 +90,7 @@ UI.initConference = function() {
  * @returns {boolean} true if the UI is ready and the conference should be
  * established, false - otherwise (for example in the case of welcome page)
  */
-UI.start = function() {
+UI.start = function () {
     VideoLayout.initLargeVideo();
 
     // Do not animate the video area on UI start (second argument passed into
@@ -100,15 +100,18 @@ UI.start = function() {
     VideoLayout.resizeVideoArea();
 
     if (isMobileBrowser()) {
-        $('body').addClass('mobile-browser');
+        $("body").addClass("mobile-browser");
     } else {
-        $('body').addClass('desktop-browser');
+        $("body").addClass("desktop-browser");
 
         if (config.backgroundAlpha !== undefined) {
-            const backgroundColor = $('body').css('background-color');
-            const alphaColor = setColorAlpha(backgroundColor, config.backgroundAlpha);
+            const backgroundColor = $("body").css("background-color");
+            const alphaColor = setColorAlpha(
+                backgroundColor,
+                config.backgroundAlpha
+            );
 
-            $('body').css('background-color', alphaColor);
+            $("body").css("background-color", alphaColor);
         }
     }
 
@@ -125,8 +128,8 @@ UI.start = function() {
 /**
  * Setup some UI event listeners.
  */
-UI.registerListeners
-    = () => UIListeners.forEach((value, key) => UI.addListener(key, value));
+UI.registerListeners = () =>
+    UIListeners.forEach((value, key) => UI.addListener(key, value));
 
 /**
  * Setup some DOM event listeners.
@@ -141,8 +144,9 @@ UI.bindEvents = () => {
 
     // Resize and reposition videos in full screen mode.
     $(document).on(
-            'webkitfullscreenchange mozfullscreenchange fullscreenchange',
-            onResize);
+        "webkitfullscreenchange mozfullscreenchange fullscreenchange",
+        onResize
+    );
 
     $(window).resize(onResize);
 };
@@ -152,20 +156,21 @@ UI.bindEvents = () => {
  */
 UI.unbindEvents = () => {
     $(document).off(
-            'webkitfullscreenchange mozfullscreenchange fullscreenchange');
+        "webkitfullscreenchange mozfullscreenchange fullscreenchange"
+    );
 
-    $(window).off('resize');
+    $(window).off("resize");
 };
 
 /**
  * Setup and show Etherpad.
  * @param {string} name etherpad id
  */
-UI.initEtherpad = name => {
+UI.initEtherpad = (name) => {
     if (etherpadManager || !config.etherpad_base || !name) {
         return;
     }
-    logger.log('Etherpad is enabled');
+    //logger.log('Etherpad is enabled');
 
     etherpadManager = new EtherpadManager(eventEmitter);
 
@@ -188,7 +193,7 @@ UI.getSharedDocumentManager = () => etherpadManager;
  * Show user on UI.
  * @param {JitsiParticipant} user
  */
-UI.addUser = function(user) {
+UI.addUser = function (user) {
     const status = user.getStatus();
 
     if (status) {
@@ -205,7 +210,7 @@ UI.addUser = function(user) {
  */
 UI.updateUserStatus = (user, status) => {
     const reduxState = APP.store.getState() || {};
-    const { calleeInfoVisible } = reduxState['features/invite'] || {};
+    const { calleeInfoVisible } = reduxState["features/invite"] || {};
 
     // We hide status updates when join/leave notifications are disabled,
     // as jigasi is the component with statuses and they are seen as join/leave notifications.
@@ -217,17 +222,18 @@ UI.updateUserStatus = (user, status) => {
 
     messageHandler.participantNotification(
         displayName,
-        '',
-        'connected',
-        'dialOut.statusMessage',
-        { status: UIUtil.escapeHtml(status) });
+        "",
+        "connected",
+        "dialOut.statusMessage",
+        { status: UIUtil.escapeHtml(status) }
+    );
 };
 
 /**
  * Toggles filmstrip.
  */
-UI.toggleFilmstrip = function() {
-    const { visible } = APP.store.getState()['features/filmstrip'];
+UI.toggleFilmstrip = function () {
+    const { visible } = APP.store.getState()["features/filmstrip"];
 
     APP.store.dispatch(setFilmstripVisible(!visible));
 };
@@ -240,25 +246,22 @@ UI.toggleChat = () => APP.store.dispatch(toggleChat());
 /**
  * Handle new user display name.
  */
-UI.inputDisplayNameHandler = function(newDisplayName) {
+UI.inputDisplayNameHandler = function (newDisplayName) {
     eventEmitter.emit(UIEvents.NICKNAME_CHANGED, newDisplayName);
 };
 
 // FIXME check if someone user this
-UI.showLoginPopup = function(callback) {
-    logger.log('password is required');
+UI.showLoginPopup = function (callback) {
+    //logger.log('password is required');
 
-    const message
-        = `<input name="username" type="text"
+    const message = `<input name="username" type="text"
                 placeholder="user@domain.net"
                 data-i18n="[placeholder]dialog.user"
                 class="input-control" autofocus>
          <input name="password" type="password"
                 data-i18n="[placeholder]dialog.userPassword"
                 class="input-control"
-                placeholder="user password">`
-
-    ;
+                placeholder="user password">`;
 
     // eslint-disable-next-line max-params
     const submitFunction = (e, v, m, f) => {
@@ -268,18 +271,18 @@ UI.showLoginPopup = function(callback) {
     };
 
     messageHandler.openTwoButtonDialog({
-        titleKey: 'dialog.passwordRequired',
+        titleKey: "dialog.passwordRequired",
         msgString: message,
-        leftButtonKey: 'dialog.Ok',
+        leftButtonKey: "dialog.Ok",
         submitFunction,
-        focus: ':input:first'
+        focus: ":input:first",
     });
 };
 
 /**
  * Sets muted audio state for participant
  */
-UI.setAudioMuted = function(id) {
+UI.setAudioMuted = function (id) {
     // FIXME: Maybe this can be removed!
     if (APP.conference.isLocalId(id)) {
         APP.conference.updateAudioIconEnabled();
@@ -289,7 +292,7 @@ UI.setAudioMuted = function(id) {
 /**
  * Sets muted video state for participant
  */
-UI.setVideoMuted = function(id) {
+UI.setVideoMuted = function (id) {
     // VideoLayout.onVideoMute(id);
     VideoLayout._updateLargeVideoIfDisplayed(id, true);
 
@@ -298,7 +301,8 @@ UI.setVideoMuted = function(id) {
     }
 };
 
-UI.updateLargeVideo = (id, forceUpdate) => VideoLayout.updateLargeVideo(id, forceUpdate);
+UI.updateLargeVideo = (id, forceUpdate) =>
+    VideoLayout.updateLargeVideo(id, forceUpdate);
 
 /**
  * Adds a listener that would be notified on the given type of event.
@@ -306,7 +310,7 @@ UI.updateLargeVideo = (id, forceUpdate) => VideoLayout.updateLargeVideo(id, forc
  * @param type the type of the event we're listening for
  * @param listener a function that would be called when notified
  */
-UI.addListener = function(type, listener) {
+UI.addListener = function (type, listener) {
     eventEmitter.on(type, listener);
 };
 
@@ -315,7 +319,7 @@ UI.addListener = function(type, listener) {
  *
  * @returns {void}
  */
-UI.removeAllListeners = function() {
+UI.removeAllListeners = function () {
     eventEmitter.removeAllListeners();
 };
 
@@ -328,10 +332,10 @@ UI.removeAllListeners = function() {
 UI.emitEvent = (type, ...options) => eventEmitter.emit(type, ...options);
 
 // Used by torture.
-UI.showToolbar = timeout => APP.store.dispatch(showToolbox(timeout));
+UI.showToolbar = (timeout) => APP.store.dispatch(showToolbox(timeout));
 
 // Used by torture.
-UI.dockToolbar = dock => APP.store.dispatch(dockToolbox(dock));
+UI.dockToolbar = (dock) => APP.store.dispatch(dockToolbox(dock));
 
 /**
  * Updates the displayed avatar for participant.
@@ -340,7 +344,7 @@ UI.dockToolbar = dock => APP.store.dispatch(dockToolbox(dock));
  * @param {string} avatarURL - The URL to avatar image to display.
  * @returns {void}
  */
-UI.refreshAvatarDisplay = function(id) {
+UI.refreshAvatarDisplay = function (id) {
     VideoLayout.changeUserAvatar(id);
 };
 
@@ -348,49 +352,49 @@ UI.refreshAvatarDisplay = function(id) {
  * Notify user that connection failed.
  * @param {string} stropheErrorMsg raw Strophe error message
  */
-UI.notifyConnectionFailed = function(stropheErrorMsg) {
+UI.notifyConnectionFailed = function (stropheErrorMsg) {
     let descriptionKey;
     let descriptionArguments;
 
     if (stropheErrorMsg) {
-        descriptionKey = 'dialog.connectErrorWithMsg';
+        descriptionKey = "dialog.connectErrorWithMsg";
         descriptionArguments = { msg: stropheErrorMsg };
     } else {
-        descriptionKey = 'dialog.connectError';
+        descriptionKey = "dialog.connectError";
     }
 
     messageHandler.showError({
         descriptionArguments,
         descriptionKey,
-        titleKey: 'connection.CONNFAIL'
+        titleKey: "connection.CONNFAIL",
     });
 };
-
 
 /**
  * Notify user that maximum users limit has been reached.
  */
-UI.notifyMaxUsersLimitReached = function() {
+UI.notifyMaxUsersLimitReached = function () {
     messageHandler.showError({
         hideErrorSupportLink: true,
-        descriptionKey: 'dialog.maxUsersLimitReached',
-        titleKey: 'dialog.maxUsersLimitReachedTitle'
+        descriptionKey: "dialog.maxUsersLimitReached",
+        titleKey: "dialog.maxUsersLimitReachedTitle",
     });
 };
 
 /**
  * Notify user that he was automatically muted when joned the conference.
  */
-UI.notifyInitiallyMuted = function() {
+UI.notifyInitiallyMuted = function () {
     messageHandler.participantNotification(
         null,
-        'notify.mutedTitle',
-        'connected',
-        'notify.muted',
-        null);
+        "notify.mutedTitle",
+        "connected",
+        "notify.muted",
+        null
+    );
 };
 
-UI.handleLastNEndpoints = function(leavingIds, enteringIds) {
+UI.handleLastNEndpoints = function (leavingIds, enteringIds) {
     VideoLayout.onLastNEndpointsChanged(leavingIds, enteringIds);
 };
 
@@ -401,26 +405,27 @@ UI.handleLastNEndpoints = function(leavingIds, enteringIds) {
  */
 UI.setAudioLevel = (id, lvl) => VideoLayout.setAudioLevel(id, lvl);
 
-UI.notifyTokenAuthFailed = function() {
+UI.notifyTokenAuthFailed = function () {
     messageHandler.showError({
-        descriptionKey: 'dialog.tokenAuthFailed',
-        titleKey: 'dialog.tokenAuthFailedTitle'
+        descriptionKey: "dialog.tokenAuthFailed",
+        titleKey: "dialog.tokenAuthFailedTitle",
     });
 };
 
-UI.notifyFocusDisconnected = function(focus, retrySec) {
+UI.notifyFocusDisconnected = function (focus, retrySec) {
     messageHandler.participantNotification(
-        null, 'notify.focus',
-        'disconnected', 'notify.focusFail',
-        { component: focus,
-            ms: retrySec }
+        null,
+        "notify.focus",
+        "disconnected",
+        "notify.focusFail",
+        { component: focus, ms: retrySec }
     );
 };
 
 /**
  * Update list of available physical devices.
  */
-UI.onAvailableDevicesChanged = function() {
+UI.onAvailableDevicesChanged = function () {
     APP.conference.updateAudioIconEnabled();
     APP.conference.updateVideoIconEnabled();
 };
@@ -429,7 +434,7 @@ UI.onAvailableDevicesChanged = function() {
  * Returns the id of the current video shown on large.
  * Currently used by tests (torture).
  */
-UI.getLargeVideoID = function() {
+UI.getLargeVideoID = function () {
     return VideoLayout.getLargeVideoID();
 };
 
@@ -437,7 +442,7 @@ UI.getLargeVideoID = function() {
  * Returns the current video shown on large.
  * Currently used by tests (torture).
  */
-UI.getLargeVideo = function() {
+UI.getLargeVideo = function () {
     return VideoLayout.getLargeVideo();
 };
 

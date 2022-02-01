@@ -1,20 +1,18 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import logger from '../../../logger';
+import logger from "../../../logger";
 
-import AudioSettingsEntry from './AudioSettingsEntry';
-import TestButton from './TestButton';
+import AudioSettingsEntry from "./AudioSettingsEntry";
+import TestButton from "./TestButton";
 
-const TEST_SOUND_PATH = 'sounds/ring.wav';
+const TEST_SOUND_PATH = "sounds/ring.wav";
 
 /**
  * The type of the React {@code Component} props of {@link SpeakerEntry}.
  */
 type Props = {
-
-
     /**
      * The text label for the entry.
      */
@@ -44,7 +42,7 @@ type Props = {
      * Click handler for the component.
      */
     onClick: Function,
-    listHeaderId: string
+    listHeaderId: string,
 };
 
 /**
@@ -96,14 +94,13 @@ export default class SpeakerEntry extends Component<Props> {
      * @returns {void}
      */
     _onKeyPress(e) {
-        if (e.key === ' ') {
+        if (e.key === " ") {
             e.preventDefault();
             this.props.onClick(this.props.deviceId);
         }
     }
 
-
-    _onTestButtonClick: Object => void;
+    _onTestButtonClick: (Object) => void;
 
     /**
      * Click handler for Test button.
@@ -119,7 +116,7 @@ export default class SpeakerEntry extends Component<Props> {
             await this.audioRef.current.setSinkId(this.props.deviceId);
             this.audioRef.current.play();
         } catch (err) {
-            logger.log('Could not set sink id', err);
+            //logger.log('Could not set sink id', err);
         }
     }
 
@@ -129,34 +126,39 @@ export default class SpeakerEntry extends Component<Props> {
      * @inheritdoc
      */
     render() {
-        const { children, isSelected, index, deviceId, length, listHeaderId } = this.props;
+        const { children, isSelected, index, deviceId, length, listHeaderId } =
+            this.props;
         const deviceTextId: string = `choose_speaker${deviceId}`;
         const labelledby: string = `${listHeaderId} ${deviceTextId} `;
 
         return (
             <li
-                aria-checked = { isSelected }
-                aria-labelledby = { labelledby }
-                aria-posinset = { index }
-                aria-setsize = { length }
-                className = 'audio-preview-speaker'
-                onClick = { this._onClick }
-                onKeyPress = { this._onKeyPress }
-                role = 'radio'
-                tabIndex = { 0 }>
+                aria-checked={isSelected}
+                aria-labelledby={labelledby}
+                aria-posinset={index}
+                aria-setsize={length}
+                className="audio-preview-speaker"
+                onClick={this._onClick}
+                onKeyPress={this._onKeyPress}
+                role="radio"
+                tabIndex={0}
+            >
                 <AudioSettingsEntry
-                    isSelected = { isSelected }
-                    key = { deviceId }
-                    labelId = { deviceTextId }>
+                    isSelected={isSelected}
+                    key={deviceId}
+                    labelId={deviceTextId}
+                >
                     {children}
                 </AudioSettingsEntry>
                 <TestButton
-                    onClick = { this._onTestButtonClick }
-                    onKeyPress = { this._onTestButtonClick } />
+                    onClick={this._onTestButtonClick}
+                    onKeyPress={this._onTestButtonClick}
+                />
                 <audio
-                    preload = 'auto'
-                    ref = { this.audioRef }
-                    src = { TEST_SOUND_PATH } />
+                    preload="auto"
+                    ref={this.audioRef}
+                    src={TEST_SOUND_PATH}
+                />
             </li>
         );
     }

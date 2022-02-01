@@ -1,20 +1,19 @@
 // @flow
 
-import { PureComponent } from 'react';
+import { PureComponent } from "react";
 
-import { isLocalParticipantModerator } from '../../base/participants';
+import { isLocalParticipantModerator } from "../../base/participants";
 
-import infoConf from '../../../../infoConference';
-import socketIOClient from 'socket.io-client';
+import infoConf from "../../../../infoConference";
+import socketIOClient from "socket.io-client";
 
-import Logger from 'jitsi-meet-logger';
+import Logger from "jitsi-meet-logger";
 
 const logger = Logger.getLogger(__filename);
-import { setKnockingParticipantApproval } from '../actions';
-import { getKnockingParticipants, getLobbyEnabled } from '../functions';
+import { setKnockingParticipantApproval } from "../actions";
+import { getKnockingParticipants, getLobbyEnabled } from "../functions";
 
 export type Props = {
-
     /**
      * The list of participants.
      */
@@ -33,13 +32,15 @@ export type Props = {
     /**
      * Function to be used to translate i18n labels.
      */
-    t: Function
+    t: Function,
 };
 
 /**
  * Abstract class to encapsulate the platform common code of the {@code KnockingParticipantList}.
  */
-export default class AbstractKnockingParticipantList<P: Props = Props> extends PureComponent<P> {
+export default class AbstractKnockingParticipantList<
+    P: Props = Props
+> extends PureComponent<P> {
     /**
      * Instantiates a new component.
      *
@@ -49,17 +50,19 @@ export default class AbstractKnockingParticipantList<P: Props = Props> extends P
         super(props);
 
         this.state = {
-            meetingId: '',
-            endpoint: interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
-        }
+            meetingId: "",
+            endpoint:
+                interfaceConfig.SOCKET_NODE ||
+                "https://oneconf-dev3.cloudns.asia", ///UAT test
+        };
 
         this._onRespondToParticipant = this._onRespondToParticipant.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setState({
             meetingId: infoConf.getMeetingId(),
-        })
+        });
     }
 
     _onRespondToParticipant: (string, boolean) => Function;
@@ -95,24 +98,25 @@ export default class AbstractKnockingParticipantList<P: Props = Props> extends P
     //         name: name,
     //         approve: approve
     //     }
-    //     logger.log("DATA: ", data);
+    //     //logger.log("DATA: ", data);
     //     socket.emit('handleApprove', data) ;
     //     // dispatch(setKnockingState(false))
     // }
 }
 
 export function _onRespondToParticipantSocket(id, name, approve) {
-    const meetingId = infoConf.getMeetingId()
-    const endpoint = interfaceConfig.SOCKET_NODE || 'https://oneconf-dev3.cloudns.asia' ///UAT test
-    const socket = socketIOClient(endpoint)
+    const meetingId = infoConf.getMeetingId();
+    const endpoint =
+        interfaceConfig.SOCKET_NODE || "https://oneconf-dev3.cloudns.asia"; ///UAT test
+    const socket = socketIOClient(endpoint);
     const data = {
         meetingId: meetingId,
         id: id,
         name: name,
-        approve: approve
-    }
-    logger.log("DATA: ", data);
-    socket.emit('handleApprove', data) ;
+        approve: approve,
+    };
+    //logger.log("DATA: ", data);
+    socket.emit("handleApprove", data);
     // dispatch(setKnockingState(false))
 }
 
@@ -128,7 +132,9 @@ export function mapStateToProps(state: Object): $Shape<Props> {
 
     return {
         _participants: knockingParticipants,
-        _visible: isLocalParticipantModerator(state) && Boolean(knockingParticipants && knockingParticipants.length)
+        _visible:
+            isLocalParticipantModerator(state) &&
+            Boolean(knockingParticipants && knockingParticipants.length),
         // _visible: lobbyEnabled && isLocalParticipantModerator(state)
         //   && Boolean(knockingParticipants && knockingParticipants.length)
     };

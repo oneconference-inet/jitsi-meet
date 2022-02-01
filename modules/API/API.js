@@ -1,65 +1,72 @@
 // @flow
 
-import Logger from 'jitsi-meet-logger';
+import Logger from "jitsi-meet-logger";
 
-import {
-    createApiEvent,
-    sendAnalytics
-} from '../../react/features/analytics';
+import { createApiEvent, sendAnalytics } from "../../react/features/analytics";
 import {
     getCurrentConference,
     sendTones,
     setFollowMe,
     setPassword,
-    setSubject
-} from '../../react/features/base/conference';
-import { overwriteConfig, getWhitelistedJSON } from '../../react/features/base/config';
-import { toggleDialog } from '../../react/features/base/dialog/actions';
-import { parseJWTFromURLParams } from '../../react/features/base/jwt';
-import JitsiMeetJS, { JitsiRecordingConstants } from '../../react/features/base/lib-jitsi-meet';
-import { MEDIA_TYPE } from '../../react/features/base/media';
+    setSubject,
+} from "../../react/features/base/conference";
+import {
+    overwriteConfig,
+    getWhitelistedJSON,
+} from "../../react/features/base/config";
+import { toggleDialog } from "../../react/features/base/dialog/actions";
+import { parseJWTFromURLParams } from "../../react/features/base/jwt";
+import JitsiMeetJS, {
+    JitsiRecordingConstants,
+} from "../../react/features/base/lib-jitsi-meet";
+import { MEDIA_TYPE } from "../../react/features/base/media";
 import {
     getLocalParticipant,
     getParticipantById,
     pinParticipant,
     kickParticipant,
     raiseHand,
-    isParticipantModerator
-} from '../../react/features/base/participants';
-import { updateSettings } from '../../react/features/base/settings';
-import { isToggleCameraEnabled, toggleCamera } from '../../react/features/base/tracks';
+    isParticipantModerator,
+} from "../../react/features/base/participants";
+import { updateSettings } from "../../react/features/base/settings";
+import {
+    isToggleCameraEnabled,
+    toggleCamera,
+} from "../../react/features/base/tracks";
 import {
     sendMessage,
     setPrivateMessageRecipient,
-    toggleChat
-} from '../../react/features/chat/actions';
-import { openChat } from '../../react/features/chat/actions.web';
-import {
-    processExternalDeviceRequest
-} from '../../react/features/device-selection/functions';
-import { isEnabled as isDropboxEnabled } from '../../react/features/dropbox';
-import { toggleE2EE } from '../../react/features/e2ee/actions';
-import { invite } from '../../react/features/invite';
-import {
-    selectParticipantInLargeVideo
-} from '../../react/features/large-video/actions.any';
+    toggleChat,
+} from "../../react/features/chat/actions";
+import { openChat } from "../../react/features/chat/actions.web";
+import { processExternalDeviceRequest } from "../../react/features/device-selection/functions";
+import { isEnabled as isDropboxEnabled } from "../../react/features/dropbox";
+import { toggleE2EE } from "../../react/features/e2ee/actions";
+import { invite } from "../../react/features/invite";
+import { selectParticipantInLargeVideo } from "../../react/features/large-video/actions.any";
 import {
     captureLargeVideoScreenshot,
-    resizeLargeVideo
-} from '../../react/features/large-video/actions.web';
-import { toggleLobbyMode } from '../../react/features/lobby/actions';
-import { RECORDING_TYPES } from '../../react/features/recording/constants';
-import { getActiveSession } from '../../react/features/recording/functions';
-import { isScreenAudioSupported } from '../../react/features/screen-share';
-import { startScreenShareFlow, startAudioScreenShareFlow } from '../../react/features/screen-share/actions';
-import { playSharedVideo, stopSharedVideo } from '../../react/features/shared-video/actions.any';
-import { toggleTileView, setTileView } from '../../react/features/video-layout';
-import { muteAllParticipants } from '../../react/features/video-menu/actions';
-import { setVideoQuality } from '../../react/features/video-quality';
-import VirtualBackgroundDialog from '../../react/features/virtual-background/components/VirtualBackgroundDialog';
-import { getJitsiMeetTransport } from '../transport';
+    resizeLargeVideo,
+} from "../../react/features/large-video/actions.web";
+import { toggleLobbyMode } from "../../react/features/lobby/actions";
+import { RECORDING_TYPES } from "../../react/features/recording/constants";
+import { getActiveSession } from "../../react/features/recording/functions";
+import { isScreenAudioSupported } from "../../react/features/screen-share";
+import {
+    startScreenShareFlow,
+    startAudioScreenShareFlow,
+} from "../../react/features/screen-share/actions";
+import {
+    playSharedVideo,
+    stopSharedVideo,
+} from "../../react/features/shared-video/actions.any";
+import { toggleTileView, setTileView } from "../../react/features/video-layout";
+import { muteAllParticipants } from "../../react/features/video-menu/actions";
+import { setVideoQuality } from "../../react/features/video-quality";
+import VirtualBackgroundDialog from "../../react/features/virtual-background/components/VirtualBackgroundDialog";
+import { getJitsiMeetTransport } from "../transport";
 
-import { API_ID, ENDPOINT_TEXT_MESSAGE_NAME } from './constants';
+import { API_ID, ENDPOINT_TEXT_MESSAGE_NAME } from "./constants";
 
 const logger = Logger.getLogger(__filename);
 
@@ -98,14 +105,14 @@ let videoAvailable = true;
  */
 function initCommands() {
     commands = {
-        'display-name': displayName => {
-            sendAnalytics(createApiEvent('display.name.changed'));
+        "display-name": (displayName) => {
+            sendAnalytics(createApiEvent("display.name.changed"));
             APP.conference.changeLocalDisplayName(displayName);
         },
-        'mute-everyone': mediaType => {
+        "mute-everyone": (mediaType) => {
             const muteMediaType = mediaType ? mediaType : MEDIA_TYPE.AUDIO;
 
-            sendAnalytics(createApiEvent('muted-everyone'));
+            sendAnalytics(createApiEvent("muted-everyone"));
             const localParticipant = getLocalParticipant(APP.store.getState());
             const exclude = [];
 
@@ -115,105 +122,106 @@ function initCommands() {
 
             APP.store.dispatch(muteAllParticipants(exclude, muteMediaType));
         },
-        'toggle-lobby': isLobbyEnabled => {
+        "toggle-lobby": (isLobbyEnabled) => {
             APP.store.dispatch(toggleLobbyMode(isLobbyEnabled));
         },
-        'password': password => {
-            const { conference, passwordRequired }
-                = APP.store.getState()['features/base/conference'];
+        password: (password) => {
+            const { conference, passwordRequired } =
+                APP.store.getState()["features/base/conference"];
 
             if (passwordRequired) {
-                sendAnalytics(createApiEvent('submit.password'));
+                sendAnalytics(createApiEvent("submit.password"));
 
-                APP.store.dispatch(setPassword(
-                    passwordRequired,
-                    passwordRequired.join,
-                    password
-                ));
+                APP.store.dispatch(
+                    setPassword(
+                        passwordRequired,
+                        passwordRequired.join,
+                        password
+                    )
+                );
             } else {
-                sendAnalytics(createApiEvent('password.changed'));
+                sendAnalytics(createApiEvent("password.changed"));
 
-                APP.store.dispatch(setPassword(
-                    conference,
-                    conference.lock,
-                    password
-                ));
+                APP.store.dispatch(
+                    setPassword(conference, conference.lock, password)
+                );
             }
         },
-        'pin-participant': id => {
-            logger.debug('Pin participant command received');
-            sendAnalytics(createApiEvent('participant.pinned'));
+        "pin-participant": (id) => {
+            logger.debug("Pin participant command received");
+            sendAnalytics(createApiEvent("participant.pinned"));
             APP.store.dispatch(pinParticipant(id));
         },
-        'proxy-connection-event': event => {
+        "proxy-connection-event": (event) => {
             APP.conference.onProxyConnectionEvent(event);
         },
-        'resize-large-video': (width, height) => {
-            logger.debug('Resize large video command received');
-            sendAnalytics(createApiEvent('largevideo.resized'));
+        "resize-large-video": (width, height) => {
+            logger.debug("Resize large video command received");
+            sendAnalytics(createApiEvent("largevideo.resized"));
             APP.store.dispatch(resizeLargeVideo(width, height));
         },
-        'send-tones': (options = {}) => {
+        "send-tones": (options = {}) => {
             const { duration, tones, pause } = options;
 
             APP.store.dispatch(sendTones(tones, duration, pause));
         },
-        'set-follow-me': value => {
-            logger.debug('Set follow me command received');
+        "set-follow-me": (value) => {
+            logger.debug("Set follow me command received");
 
             if (value) {
-                sendAnalytics(createApiEvent('follow.me.set'));
+                sendAnalytics(createApiEvent("follow.me.set"));
             } else {
-                sendAnalytics(createApiEvent('follow.me.unset'));
+                sendAnalytics(createApiEvent("follow.me.unset"));
             }
 
             APP.store.dispatch(setFollowMe(value));
         },
-        'set-large-video-participant': participantId => {
-            logger.debug('Set large video participant command received');
-            sendAnalytics(createApiEvent('largevideo.participant.set'));
+        "set-large-video-participant": (participantId) => {
+            logger.debug("Set large video participant command received");
+            sendAnalytics(createApiEvent("largevideo.participant.set"));
             APP.store.dispatch(selectParticipantInLargeVideo(participantId));
         },
-        'subject': subject => {
-            sendAnalytics(createApiEvent('subject.changed'));
+        subject: (subject) => {
+            sendAnalytics(createApiEvent("subject.changed"));
             APP.store.dispatch(setSubject(subject));
         },
-        'submit-feedback': feedback => {
-            sendAnalytics(createApiEvent('submit.feedback'));
+        "submit-feedback": (feedback) => {
+            sendAnalytics(createApiEvent("submit.feedback"));
             APP.conference.submitFeedback(feedback.score, feedback.message);
         },
-        'toggle-audio': () => {
-            sendAnalytics(createApiEvent('toggle-audio'));
-            logger.log('Audio toggle: API command received');
+        "toggle-audio": () => {
+            sendAnalytics(createApiEvent("toggle-audio"));
+            //logger.log('Audio toggle: API command received');
             APP.conference.toggleAudioMuted(false /* no UI */);
         },
-        'toggle-video': () => {
-            sendAnalytics(createApiEvent('toggle-video'));
-            logger.log('Video toggle: API command received');
+        "toggle-video": () => {
+            sendAnalytics(createApiEvent("toggle-video"));
+            //logger.log('Video toggle: API command received');
             APP.conference.toggleVideoMuted(false /* no UI */);
         },
-        'toggle-film-strip': () => {
-            sendAnalytics(createApiEvent('film.strip.toggled'));
+        "toggle-film-strip": () => {
+            sendAnalytics(createApiEvent("film.strip.toggled"));
             APP.UI.toggleFilmstrip();
         },
-        'toggle-camera': () => {
+        "toggle-camera": () => {
             if (!isToggleCameraEnabled(APP.store.getState())) {
                 return;
             }
 
             APP.store.dispatch(toggleCamera());
         },
-        'toggle-camera-mirror': () => {
+        "toggle-camera-mirror": () => {
             const state = APP.store.getState();
-            const { localFlipX: currentFlipX } = state['features/base/settings'];
+            const { localFlipX: currentFlipX } =
+                state["features/base/settings"];
 
             APP.store.dispatch(updateSettings({ localFlipX: !currentFlipX }));
         },
-        'toggle-chat': () => {
-            sendAnalytics(createApiEvent('chat.toggled'));
+        "toggle-chat": () => {
+            sendAnalytics(createApiEvent("chat.toggled"));
             APP.store.dispatch(toggleChat());
         },
-        'toggle-raise-hand': () => {
+        "toggle-raise-hand": () => {
             const localParticipant = getLocalParticipant(APP.store.getState());
 
             if (!localParticipant) {
@@ -221,18 +229,20 @@ function initCommands() {
             }
             const { raisedHand } = localParticipant;
 
-            sendAnalytics(createApiEvent('raise-hand.toggled'));
+            sendAnalytics(createApiEvent("raise-hand.toggled"));
             APP.store.dispatch(raiseHand(!raisedHand));
         },
-        'toggle-share-audio': () => {
-            sendAnalytics(createApiEvent('audio.screen.sharing.toggled'));
+        "toggle-share-audio": () => {
+            sendAnalytics(createApiEvent("audio.screen.sharing.toggled"));
             if (isScreenAudioSupported()) {
                 APP.store.dispatch(startAudioScreenShareFlow());
 
                 return;
             }
 
-            logger.error('Audio screen sharing is not supported by the current platform!');
+            logger.error(
+                "Audio screen sharing is not supported by the current platform!"
+            );
         },
 
         /**
@@ -244,34 +254,37 @@ function initCommands() {
          * sharing or to turn it off.
          * @returns {void}
          */
-        'toggle-share-screen': (options = {}) => {
-            sendAnalytics(createApiEvent('screen.sharing.toggled'));
+        "toggle-share-screen": (options = {}) => {
+            sendAnalytics(createApiEvent("screen.sharing.toggled"));
             toggleScreenSharing(options.enable);
         },
-        'toggle-tile-view': () => {
-            sendAnalytics(createApiEvent('tile-view.toggled'));
+        "toggle-tile-view": () => {
+            sendAnalytics(createApiEvent("tile-view.toggled"));
 
             APP.store.dispatch(toggleTileView());
         },
-        'set-tile-view': enabled => {
+        "set-tile-view": (enabled) => {
             APP.store.dispatch(setTileView(enabled));
         },
-        'video-hangup': (showFeedbackDialog = true) => {
-            sendAnalytics(createApiEvent('video.hangup'));
+        "video-hangup": (showFeedbackDialog = true) => {
+            sendAnalytics(createApiEvent("video.hangup"));
             APP.conference.hangup(showFeedbackDialog);
         },
-        'email': email => {
-            sendAnalytics(createApiEvent('email.changed'));
+        email: (email) => {
+            sendAnalytics(createApiEvent("email.changed"));
             APP.conference.changeLocalEmail(email);
         },
-        'avatar-url': avatarUrl => {
-            sendAnalytics(createApiEvent('avatar.url.changed'));
+        "avatar-url": (avatarUrl) => {
+            sendAnalytics(createApiEvent("avatar.url.changed"));
             APP.conference.changeLocalAvatarUrl(avatarUrl);
         },
-        'send-chat-message': (message, to, ignorePrivacy = false) => {
-            logger.debug('Send chat message command received');
+        "send-chat-message": (message, to, ignorePrivacy = false) => {
+            logger.debug("Send chat message command received");
             if (to) {
-                const participant = getParticipantById(APP.store.getState(), to);
+                const participant = getParticipantById(
+                    APP.store.getState(),
+                    to
+                );
 
                 if (participant) {
                     APP.store.dispatch(setPrivateMessageRecipient(participant));
@@ -286,36 +299,36 @@ function initCommands() {
 
             APP.store.dispatch(sendMessage(message, ignorePrivacy));
         },
-        'send-endpoint-text-message': (to, text) => {
-            logger.debug('Send endpoint message command received');
+        "send-endpoint-text-message": (to, text) => {
+            logger.debug("Send endpoint message command received");
             try {
                 APP.conference.sendEndpointMessage(to, {
                     name: ENDPOINT_TEXT_MESSAGE_NAME,
-                    text
+                    text,
                 });
             } catch (err) {
-                logger.error('Failed sending endpoint text message', err);
+                logger.error("Failed sending endpoint text message", err);
             }
         },
-        'toggle-e2ee': enabled => {
-            logger.debug('Toggle E2EE key command received');
+        "toggle-e2ee": (enabled) => {
+            logger.debug("Toggle E2EE key command received");
             APP.store.dispatch(toggleE2EE(enabled));
         },
-        'set-video-quality': frameHeight => {
-            logger.debug('Set video quality command received');
-            sendAnalytics(createApiEvent('set.video.quality'));
+        "set-video-quality": (frameHeight) => {
+            logger.debug("Set video quality command received");
+            sendAnalytics(createApiEvent("set.video.quality"));
             APP.store.dispatch(setVideoQuality(frameHeight));
         },
 
-        'start-share-video': url => {
-            logger.debug('Share video command received');
-            sendAnalytics(createApiEvent('share.video.start'));
+        "start-share-video": (url) => {
+            logger.debug("Share video command received");
+            sendAnalytics(createApiEvent("share.video.start"));
             APP.store.dispatch(playSharedVideo(url));
         },
 
-        'stop-share-video': () => {
-            logger.debug('Share video command received');
-            sendAnalytics(createApiEvent('share.video.stop'));
+        "stop-share-video": () => {
+            logger.debug("Share video command received");
+            sendAnalytics(createApiEvent("share.video.stop"));
             APP.store.dispatch(stopSharedVideo());
         },
 
@@ -337,32 +350,39 @@ function initCommands() {
          * @param { string } arg.youtubeBroadcastID - The youtube broacast ID.
          * @returns {void}
          */
-        'start-recording': ({
+        "start-recording": ({
             mode,
             dropboxToken,
             shouldShare,
             rtmpStreamKey,
             rtmpBroadcastID,
             youtubeStreamKey,
-            youtubeBroadcastID
+            youtubeBroadcastID,
         }) => {
             const state = APP.store.getState();
             const conference = getCurrentConference(state);
 
             if (!conference) {
-                logger.error('Conference is not defined');
+                logger.error("Conference is not defined");
 
                 return;
             }
 
             if (dropboxToken && !isDropboxEnabled(state)) {
-                logger.error('Failed starting recording: dropbox is not enabled on this deployment');
+                logger.error(
+                    "Failed starting recording: dropbox is not enabled on this deployment"
+                );
 
                 return;
             }
 
-            if (mode === JitsiRecordingConstants.mode.STREAM && !(youtubeStreamKey || rtmpStreamKey)) {
-                logger.error('Failed starting recording: missing youtube or RTMP stream key');
+            if (
+                mode === JitsiRecordingConstants.mode.STREAM &&
+                !(youtubeStreamKey || rtmpStreamKey)
+            ) {
+                logger.error(
+                    "Failed starting recording: missing youtube or RTMP stream key"
+                );
 
                 return;
             }
@@ -374,32 +394,32 @@ function initCommands() {
                     recordingConfig = {
                         mode: JitsiRecordingConstants.mode.FILE,
                         appData: JSON.stringify({
-                            'file_recording_metadata': {
-                                'upload_credentials': {
-                                    'service_name': RECORDING_TYPES.DROPBOX,
-                                    'token': dropboxToken
-                                }
-                            }
-                        })
+                            file_recording_metadata: {
+                                upload_credentials: {
+                                    service_name: RECORDING_TYPES.DROPBOX,
+                                    token: dropboxToken,
+                                },
+                            },
+                        }),
                     };
                 } else {
                     recordingConfig = {
                         mode: JitsiRecordingConstants.mode.FILE,
                         appData: JSON.stringify({
-                            'file_recording_metadata': {
-                                'share': shouldShare
-                            }
-                        })
+                            file_recording_metadata: {
+                                share: shouldShare,
+                            },
+                        }),
                     };
                 }
             } else if (mode === JitsiRecordingConstants.mode.STREAM) {
                 recordingConfig = {
                     broadcastId: youtubeBroadcastID || rtmpBroadcastID,
                     mode: JitsiRecordingConstants.mode.STREAM,
-                    streamId: youtubeStreamKey || rtmpStreamKey
+                    streamId: youtubeStreamKey || rtmpStreamKey,
                 };
             } else {
-                logger.error('Invalid recording mode provided');
+                logger.error("Invalid recording mode provided");
 
                 return;
             }
@@ -413,18 +433,23 @@ function initCommands() {
          * @param {string} mode - `file` or `stream`.
          * @returns {void}
          */
-        'stop-recording': mode => {
+        "stop-recording": (mode) => {
             const state = APP.store.getState();
             const conference = getCurrentConference(state);
 
             if (!conference) {
-                logger.error('Conference is not defined');
+                logger.error("Conference is not defined");
 
                 return;
             }
 
-            if (![ JitsiRecordingConstants.mode.FILE, JitsiRecordingConstants.mode.STREAM ].includes(mode)) {
-                logger.error('Invalid recording mode provided!');
+            if (
+                ![
+                    JitsiRecordingConstants.mode.FILE,
+                    JitsiRecordingConstants.mode.STREAM,
+                ].includes(mode)
+            ) {
+                logger.error("Invalid recording mode provided!");
 
                 return;
             }
@@ -434,40 +459,42 @@ function initCommands() {
             if (activeSession && activeSession.id) {
                 conference.stopRecording(activeSession.id);
             } else {
-                logger.error('No recording or streaming session found');
+                logger.error("No recording or streaming session found");
             }
         },
-        'initiate-private-chat': participantId => {
+        "initiate-private-chat": (participantId) => {
             const state = APP.store.getState();
             const participant = getParticipantById(state, participantId);
 
             if (participant) {
-                const { isOpen: isChatOpen } = state['features/chat'];
+                const { isOpen: isChatOpen } = state["features/chat"];
 
                 if (!isChatOpen) {
                     APP.store.dispatch(toggleChat());
                 }
                 APP.store.dispatch(openChat(participant));
             } else {
-                logger.error('No participant found for the given participantId');
+                logger.error(
+                    "No participant found for the given participantId"
+                );
             }
         },
-        'cancel-private-chat': () => {
+        "cancel-private-chat": () => {
             APP.store.dispatch(setPrivateMessageRecipient());
         },
-        'kick-participant': participantId => {
+        "kick-participant": (participantId) => {
             APP.store.dispatch(kickParticipant(participantId));
         },
-        'overwrite-config': config => {
-            const whitelistedConfig = getWhitelistedJSON('config', config);
+        "overwrite-config": (config) => {
+            const whitelistedConfig = getWhitelistedJSON("config", config);
 
             APP.store.dispatch(overwriteConfig(whitelistedConfig));
         },
-        'toggle-virtual-background': () => {
+        "toggle-virtual-background": () => {
             APP.store.dispatch(toggleDialog(VirtualBackgroundDialog));
-        }
+        },
     };
-    transport.on('event', ({ data, name }) => {
+    transport.on("event", ({ data, name }) => {
         if (name && commands[name]) {
             commands[name](...data);
 
@@ -476,112 +503,122 @@ function initCommands() {
 
         return false;
     });
-    transport.on('request', (request, callback) => {
+    transport.on("request", (request, callback) => {
         const { dispatch, getState } = APP.store;
 
-        if (processExternalDeviceRequest(dispatch, getState, request, callback)) {
+        if (
+            processExternalDeviceRequest(dispatch, getState, request, callback)
+        ) {
             return true;
         }
 
         const { name } = request;
 
         switch (name) {
-        case 'capture-largevideo-screenshot' :
-            APP.store.dispatch(captureLargeVideoScreenshot())
-                .then(dataURL => {
-                    let error;
+            case "capture-largevideo-screenshot":
+                APP.store
+                    .dispatch(captureLargeVideoScreenshot())
+                    .then((dataURL) => {
+                        let error;
 
-                    if (!dataURL) {
-                        error = new Error('No large video found!');
-                    }
+                        if (!dataURL) {
+                            error = new Error("No large video found!");
+                        }
 
-                    callback({
-                        error,
-                        dataURL
+                        callback({
+                            error,
+                            dataURL,
+                        });
                     });
-                });
-            break;
-        case 'invite': {
-            const { invitees } = request;
+                break;
+            case "invite": {
+                const { invitees } = request;
 
-            if (!Array.isArray(invitees) || invitees.length === 0) {
-                callback({
-                    error: new Error('Unexpected format of invitees')
-                });
+                if (!Array.isArray(invitees) || invitees.length === 0) {
+                    callback({
+                        error: new Error("Unexpected format of invitees"),
+                    });
 
+                    break;
+                }
+
+                // The store should be already available because API.init is called
+                // on appWillMount action.
+                APP.store
+                    .dispatch(invite(invitees, true))
+                    .then((failedInvitees) => {
+                        let error;
+                        let result;
+
+                        if (failedInvitees.length) {
+                            error = new Error("One or more invites failed!");
+                        } else {
+                            result = true;
+                        }
+
+                        callback({
+                            error,
+                            result,
+                        });
+                    });
                 break;
             }
+            case "is-audio-muted":
+                callback(APP.conference.isLocalAudioMuted());
+                break;
+            case "is-video-muted":
+                callback(APP.conference.isLocalVideoMuted());
+                break;
+            case "is-audio-available":
+                callback(audioAvailable);
+                break;
+            case "is-video-available":
+                callback(videoAvailable);
+                break;
+            case "is-sharing-screen":
+                callback(Boolean(APP.conference.isSharingScreen));
+                break;
+            case "get-content-sharing-participants": {
+                const tracks = getState()["features/base/tracks"];
+                const sharingParticipantIds = tracks
+                    .filter((tr) => tr.videoType === "desktop")
+                    .map((t) => t.participantId);
 
-            // The store should be already available because API.init is called
-            // on appWillMount action.
-            APP.store.dispatch(
-                invite(invitees, true))
-                .then(failedInvitees => {
-                    let error;
-                    let result;
-
-                    if (failedInvitees.length) {
-                        error = new Error('One or more invites failed!');
-                    } else {
-                        result = true;
-                    }
-
-                    callback({
-                        error,
-                        result
-                    });
+                callback({
+                    sharingParticipantIds,
                 });
-            break;
-        }
-        case 'is-audio-muted':
-            callback(APP.conference.isLocalAudioMuted());
-            break;
-        case 'is-video-muted':
-            callback(APP.conference.isLocalVideoMuted());
-            break;
-        case 'is-audio-available':
-            callback(audioAvailable);
-            break;
-        case 'is-video-available':
-            callback(videoAvailable);
-            break;
-        case 'is-sharing-screen':
-            callback(Boolean(APP.conference.isSharingScreen));
-            break;
-        case 'get-content-sharing-participants': {
-            const tracks = getState()['features/base/tracks'];
-            const sharingParticipantIds = tracks.filter(tr => tr.videoType === 'desktop').map(t => t.participantId);
-
-            callback({
-                sharingParticipantIds
-            });
-            break;
-        }
-        case 'get-livestream-url': {
-            const state = APP.store.getState();
-            const conference = getCurrentConference(state);
-            let livestreamUrl;
-
-            if (conference) {
-                const activeSession = getActiveSession(state, JitsiRecordingConstants.mode.STREAM);
-
-                livestreamUrl = activeSession?.liveStreamViewURL;
-            } else {
-                logger.error('Conference is not defined');
+                break;
             }
-            callback({
-                livestreamUrl
-            });
-            break;
-        }
-        case 'get-custom-avatar-backgrounds' : {
-            callback({
-                avatarBackgrounds: APP.store.getState()['features/dynamic-branding'].avatarBackgrounds
-            });
-            break;
-        }
-        default:
-            return false;
+            case "get-livestream-url": {
+                const state = APP.store.getState();
+                const conference = getCurrentConference(state);
+                let livestreamUrl;
+
+                if (conference) {
+                    const activeSession = getActiveSession(
+                        state,
+                        JitsiRecordingConstants.mode.STREAM
+                    );
+
+                    livestreamUrl = activeSession?.liveStreamViewURL;
+                } else {
+                    logger.error("Conference is not defined");
+                }
+                callback({
+                    livestreamUrl,
+                });
+                break;
+            }
+            case "get-custom-avatar-backgrounds": {
+                callback({
+                    avatarBackgrounds:
+                        APP.store.getState()["features/dynamic-branding"]
+                            .avatarBackgrounds,
+                });
+                break;
+            }
+            default:
+                return false;
         }
 
         return true;
@@ -595,14 +632,14 @@ function initCommands() {
  */
 function shouldBeEnabled() {
     return (
-        typeof API_ID === 'number'
-
-            // XXX Enable the API when a JSON Web Token (JWT) is specified in
-            // the location/URL because then it is very likely that the Jitsi
-            // Meet (Web) app is being used by an external/wrapping (Web) app
-            // and, consequently, the latter will need to communicate with the
-            // former. (The described logic is merely a heuristic though.)
-            || parseJWTFromURLParams());
+        typeof API_ID === "number" ||
+        // XXX Enable the API when a JSON Web Token (JWT) is specified in
+        // the location/URL because then it is very likely that the Jitsi
+        // Meet (Web) app is being used by an external/wrapping (Web) app
+        // and, consequently, the latter will need to communicate with the
+        // former. (The described logic is merely a heuristic though.)
+        parseJWTFromURLParams()
+    );
 }
 
 /**
@@ -639,7 +676,7 @@ function sanitizeMouseEvent(event: MouseEvent) {
         x,
         y,
         screenX,
-        screenY
+        screenY,
     } = event;
 
     return {
@@ -654,7 +691,7 @@ function sanitizeMouseEvent(event: MouseEvent) {
         x,
         y,
         screenX,
-        screenY
+        screenY,
     };
 }
 
@@ -700,8 +737,8 @@ class API {
      */
     notifyLargeVideoVisibilityChanged(isHidden: boolean) {
         this._sendEvent({
-            name: 'large-video-visibility-changed',
-            isVisible: !isHidden
+            name: "large-video-visibility-changed",
+            isVisible: !isHidden,
         });
     }
 
@@ -714,8 +751,8 @@ class API {
      */
     sendProxyConnectionEvent(event: Object) {
         this._sendEvent({
-            name: 'proxy-connection-event',
-            ...event
+            name: "proxy-connection-event",
+            ...event,
         });
     }
 
@@ -740,9 +777,9 @@ class API {
      */
     notifyChatUpdated(unreadCount: number, isOpen: boolean) {
         this._sendEvent({
-            name: 'chat-updated',
+            name: "chat-updated",
             unreadCount,
-            isOpen
+            isOpen,
         });
     }
 
@@ -755,9 +792,9 @@ class API {
      */
     notifySendingChatMessage(message: string, privateMessage: boolean) {
         this._sendEvent({
-            name: 'outgoing-message',
+            name: "outgoing-message",
             message,
-            privateMessage
+            privateMessage,
         });
     }
 
@@ -769,8 +806,8 @@ class API {
      */
     notifyMouseEnter(event: MouseEvent) {
         this._sendEvent({
-            name: 'mouse-enter',
-            event: sanitizeMouseEvent(event)
+            name: "mouse-enter",
+            event: sanitizeMouseEvent(event),
         });
     }
 
@@ -782,8 +819,8 @@ class API {
      */
     notifyMouseLeave(event: MouseEvent) {
         this._sendEvent({
-            name: 'mouse-leave',
-            event: sanitizeMouseEvent(event)
+            name: "mouse-leave",
+            event: sanitizeMouseEvent(event),
         });
     }
 
@@ -795,8 +832,8 @@ class API {
      */
     notifyMouseMove(event: MouseEvent) {
         this._sendEvent({
-            name: 'mouse-move',
-            event: sanitizeMouseEvent(event)
+            name: "mouse-move",
+            event: sanitizeMouseEvent(event),
         });
     }
 
@@ -808,8 +845,8 @@ class API {
      */
     notifyVideoQualityChanged(videoQuality: number) {
         this._sendEvent({
-            name: 'video-quality-changed',
-            videoQuality
+            name: "video-quality-changed",
+            videoQuality,
         });
     }
 
@@ -820,21 +857,30 @@ class API {
      * @param {Object} options - Object with the message properties.
      * @returns {void}
      */
-    notifyReceivedChatMessage(
-            { body, id, nick, privateMessage, ts }: {
-                body: *, id: string, nick: string, privateMessage: boolean, ts: *
-            } = {}) {
+    notifyReceivedChatMessage({
+        body,
+        id,
+        nick,
+        privateMessage,
+        ts,
+    }: {
+        body: *,
+        id: string,
+        nick: string,
+        privateMessage: boolean,
+        ts: *,
+    } = {}) {
         if (APP.conference.isLocalId(id)) {
             return;
         }
 
         this._sendEvent({
-            name: 'incoming-message',
+            name: "incoming-message",
             from: id,
             message: body,
             nick,
             privateMessage,
-            stamp: ts
+            stamp: ts,
         });
     }
 
@@ -848,9 +894,9 @@ class API {
      */
     notifyUserJoined(id: string, props: Object) {
         this._sendEvent({
-            name: 'participant-joined',
+            name: "participant-joined",
             id,
-            ...props
+            ...props,
         });
     }
 
@@ -863,8 +909,8 @@ class API {
      */
     notifyUserLeft(id: string) {
         this._sendEvent({
-            name: 'participant-left',
-            id
+            name: "participant-left",
+            id,
         });
     }
 
@@ -878,9 +924,9 @@ class API {
      */
     notifyUserRoleChanged(id: string, role: string) {
         this._sendEvent({
-            name: 'participant-role-changed',
+            name: "participant-role-changed",
             id,
-            role
+            role,
         });
     }
 
@@ -894,9 +940,9 @@ class API {
      */
     notifyAvatarChanged(id: string, avatarURL: string) {
         this._sendEvent({
-            name: 'avatar-changed',
+            name: "avatar-changed",
             avatarURL,
-            id
+            id,
         });
     }
 
@@ -909,8 +955,8 @@ class API {
      */
     notifyEndpointTextMessageReceived(data: Object) {
         this._sendEvent({
-            name: 'endpoint-text-message-received',
-            data
+            name: "endpoint-text-message-received",
+            data,
         });
     }
 
@@ -922,8 +968,8 @@ class API {
      */
     notifySharingParticipantsChanged(data: Object) {
         this._sendEvent({
-            name: 'content-sharing-participants-changed',
-            data
+            name: "content-sharing-participants-changed",
+            data,
         });
     }
 
@@ -936,8 +982,8 @@ class API {
      */
     notifyDeviceListChanged(devices: Object) {
         this._sendEvent({
-            name: 'device-list-changed',
-            devices
+            name: "device-list-changed",
+            devices,
         });
     }
 
@@ -952,13 +998,14 @@ class API {
      * @returns {void}
      */
     notifyDisplayNameChanged(
-            id: string,
-            { displayName, formattedDisplayName }: Object) {
+        id: string,
+        { displayName, formattedDisplayName }: Object
+    ) {
         this._sendEvent({
-            name: 'display-name-change',
+            name: "display-name-change",
             displayname: displayName,
             formattedDisplayName,
-            id
+            id,
         });
     }
 
@@ -970,13 +1017,11 @@ class API {
      * @param {string} email - The new email of the participant.
      * @returns {void}
      */
-    notifyEmailChanged(
-            id: string,
-            { email }: Object) {
+    notifyEmailChanged(id: string, { email }: Object) {
         this._sendEvent({
-            name: 'email-change',
+            name: "email-change",
             email,
-            id
+            id,
         });
     }
 
@@ -989,9 +1034,9 @@ class API {
      */
     notifyLog(logLevel: string, args: Array<string>) {
         this._sendEvent({
-            name: 'log',
+            name: "log",
             logLevel,
-            args
+            args,
         });
     }
 
@@ -1007,10 +1052,10 @@ class API {
      */
     notifyConferenceJoined(roomName: string, id: string, props: Object) {
         this._sendEvent({
-            name: 'video-conference-joined',
+            name: "video-conference-joined",
             roomName,
             id,
-            ...props
+            ...props,
         });
     }
 
@@ -1022,8 +1067,8 @@ class API {
      */
     notifyConferenceLeft(roomName: string) {
         this._sendEvent({
-            name: 'video-conference-left',
-            roomName
+            name: "video-conference-left",
+            roomName,
         });
     }
 
@@ -1034,7 +1079,7 @@ class API {
      * @returns {void}
      */
     notifyReadyToClose() {
-        this._sendEvent({ name: 'video-ready-to-close' });
+        this._sendEvent({ name: "video-ready-to-close" });
     }
 
     /**
@@ -1043,7 +1088,7 @@ class API {
      * @returns {void}
      */
     notifySuspendDetected() {
-        this._sendEvent({ name: 'suspend-detected' });
+        this._sendEvent({ name: "suspend-detected" });
     }
 
     /**
@@ -1055,8 +1100,8 @@ class API {
      */
     notifyAudioMutedStatusChanged(muted: boolean) {
         this._sendEvent({
-            name: 'audio-mute-status-changed',
-            muted
+            name: "audio-mute-status-changed",
+            muted,
         });
     }
 
@@ -1069,8 +1114,8 @@ class API {
      */
     notifyVideoMutedStatusChanged(muted: boolean) {
         this._sendEvent({
-            name: 'video-mute-status-changed',
-            muted
+            name: "video-mute-status-changed",
+            muted,
         });
     }
 
@@ -1084,8 +1129,8 @@ class API {
     notifyAudioAvailabilityChanged(available: boolean) {
         audioAvailable = available;
         this._sendEvent({
-            name: 'audio-availability-changed',
-            available
+            name: "audio-availability-changed",
+            available,
         });
     }
 
@@ -1099,8 +1144,8 @@ class API {
     notifyVideoAvailabilityChanged(available: boolean) {
         videoAvailable = available;
         this._sendEvent({
-            name: 'video-availability-changed',
-            available
+            name: "video-availability-changed",
+            available,
         });
     }
 
@@ -1113,8 +1158,8 @@ class API {
      */
     notifyOnStageParticipantChanged(id: string) {
         this._sendEvent({
-            name: 'on-stage-participant-changed',
-            id
+            name: "on-stage-participant-changed",
+            id,
         });
     }
 
@@ -1128,9 +1173,9 @@ class API {
      */
     notifyOnCameraError(type: string, message: string) {
         this._sendEvent({
-            name: 'camera-error',
+            name: "camera-error",
             type,
-            message
+            message,
         });
     }
 
@@ -1144,9 +1189,9 @@ class API {
      */
     notifyOnMicError(type: string, message: string) {
         this._sendEvent({
-            name: 'mic-error',
+            name: "mic-error",
             type,
-            message
+            message,
         });
     }
 
@@ -1160,8 +1205,8 @@ class API {
      */
     notifyFeedbackSubmitted(error: string) {
         this._sendEvent({
-            name: 'feedback-submitted',
-            error
+            name: "feedback-submitted",
+            error,
         });
     }
 
@@ -1172,7 +1217,7 @@ class API {
      * @returns {void}
      */
     notifyFeedbackPromptDisplayed() {
-        this._sendEvent({ name: 'feedback-prompt-displayed' });
+        this._sendEvent({ name: "feedback-prompt-displayed" });
     }
 
     /**
@@ -1185,8 +1230,8 @@ class API {
      */
     notifyFilmstripDisplayChanged(visible: boolean) {
         this._sendEvent({
-            name: 'filmstrip-display-changed',
-            visible
+            name: "filmstrip-display-changed",
+            visible,
         });
     }
 
@@ -1202,9 +1247,9 @@ class API {
      */
     notifyKickedOut(kicked: Object, kicker: Object) {
         this._sendEvent({
-            name: 'participant-kicked-out',
+            name: "participant-kicked-out",
             kicked,
-            kicker
+            kicker,
         });
     }
 
@@ -1215,7 +1260,7 @@ class API {
      * @returns {void}
      */
     notifyOnPasswordRequired() {
-        this._sendEvent({ name: 'password-required' });
+        this._sendEvent({ name: "password-required" });
     }
 
     /**
@@ -1231,9 +1276,9 @@ class API {
      */
     notifyScreenSharingStatusChanged(on: boolean, details: Object) {
         this._sendEvent({
-            name: 'screen-sharing-status-changed',
+            name: "screen-sharing-status-changed",
             on,
-            details
+            details,
         });
     }
 
@@ -1246,8 +1291,8 @@ class API {
      */
     notifyDominantSpeakerChanged(id: string) {
         this._sendEvent({
-            name: 'dominant-speaker-changed',
-            id
+            name: "dominant-speaker-changed",
+            id,
         });
     }
 
@@ -1260,8 +1305,8 @@ class API {
      */
     notifySubjectChanged(subject: string) {
         this._sendEvent({
-            name: 'subject-change',
-            subject
+            name: "subject-change",
+            subject,
         });
     }
 
@@ -1275,8 +1320,8 @@ class API {
      */
     notifyTileViewChanged(enabled: boolean) {
         this._sendEvent({
-            name: 'tile-view-changed',
-            enabled
+            name: "tile-view-changed",
+            enabled,
         });
     }
 
@@ -1288,8 +1333,8 @@ class API {
      */
     notifyLocalStorageChanged(localStorageContent: string) {
         this._sendEvent({
-            name: 'local-storage-changed',
-            localStorageContent
+            name: "local-storage-changed",
+            localStorageContent,
         });
     }
 
@@ -1302,9 +1347,9 @@ class API {
      */
     notifyRaiseHandUpdated(id: string, handRaised: boolean) {
         this._sendEvent({
-            name: 'raise-hand-updated',
+            name: "raise-hand-updated",
             handRaised,
-            id
+            id,
         });
     }
 
@@ -1318,10 +1363,10 @@ class API {
      */
     notifyRecordingStatusChanged(on: boolean, mode: string, error?: string) {
         this._sendEvent({
-            name: 'recording-status-changed',
+            name: "recording-status-changed",
             on,
             mode,
-            error
+            error,
         });
     }
 
@@ -1333,8 +1378,8 @@ class API {
      */
     notifyError(error: Object) {
         this._sendEvent({
-            name: 'error-occurred',
-            error
+            name: "error-occurred",
+            error,
         });
     }
 

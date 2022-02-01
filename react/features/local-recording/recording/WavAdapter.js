@@ -1,6 +1,6 @@
-import logger from '../logger';
+import logger from "../logger";
 
-import { AbstractAudioContextAdapter } from './AbstractAudioContextAdapter';
+import { AbstractAudioContextAdapter } from "./AbstractAudioContextAdapter";
 
 const WAV_BITS_PER_SAMPLE = 16;
 
@@ -8,7 +8,6 @@ const WAV_BITS_PER_SAMPLE = 16;
  * Recording adapter for raw WAVE format.
  */
 export class WavAdapter extends AbstractAudioContextAdapter {
-
     /**
      * Length of the WAVE file, in number of samples.
      */
@@ -79,11 +78,11 @@ export class WavAdapter extends AbstractAudioContextAdapter {
         if (this._data !== null) {
             return Promise.resolve({
                 data: this._data,
-                format: 'wav'
+                format: "wav",
             });
         }
 
-        return Promise.reject('No audio data recorded.');
+        return Promise.reject("No audio data recorded.");
     }
 
     /**
@@ -101,14 +100,14 @@ export class WavAdapter extends AbstractAudioContextAdapter {
         const track = this._stream.getAudioTracks()[0];
 
         if (!track) {
-            logger.error('Cannot mute/unmute. Track not found!');
+            logger.error("Cannot mute/unmute. Track not found!");
 
             return Promise.resolve();
         }
 
         if (track.enabled !== shouldEnable) {
             track.enabled = shouldEnable;
-            logger.log(muted ? 'Mute' : 'Unmute');
+            //logger.log(muted ? 'Mute' : 'Unmute');
         }
 
         return Promise.resolve();
@@ -141,13 +140,13 @@ export class WavAdapter extends AbstractAudioContextAdapter {
         const view = new DataView(buffer);
 
         // RIFF chunk descriptor
-        writeUTFBytes(view, 0, 'RIFF');
+        writeUTFBytes(view, 0, "RIFF");
 
         // set file size at the end
-        writeUTFBytes(view, 8, 'WAVE');
+        writeUTFBytes(view, 8, "WAVE");
 
         // FMT sub-chunk
-        writeUTFBytes(view, 12, 'fmt ');
+        writeUTFBytes(view, 12, "fmt ");
         view.setUint32(16, 16, true);
         view.setUint16(20, 1, true);
 
@@ -158,16 +157,19 @@ export class WavAdapter extends AbstractAudioContextAdapter {
         view.setUint32(24, this._sampleRate, true);
 
         // ByteRate
-        view.setUint32(28,
-            Number(this._sampleRate) * 1 * WAV_BITS_PER_SAMPLE / 8, true);
+        view.setUint32(
+            28,
+            (Number(this._sampleRate) * 1 * WAV_BITS_PER_SAMPLE) / 8,
+            true
+        );
 
         // BlockAlign
-        view.setUint16(32, 1 * Number(WAV_BITS_PER_SAMPLE) / 8, true);
+        view.setUint16(32, (1 * Number(WAV_BITS_PER_SAMPLE)) / 8, true);
 
         view.setUint16(34, WAV_BITS_PER_SAMPLE, true);
 
         // data sub-chunk
-        writeUTFBytes(view, 36, 'data');
+        writeUTFBytes(view, 36, "data");
 
         // file length
         view.setUint32(4, 32 + dataLength, true);
@@ -190,10 +192,12 @@ export class WavAdapter extends AbstractAudioContextAdapter {
             return Promise.resolve();
         }
 
-        return this._initializeAudioContext(micDeviceId, this._onAudioProcess)
-            .then(() => {
-                this._isInitialized = true;
-            });
+        return this._initializeAudioContext(
+            micDeviceId,
+            this._onAudioProcess
+        ).then(() => {
+            this._isInitialized = true;
+        });
     }
 
     /**
@@ -241,10 +245,9 @@ export class WavAdapter extends AbstractAudioContextAdapter {
         // write audio data
         floatTo16BitPCM(view, 44, buffers);
 
-        return new Blob([ view ], { type: 'audio/wav' });
+        return new Blob([view], { type: "audio/wav" });
     }
 }
-
 
 /**
  * Helper function. Writes a UTF string to memory
@@ -273,7 +276,6 @@ function writeUTFBytes(view, offset, string) {
  * @returns {void}
  */
 function floatTo16BitPCM(output, offset, inputBuffers) {
-
     let i, j;
     let input, s, sampleCount;
     const bufferCount = inputBuffers.length;
@@ -284,7 +286,7 @@ function floatTo16BitPCM(output, offset, inputBuffers) {
         sampleCount = input.length;
         for (j = 0; j < sampleCount; ++j, o += 2) {
             s = Math.max(-1, Math.min(1, input[j]));
-            output.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            output.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7fff, true);
         }
     }
 }

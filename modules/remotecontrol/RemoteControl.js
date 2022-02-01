@@ -1,16 +1,14 @@
 /* @flow */
 
-import EventEmitter from 'events';
-import { getLogger } from 'jitsi-meet-logger';
+import EventEmitter from "events";
+import { getLogger } from "jitsi-meet-logger";
 
-import JitsiMeetJS from '../../react/features/base/lib-jitsi-meet';
-import { DISCO_REMOTE_CONTROL_FEATURE }
-    from '../../service/remotecontrol/Constants';
-import * as RemoteControlEvents
-    from '../../service/remotecontrol/RemoteControlEvents';
+import JitsiMeetJS from "../../react/features/base/lib-jitsi-meet";
+import { DISCO_REMOTE_CONTROL_FEATURE } from "../../service/remotecontrol/Constants";
+import * as RemoteControlEvents from "../../service/remotecontrol/RemoteControlEvents";
 
-import Controller from './Controller';
-import Receiver from './Receiver';
+import Controller from "./Controller";
+import Receiver from "./Receiver";
 
 const logger = getLogger(__filename);
 
@@ -35,7 +33,7 @@ class RemoteControl extends EventEmitter {
         this._active = false;
         this._initialized = false;
 
-        this.controller.on(RemoteControlEvents.ACTIVE_CHANGED, active => {
+        this.controller.on(RemoteControlEvents.ACTIVE_CHANGED, (active) => {
             this.active = active;
         });
     }
@@ -69,15 +67,19 @@ class RemoteControl extends EventEmitter {
      * @returns {void}
      */
     init() {
-        if (config.disableRemoteControl || this._initialized || !JitsiMeetJS.isDesktopSharingEnabled()) {
+        if (
+            config.disableRemoteControl ||
+            this._initialized ||
+            !JitsiMeetJS.isDesktopSharingEnabled()
+        ) {
             return;
         }
-        logger.log('Initializing remote control.');
+        //logger.log('Initializing remote control.');
         this._initialized = true;
         this.controller.enable(true);
         this.receiver = new Receiver();
 
-        this.receiver.on(RemoteControlEvents.ACTIVE_CHANGED, active => {
+        this.receiver.on(RemoteControlEvents.ACTIVE_CHANGED, (active) => {
             this.active = active;
         });
     }
@@ -90,8 +92,9 @@ class RemoteControl extends EventEmitter {
      * the user supports remote control and with false if not.
      */
     checkUserRemoteControlSupport(user: Object) {
-        return user.getFeatures()
-            .then(features => features.has(DISCO_REMOTE_CONTROL_FEATURE));
+        return user
+            .getFeatures()
+            .then((features) => features.has(DISCO_REMOTE_CONTROL_FEATURE));
     }
 }
 

@@ -2,21 +2,25 @@
 
 declare var JitsiMeetJS: Object;
 
-import uuid from 'uuid';
+import uuid from "uuid";
 
-import { getDialOutStatusUrl, getDialOutUrl } from '../base/config/functions';
-import { createLocalTrack } from '../base/lib-jitsi-meet';
-import { isVideoMutedByUser } from '../base/media';
+import { getDialOutStatusUrl, getDialOutUrl } from "../base/config/functions";
+import { createLocalTrack } from "../base/lib-jitsi-meet";
+import { isVideoMutedByUser } from "../base/media";
 import {
     getLocalAudioTrack,
     getLocalVideoTrack,
     trackAdded,
-    replaceLocalTrack
-} from '../base/tracks';
-import { createLocalTracksF } from '../base/tracks/functions';
-import { openURLInBrowser } from '../base/util';
-import { executeDialOutRequest, executeDialOutStatusRequest, getDialInfoPageURL } from '../invite/functions';
-import { showErrorNotification } from '../notifications';
+    replaceLocalTrack,
+} from "../base/tracks";
+import { createLocalTracksF } from "../base/tracks/functions";
+import { openURLInBrowser } from "../base/util";
+import {
+    executeDialOutRequest,
+    executeDialOutStatusRequest,
+    getDialInfoPageURL,
+} from "../invite/functions";
+import { showErrorNotification } from "../notifications";
 
 import {
     PREJOIN_INITIALIZED,
@@ -31,28 +35,28 @@ import {
     SET_JOIN_BY_PHONE_DIALOG_VISIBLITY,
     SET_PRECALL_TEST_RESULTS,
     SET_PREJOIN_DEVICE_ERRORS,
-    SET_PREJOIN_PAGE_VISIBILITY
-} from './actionTypes';
-import { type PREJOIN_SCREEN_STATE } from './constants';
+    SET_PREJOIN_PAGE_VISIBILITY,
+} from "./actionTypes";
+import { type PREJOIN_SCREEN_STATE } from "./constants";
 import {
     getFullDialOutNumber,
     getDialOutConferenceUrl,
     getDialOutCountry,
-    isJoinByPhoneDialogVisible
-} from './functions';
-import logger from './logger';
+    isJoinByPhoneDialogVisible,
+} from "./functions";
+import logger from "./logger";
 
 const dialOutStatusToKeyMap = {
-    INITIATED: 'presenceStatus.calling',
-    RINGING: 'presenceStatus.ringing'
+    INITIATED: "presenceStatus.calling",
+    RINGING: "presenceStatus.ringing",
 };
 
 const DIAL_OUT_STATUS = {
-    INITIATED: 'INITIATED',
-    RINGING: 'RINGING',
-    CONNECTED: 'CONNECTED',
-    DISCONNECTED: 'DISCONNECTED',
-    FAILED: 'FAILED'
+    INITIATED: "INITIATED",
+    RINGING: "RINGING",
+    CONNECTED: "CONNECTED",
+    DISCONNECTED: "DISCONNECTED",
+    FAILED: "FAILED",
 };
 
 /**
@@ -77,11 +81,12 @@ const STATUS_REQ_CAP = 45;
  * @returns {Function}
  */
 function pollForStatus(
-        reqId: string,
-        onSuccess: Function,
-        onFail: Function,
-        count = 0) {
-    return async function(dispatch: Function, getState: Function) {
+    reqId: string,
+    onSuccess: Function,
+    onFail: Function,
+    count = 0
+) {
+    return async function (dispatch: Function, getState: Function) {
         const state = getState();
 
         try {
@@ -89,52 +94,67 @@ function pollForStatus(
                 return;
             }
 
-            const res = await executeDialOutStatusRequest(getDialOutStatusUrl(state), reqId);
+            const res = await executeDialOutStatusRequest(
+                getDialOutStatusUrl(state),
+                reqId
+            );
 
             switch (res) {
-            case DIAL_OUT_STATUS.INITIATED:
-            case DIAL_OUT_STATUS.RINGING: {
-                dispatch(setDialOutStatus(dialOutStatusToKeyMap[res]));
+                case DIAL_OUT_STATUS.INITIATED:
+                case DIAL_OUT_STATUS.RINGING: {
+                    dispatch(setDialOutStatus(dialOutStatusToKeyMap[res]));
 
-                if (count < STATUS_REQ_CAP) {
-                    return setTimeout(() => {
-                        dispatch(pollForStatus(reqId, onSuccess, onFail, count + 1));
-                    }, STATUS_REQ_FREQUENCY);
+                    if (count < STATUS_REQ_CAP) {
+                        return setTimeout(() => {
+                            dispatch(
+                                pollForStatus(
+                                    reqId,
+                                    onSuccess,
+                                    onFail,
+                                    count + 1
+                                )
+                            );
+                        }, STATUS_REQ_FREQUENCY);
+                    }
+
+                    return onFail();
                 }
 
-                return onFail();
-            }
+                case DIAL_OUT_STATUS.CONNECTED: {
+                    return onSuccess();
+                }
 
-            case DIAL_OUT_STATUS.CONNECTED: {
-                return onSuccess();
-            }
+                case DIAL_OUT_STATUS.DISCONNECTED: {
+                    dispatch(
+                        showErrorNotification({
+                            titleKey: "prejoin.errorDialOutDisconnected",
+                        })
+                    );
 
-            case DIAL_OUT_STATUS.DISCONNECTED: {
-                dispatch(showErrorNotification({
-                    titleKey: 'prejoin.errorDialOutDisconnected'
-                }));
+                    return onFail();
+                }
 
-                return onFail();
-            }
+                case DIAL_OUT_STATUS.FAILED: {
+                    dispatch(
+                        showErrorNotification({
+                            titleKey: "prejoin.errorDialOutFailed",
+                        })
+                    );
 
-            case DIAL_OUT_STATUS.FAILED: {
-                dispatch(showErrorNotification({
-                    titleKey: 'prejoin.errorDialOutFailed'
-                }));
-
-                return onFail();
-            }
+                    return onFail();
+                }
             }
         } catch (err) {
-            dispatch(showErrorNotification({
-                titleKey: 'prejoin.errorDialOutStatus'
-            }));
-            logger.error('Error getting dial out status', err);
+            dispatch(
+                showErrorNotification({
+                    titleKey: "prejoin.errorDialOutStatus",
+                })
+            );
+            logger.error("Error getting dial out status", err);
             onFail();
         }
     };
 }
-
 
 /**
  * Action used for joining the meeting with phone audio.
@@ -147,7 +167,7 @@ function pollForStatus(
  * @returns {Function}
  */
 export function dialOut(onSuccess: Function, onFail: Function) {
-    return async function(dispatch: Function, getState: Function) {
+    return async function (dispatch: Function, getState: Function) {
         const state = getState();
         const reqId = uuid.v4();
         const url = getDialOutUrl(state);
@@ -159,7 +179,7 @@ export function dialOut(onSuccess: Function, onFail: Function) {
             conferenceUrl,
             countryCode,
             name: phoneNumber,
-            phoneNumber
+            phoneNumber,
         };
 
         try {
@@ -168,21 +188,21 @@ export function dialOut(onSuccess: Function, onFail: Function) {
             dispatch(pollForStatus(reqId, onSuccess, onFail));
         } catch (err) {
             const notification = {
-                titleKey: 'prejoin.errorDialOut',
-                titleArguments: undefined
+                titleKey: "prejoin.errorDialOut",
+                titleArguments: undefined,
             };
 
             if (err.status) {
-                if (err.messageKey === 'validation.failed') {
-                    notification.titleKey = 'prejoin.errorValidation';
+                if (err.messageKey === "validation.failed") {
+                    notification.titleKey = "prejoin.errorValidation";
                 } else {
-                    notification.titleKey = 'prejoin.errorStatusCode';
+                    notification.titleKey = "prejoin.errorStatusCode";
                     notification.titleArguments = { status: err.status };
                 }
             }
 
             dispatch(showErrorNotification(notification));
-            logger.error('Error dialing out', err);
+            logger.error("Error dialing out", err);
             onFail();
         }
     };
@@ -197,11 +217,11 @@ export function dialOut(onSuccess: Function, onFail: Function) {
  * @returns {Function}
  */
 export function initPrejoin(tracks: Object[], errors: Object) {
-    return async function(dispatch: Function) {
+    return async function (dispatch: Function) {
         dispatch(setPrejoinDeviceErrors(errors));
         dispatch(prejoinInitialized());
 
-        tracks.forEach(track => dispatch(trackAdded(track)));
+        tracks.forEach((track) => dispatch(trackAdded(track)));
     };
 }
 
@@ -214,7 +234,7 @@ export function initPrejoin(tracks: Object[], errors: Object) {
 export function joinConference(options?: Object) {
     return {
         type: PREJOIN_START_CONFERENCE,
-        options
+        options,
     };
 }
 
@@ -224,17 +244,19 @@ export function joinConference(options?: Object) {
  * @returns {Function}
  */
 export function joinConferenceWithoutAudio() {
-    return async function(dispatch: Function, getState: Function) {
-        const tracks = getState()['features/base/tracks'];
+    return async function (dispatch: Function, getState: Function) {
+        const tracks = getState()["features/base/tracks"];
         const audioTrack = getLocalAudioTrack(tracks)?.jitsiTrack;
 
         if (audioTrack) {
             await dispatch(replaceLocalTrack(audioTrack, null));
         }
 
-        dispatch(joinConference({
-            startSilent: true
-        }));
+        dispatch(
+            joinConference({
+                startSilent: true,
+            })
+        );
     };
 }
 
@@ -245,14 +267,14 @@ export function joinConferenceWithoutAudio() {
  * @returns {Function}
  */
 export function makePrecallTest(conferenceOptions: Object) {
-    return async function(dispatch: Function) {
+    return async function (dispatch: Function) {
         try {
             await JitsiMeetJS.precallTest.init(conferenceOptions);
             const results = await JitsiMeetJS.precallTest.execute();
 
             dispatch(setPrecallTestResults(results));
         } catch (error) {
-            logger.debug('Failed to execute pre call test - ', error);
+            logger.debug("Failed to execute pre call test - ", error);
         }
     };
 }
@@ -263,7 +285,7 @@ export function makePrecallTest(conferenceOptions: Object) {
  * @returns {Function}
  */
 export function openDialInPage() {
-    return function(dispatch: Function, getState: Function) {
+    return function (dispatch: Function, getState: Function) {
         const dialInPage = getDialInfoPageURL(getState());
 
         openURLInBrowser(dialInPage, true);
@@ -277,7 +299,7 @@ export function openDialInPage() {
  */
 function prejoinInitialized() {
     return {
-        type: PREJOIN_INITIALIZED
+        type: PREJOIN_INITIALIZED,
     };
 }
 
@@ -290,14 +312,14 @@ function prejoinInitialized() {
 export function replaceAudioTrackById(deviceId: string) {
     return async (dispatch: Function, getState: Function) => {
         try {
-            const tracks = getState()['features/base/tracks'];
-            const newTrack = await createLocalTrack('audio', deviceId);
+            const tracks = getState()["features/base/tracks"];
+            const newTrack = await createLocalTrack("audio", deviceId);
             const oldTrack = getLocalAudioTrack(tracks)?.jitsiTrack;
 
             dispatch(replaceLocalTrack(oldTrack, newTrack));
         } catch (err) {
-            dispatch(setDeviceStatusWarning('prejoin.audioTrackError'));
-            logger.log('Error replacing audio track', err);
+            dispatch(setDeviceStatusWarning("prejoin.audioTrackError"));
+            //logger.log('Error replacing audio track', err);
         }
     };
 }
@@ -311,21 +333,19 @@ export function replaceAudioTrackById(deviceId: string) {
 export function replaceVideoTrackById(deviceId: Object) {
     return async (dispatch: Function, getState: Function) => {
         try {
-            const tracks = getState()['features/base/tracks'];
+            const tracks = getState()["features/base/tracks"];
             const wasVideoMuted = isVideoMutedByUser(getState());
-            const [ newTrack ] = await createLocalTracksF(
-                { cameraDeviceId: deviceId,
-                    devices: [ 'video' ] },
-                { dispatch,
-                    getState }
+            const [newTrack] = await createLocalTracksF(
+                { cameraDeviceId: deviceId, devices: ["video"] },
+                { dispatch, getState }
             );
             const oldTrack = getLocalVideoTrack(tracks)?.jitsiTrack;
 
             dispatch(replaceLocalTrack(oldTrack, newTrack));
             wasVideoMuted && newTrack.mute();
         } catch (err) {
-            dispatch(setDeviceStatusWarning('prejoin.videoTrackError'));
-            logger.log('Error replacing video track', err);
+            dispatch(setDeviceStatusWarning("prejoin.videoTrackError"));
+            //logger.log('Error replacing video track', err);
         }
     };
 }
@@ -341,8 +361,8 @@ export function setDeviceStatusOk(deviceStatusText: string) {
         type: SET_DEVICE_STATUS,
         value: {
             deviceStatusText,
-            deviceStatusType: 'ok'
-        }
+            deviceStatusType: "ok",
+        },
     };
 }
 
@@ -357,8 +377,8 @@ export function setDeviceStatusWarning(deviceStatusText: string) {
         type: SET_DEVICE_STATUS,
         value: {
             deviceStatusText,
-            deviceStatusType: 'warning'
-        }
+            deviceStatusType: "warning",
+        },
     };
 }
 
@@ -371,7 +391,7 @@ export function setDeviceStatusWarning(deviceStatusText: string) {
 function setDialOutStatus(value: string) {
     return {
         type: SET_DIALOUT_STATUS,
-        value
+        value,
     };
 }
 
@@ -384,7 +404,7 @@ function setDialOutStatus(value: string) {
 export function setDialOutCountry(value: Object) {
     return {
         type: SET_DIALOUT_COUNTRY,
-        value
+        value,
     };
 }
 
@@ -395,7 +415,7 @@ export function setDialOutCountry(value: Object) {
  */
 export function setPrejoinDisplayNameRequired() {
     return {
-        type: SET_PREJOIN_DISPLAY_NAME_REQUIRED
+        type: SET_PREJOIN_DISPLAY_NAME_REQUIRED,
     };
 }
 
@@ -408,7 +428,7 @@ export function setPrejoinDisplayNameRequired() {
 export function setDialOutNumber(value: string) {
     return {
         type: SET_DIALOUT_NUMBER,
-        value
+        value,
     };
 }
 
@@ -421,7 +441,7 @@ export function setDialOutNumber(value: string) {
 export function setSkipPrejoin(value: boolean) {
     return {
         type: SET_SKIP_PREJOIN,
-        value
+        value,
     };
 }
 
@@ -435,7 +455,7 @@ export function setSkipPrejoin(value: boolean) {
 export function setSkipPrejoinOnReload(value: boolean) {
     return {
         type: SET_SKIP_PREJOIN_RELOAD,
-        value
+        value,
     };
 }
 
@@ -448,7 +468,7 @@ export function setSkipPrejoinOnReload(value: boolean) {
 export function setJoinByPhoneDialogVisiblity(value: boolean) {
     return {
         type: SET_JOIN_BY_PHONE_DIALOG_VISIBLITY,
-        value
+        value,
     };
 }
 
@@ -461,7 +481,7 @@ export function setJoinByPhoneDialogVisiblity(value: boolean) {
 export function setPrecallTestResults(value: Object) {
     return {
         type: SET_PRECALL_TEST_RESULTS,
-        value
+        value,
     };
 }
 
@@ -474,7 +494,7 @@ export function setPrecallTestResults(value: Object) {
 export function setPrejoinDeviceErrors(value: Object) {
     return {
         type: SET_PREJOIN_DEVICE_ERRORS,
-        value
+        value,
     };
 }
 
@@ -487,6 +507,6 @@ export function setPrejoinDeviceErrors(value: Object) {
 export function setPrejoinPageVisibility(value: PREJOIN_SCREEN_STATE) {
     return {
         type: SET_PREJOIN_PAGE_VISIBILITY,
-        value
+        value,
     };
 }
