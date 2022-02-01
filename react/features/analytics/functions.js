@@ -127,9 +127,8 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const tokenAccess = Boolean(tokenDecode != undefined || repeatAccess);
     const int_service = interfaceConfig.SERVICE_INT;
     logger.log("Data Decode:123456 ", dataDecode);
-    logger.log("Option Data Decodre",dataDecode.option)
-    logger.log("Audiooooo",dataDecode.option.audio)
-
+    logger.log("Option Data Decodre", dataDecode.option);
+    logger.log("Audiooooo", dataDecode.option.audio);
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
@@ -141,7 +140,6 @@ export async function createHandlers({ getState }: { getState: Function }) {
             tokenDecode || sessionStorage.getItem("token_Access")
         ); // Set token for Reload page
         if (
-
             dataDecode.role == "moderator" &&
             meetingIdForCheck == dataDecode.meetingId
         ) {
@@ -211,15 +209,14 @@ export async function createHandlers({ getState }: { getState: Function }) {
                 // APP.store.dispatch(
                 //     redirectToStaticPage("static/errorServer.html")
                 // );
-                
             }
-        // } catch {
-        //     logger.log("6 ");
-        //     // console.error("Server is not defined ERROR: ", error);
-        //     // APP.store.dispatch(
-        //     //     redirectToStaticPage("static/errorServer.html")
-        //     // );
-        // }
+            // } catch {
+            //     logger.log("6 ");
+            //     // console.error("Server is not defined ERROR: ", error);
+            //     // APP.store.dispatch(
+            //     //     redirectToStaticPage("static/errorServer.html")
+            //     // );
+            // }
         } else if (
             dataDecode.role == "attendee" &&
             meetingIdForCheck == dataDecode.meetingId
@@ -406,7 +403,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
     logger.info(`Initialized ${handlers.length} analytics handlers`);
 
-    return handlers,dataDecode;
+    return "0";
 }
 
 /**
