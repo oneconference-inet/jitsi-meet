@@ -13,7 +13,7 @@ import { ParticipantInviteButton } from "./styled";
 import infoConf from "../../../../../infoConference";
 
 // import {createHandlers} from "D:\INET\Project\jitsi-meet\react\features\analytics\functions.js";
-import { createHandlers } from "../../../../features/analytics/functions.js";
+import { createHandlers, handleDecode } from "../../../../features/analytics/functions.js";
 import logger from "../../../analytics/logger";
 
 export const InviteButton = ({ getState }: { getState: Function }) => {
@@ -35,6 +35,8 @@ export const InviteButton = ({ getState }: { getState: Function }) => {
     // const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
     // const tokenDecode = locationURL.href.split("?")[1];
     // const dataDecode = decode(tokenDecode, true);
+
+    console.log(handleDecode(), ': handleDecode')
 
     logger.log("dataDecode inviteButton=>>>>>>>>>>>>");
 

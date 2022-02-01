@@ -99,6 +99,12 @@ function decode(data, checkReload) {
     }
 }
 
+export async function handleDecode(data, checkReload) {
+    const repeatAccess = reloadPage();
+    const tokenDecode = locationURL.href.split("?")[1];
+    return decode(tokenDecode, repeatAccess)
+}
+
 /**
  * Creates the analytics handlers.
  *
