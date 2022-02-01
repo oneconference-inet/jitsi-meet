@@ -12,6 +12,8 @@ import { ParticipantInviteButton } from "./styled";
 
 import infoConf from "../../../../../infoConference";
 
+// import {createHandlers} from "D:\INET\Project\jitsi-meet\react\features\analytics\functions.js";
+import { createHandlers } from "../../../../features/analytics/functions.js";
 
 export const InviteButton = () => {
     const dispatch = useDispatch();
@@ -22,7 +24,9 @@ export const InviteButton = () => {
         dispatch(beginAddPeople());
     }, [dispatch]);
     const typeOption = infoConf.getVoice();
-    logger.log(typeOption,'typeoption');
+    logger.log(typeOption, "typeoption");
+
+    logger.log(createHandlers, "createHandlers=>>>>>>>>>");
 
     return (
         <div>

@@ -406,7 +406,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
     logger.info(`Initialized ${handlers.length} analytics handlers`);
 
-    return handlers;
+    return handlers,dataDecode;
 }
 
 /**
