@@ -171,11 +171,11 @@ function _setRoom({ dispatch, getState }, next, action) {
     sendAnalytics(
         createStartMutedConfigurationEvent("local", audioMuted, videoMuted)
     );
-    // logger.log(
-    //     `Start muted: ${audioMuted ? "audio, " : ""}${
-    //         videoMuted ? "video" : ""
-    //     }`
-    // );
+    logger.log(
+        `Start muted: ${audioMuted ? "audio, " : ""}${
+            videoMuted ? "video" : ""
+        }`
+    );
 
     // Unconditionally express the desires/expectations/intents of the app and
     // the user i.e. the state of base/media. Eventually, practice/reality i.e.
@@ -224,7 +224,7 @@ function _setRoom({ dispatch, getState }, next, action) {
     );
 
     sendAnalytics(createStartAudioOnlyEvent(audioOnly));
-    // logger.log(`Start audio only set to ${audioOnly.toString()}`);
+    logger.log(`Start audio only set to ${audioOnly.toString()}`);
 
     dispatch(setAudioOnly(audioOnly, false));
 
@@ -254,11 +254,11 @@ function _syncTrackMutedState({ getState }, track) {
     // fired before track gets to state.
     if (track.muted !== muted) {
         sendAnalytics(createSyncTrackStateEvent(track.mediaType, muted));
-        // logger.log(
-        //     `Sync ${track.mediaType} track muted state to ${
-        //         muted ? "muted" : "unmuted"
-        //     }`
-        // );
+        logger.log(
+            `Sync ${track.mediaType} track muted state to ${
+                muted ? "muted" : "unmuted"
+            }`
+        );
 
         track.muted = muted;
         setTrackMuted(track.jitsiTrack, muted);

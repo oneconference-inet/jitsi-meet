@@ -39,7 +39,7 @@ export function onSocketReqJoin(meetingId, endpoint, props) {
     const logger = Logger.getLogger(__filename);
     const socket = socketIOClient(endpoint);
     socket.on(meetingId + "-requestjoin", (incoming) => {
-        // logger.log("Incoming-Join: ", incoming);
+        logger.log("Incoming-Join: ", incoming);
         dispatch(participantIsKnockingOrUpdated(incoming));
     });
 }

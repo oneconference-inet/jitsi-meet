@@ -351,11 +351,11 @@ function replaceStoredTracks(oldTrack, newTrack) {
                             isMuted
                         )
                     );
-                    // logger.log(
-                    //     `Replace ${newTrack.getType()} track - ${
-                    //         isMuted ? "muted" : "unmuted"
-                    //     }`
-                    // );
+                    logger.log(
+                        `Replace ${newTrack.getType()} track - ${
+                            isMuted ? "muted" : "unmuted"
+                        }`
+                    );
 
                     return dispatch(setMuted(isMuted));
                 }
