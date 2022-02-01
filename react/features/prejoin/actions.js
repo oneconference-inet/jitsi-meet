@@ -319,7 +319,7 @@ export function replaceAudioTrackById(deviceId: string) {
             dispatch(replaceLocalTrack(oldTrack, newTrack));
         } catch (err) {
             dispatch(setDeviceStatusWarning("prejoin.audioTrackError"));
-            //logger.log('Error replacing audio track', err);
+            logger.log("Error replacing audio track", err);
         }
     };
 }
@@ -345,7 +345,7 @@ export function replaceVideoTrackById(deviceId: Object) {
             wasVideoMuted && newTrack.mute();
         } catch (err) {
             dispatch(setDeviceStatusWarning("prejoin.videoTrackError"));
-            //logger.log('Error replacing video track', err);
+            logger.log("Error replacing video track", err);
         }
     };
 }

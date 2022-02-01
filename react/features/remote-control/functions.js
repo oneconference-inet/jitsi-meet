@@ -75,11 +75,11 @@ export function onRemoteControlAPIEvent(
 ) {
     switch (event.type) {
         case EVENTS.supported:
-            //logger.log('Remote Control supported.');
+            logger.log("Remote Control supported.");
             if (isRemoteControlEnabled(getState())) {
                 dispatch(enableReceiver());
             } else {
-                //logger.log('Remote Control disabled.');
+                logger.log("Remote Control disabled.");
             }
             break;
         case EVENTS.stop: {

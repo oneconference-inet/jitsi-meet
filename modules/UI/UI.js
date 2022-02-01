@@ -170,7 +170,7 @@ UI.initEtherpad = (name) => {
     if (etherpadManager || !config.etherpad_base || !name) {
         return;
     }
-    //logger.log('Etherpad is enabled');
+    logger.log("Etherpad is enabled");
 
     etherpadManager = new EtherpadManager(eventEmitter);
 
@@ -252,7 +252,7 @@ UI.inputDisplayNameHandler = function (newDisplayName) {
 
 // FIXME check if someone user this
 UI.showLoginPopup = function (callback) {
-    //logger.log('password is required');
+    logger.log("password is required");
 
     const message = `<input name="username" type="text"
                 placeholder="user@domain.net"

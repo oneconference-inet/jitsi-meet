@@ -94,7 +94,7 @@ const KeyboardShortcut = {
                         sendAnalytics(
                             createShortcutEvent("push.to.talk", PRESSED)
                         );
-                        //logger.log('Talk shortcut pressed');
+                        logger.log("Talk shortcut pressed");
                         APP.conference.muteAudio(false);
                     }
                 }
@@ -258,7 +258,7 @@ const KeyboardShortcut = {
         // message
         this.registerShortcut(" ", null, () => {
             sendAnalytics(createShortcutEvent("push.to.talk", RELEASED));
-            //logger.log('Talk shortcut released');
+            logger.log("Talk shortcut released");
             APP.conference.muteAudio(true);
         });
         this._addShortcutToHelp("SPACE", "keyboardShortcuts.pushToTalk");

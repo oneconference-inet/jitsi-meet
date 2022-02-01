@@ -74,7 +74,7 @@ class RemoteControl extends EventEmitter {
         ) {
             return;
         }
-        //logger.log('Initializing remote control.');
+        logger.log("Initializing remote control.");
         this._initialized = true;
         this.controller.enable(true);
         this.receiver = new Receiver();

@@ -191,12 +191,12 @@ function initCommands() {
         },
         "toggle-audio": () => {
             sendAnalytics(createApiEvent("toggle-audio"));
-            //logger.log('Audio toggle: API command received');
+            logger.log("Audio toggle: API command received");
             APP.conference.toggleAudioMuted(false /* no UI */);
         },
         "toggle-video": () => {
             sendAnalytics(createApiEvent("toggle-video"));
-            //logger.log('Video toggle: API command received');
+            logger.log("Video toggle: API command received");
             APP.conference.toggleVideoMuted(false /* no UI */);
         },
         "toggle-film-strip": () => {
