@@ -207,7 +207,7 @@ class VideoQualitySlider extends Component<Props> {
      */
     _enableAudioOnly() {
         sendAnalytics(createEvent("audio.only"));
-        //logger.log('Video quality: audio only enabled');
+        logger.log("Video quality: audio only enabled");
         this.props.dispatch(setAudioOnly(true));
     }
 
@@ -223,7 +223,7 @@ class VideoQualitySlider extends Component<Props> {
      */
     _enableHighDefinition() {
         sendAnalytics(createEvent("high"));
-        //logger.log('Video quality: high enabled');
+        logger.log("Video quality: high enabled");
         this._setPreferredVideoQuality(HIGH);
     }
 
@@ -238,7 +238,7 @@ class VideoQualitySlider extends Component<Props> {
      */
     _enableLowDefinition() {
         sendAnalytics(createEvent("low"));
-        //logger.log('Video quality: low enabled');
+        logger.log("Video quality: low enabled");
         this._setPreferredVideoQuality(LOW);
     }
 
@@ -253,7 +253,7 @@ class VideoQualitySlider extends Component<Props> {
      */
     _enableStandardDefinition() {
         sendAnalytics(createEvent("standard"));
-        //logger.log('Video quality: standard enabled');
+        logger.log("Video quality: standard enabled");
         this._setPreferredVideoQuality(STANDARD);
     }
 
@@ -268,7 +268,7 @@ class VideoQualitySlider extends Component<Props> {
      */
     _enableUltraHighDefinition() {
         sendAnalytics(createEvent("ultra high"));
-        //logger.log('Video quality: ultra high enabled');
+        logger.log("Video quality: ultra high enabled");
         this._setPreferredVideoQuality(ULTRA);
     }
 

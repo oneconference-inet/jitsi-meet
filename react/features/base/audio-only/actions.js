@@ -32,7 +32,7 @@ export function setAudioOnly(
 
         if (oldValue !== audioOnly) {
             sendAnalytics(createAudioOnlyChangedEvent(audioOnly));
-            //logger.log(`Audio-only ${audioOnly ? 'enabled' : 'disabled'}`);
+            logger.log(`Audio-only ${audioOnly ? "enabled" : "disabled"}`);
 
             dispatch({
                 type: SET_AUDIO_ONLY,

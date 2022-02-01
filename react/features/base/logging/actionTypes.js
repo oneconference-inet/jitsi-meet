@@ -4,7 +4,7 @@
  *
  * {
  *     type: SET_LOG_COLLECTOR,
- *     logCollector: //logger.logCollector
+ *     logCollector: logger.logCollector
  * }
  */
 export const SET_LOG_COLLECTOR = "SET_LOG_COLLECTOR";

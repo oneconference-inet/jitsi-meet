@@ -46,7 +46,7 @@ export class AbstractAudioContextAdapter extends RecordingAdapter {
 
         this._audioContext = new AudioContext();
         this._sampleRate = this._audioContext.sampleRate;
-        //logger.log(`Current sampleRate ${this._sampleRate}.`);
+        logger.log(`Current sampleRate ${this._sampleRate}.`);
     }
 
     /**

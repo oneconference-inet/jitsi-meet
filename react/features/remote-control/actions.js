@@ -105,7 +105,7 @@ export function requestRemoteControl(userId: string) {
 
         dispatch(setRemoteControlActive(true));
 
-        //logger.log(`Requsting remote control permissions from: ${userId}`);
+        logger.log(`Requsting remote control permissions from: ${userId}`);
 
         const { conference } = state["features/base/conference"];
 
@@ -167,8 +167,11 @@ export function processPermissionRequestReply(
                         controlled: participantId,
                     });
 
-                    //logger.log('Remote control permissions granted!', participantId);
-                    //logger.log('Starting remote control controller.');
+                    logger.log(
+                        "Remote control permissions granted!",
+                        participantId
+                    );
+                    logger.log("Starting remote control controller.");
 
                     const { conference } = state["features/base/conference"];
 
@@ -193,7 +196,10 @@ export function processPermissionRequestReply(
                     break;
                 }
                 case PERMISSIONS_ACTIONS.deny:
-                    //logger.log('Remote control permissions denied!', participantId);
+                    logger.log(
+                        "Remote control permissions denied!",
+                        participantId
+                    );
                     descriptionKey = "dialog.remoteControlDeniedMessage";
                     break;
                 case PERMISSIONS_ACTIONS.error:
@@ -289,7 +295,7 @@ export function stopController(notifyRemoteParty: boolean = false) {
             });
         }
 
-        //logger.log('Stopping remote control controller.');
+        logger.log("Stopping remote control controller.");
 
         conference.off(
             JitsiConferenceEvents.ENDPOINT_MESSAGE_RECEIVED,
@@ -419,7 +425,7 @@ export function disableReceiver() {
             return;
         }
 
-        //logger.log('Remote control receiver disabled.');
+        logger.log("Remote control receiver disabled.");
 
         dispatch({
             type: SET_RECEIVER_ENABLED,
@@ -531,7 +537,10 @@ export function endpointMessageReceived(
                 }
             } // else ignore
         } else {
-            //logger.log('Remote control message is ignored because remote control is disabled', message);
+            logger.log(
+                "Remote control message is ignored because remote control is disabled",
+                message
+            );
         }
     };
 }
@@ -590,7 +599,7 @@ export function grant(participantId: string) {
             type: SET_CONTROLLER,
             controller: participantId,
         });
-        //logger.log(`Remote control permissions granted to: ${participantId}`);
+        logger.log(`Remote control permissions granted to: ${participantId}`);
 
         let promise;
         const state = getState();
@@ -750,7 +759,7 @@ export function resume() {
             return;
         }
 
-        //logger.log('Resuming remote control controller.');
+        logger.log("Resuming remote control controller.");
 
         // FIXME: Once the keyboard shortcuts are using react/redux.
         APP.keyboardshortcut.enable(false);
@@ -808,7 +817,7 @@ export function pause() {
             return;
         }
 
-        //logger.log('Pausing remote control controller.');
+        logger.log("Pausing remote control controller.");
 
         // FIXME: Once the keyboard shortcuts are using react/redux.
         APP.keyboardshortcut.enable(true);

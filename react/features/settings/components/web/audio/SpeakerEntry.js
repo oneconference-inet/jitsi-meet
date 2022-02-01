@@ -116,7 +116,7 @@ export default class SpeakerEntry extends Component<Props> {
             await this.audioRef.current.setSinkId(this.props.deviceId);
             this.audioRef.current.play();
         } catch (err) {
-            //logger.log('Could not set sink id', err);
+            logger.log("Could not set sink id", err);
         }
     }
 

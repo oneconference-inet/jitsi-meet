@@ -127,7 +127,11 @@ function _addConferenceListeners(conference, dispatch, state) {
         sendAnalytics(
             createStartMutedConfigurationEvent("remote", audioMuted, videoMuted)
         );
-        //logger.log(`Start muted: ${audioMuted ? 'audio, ' : ''}${videoMuted ? 'video' : ''}`);
+        logger.log(
+            `Start muted: ${audioMuted ? "audio, " : ""}${
+                videoMuted ? "video" : ""
+            }`
+        );
 
         // XXX Jicofo tells lib-jitsi-meet to start with audio and/or video
         // muted i.e. Jicofo expresses an intent. Lib-jitsi-meet has turned

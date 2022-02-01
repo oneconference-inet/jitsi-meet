@@ -25,7 +25,7 @@ export const InviteButton = ({ getState }: { getState: Function }) => {
         dispatch(beginAddPeople());
     }, [dispatch]);
     const typeOption = infoConf.getVoice();
-    //logger.log(typeOption, "typeoption");
+    logger.log(typeOption, "typeoption");
 
     const state = getState();
     const config = state["features/base/config"];
@@ -34,7 +34,7 @@ export const InviteButton = ({ getState }: { getState: Function }) => {
     const tokenDecode = locationURL.href.split("?")[1];
     const dataDecode = decode(tokenDecode, true);
 
-    //logger.log("dataDecode inviteButton=>>>>>>>>>>>>", dataDecode);
+    logger.log("dataDecode inviteButton=>>>>>>>>>>>>", dataDecode);
 
     return (
         <div>

@@ -682,7 +682,7 @@ export default class SmallVideo {
      * @returns {void}
      */
     remove() {
-        //logger.log('Remove thumbnail', this.id);
+        logger.log("Remove thumbnail", this.id);
         this.removeAudioLevelIndicator();
 
         const toolbarContainer = this.container.querySelector(

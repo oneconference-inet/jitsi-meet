@@ -3,10 +3,10 @@
 import { SET_LOG_COLLECTOR, SET_LOGGING_CONFIG } from "./actionTypes";
 
 /**
- * Stores a {@code //logger.logCollector} instance which will be uploading logs
+ * Stores a {@code logger.logCollector} instance which will be uploading logs
  * to CallStats.
  *
- * @param {//logger.logCollector} logCollector - The log collector instance to be
+ * @param {logger.logCollector} logCollector - The log collector instance to be
  * stored in the Redux state of base/logging feature.
  * @returns {{
  *     type,

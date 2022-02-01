@@ -5,27 +5,31 @@ import {
     createStartMutedConfigurationEvent,
     createSyncTrackStateEvent,
     createTrackMutedEvent,
-    sendAnalytics
-} from '../../analytics';
-import { APP_STATE_CHANGED } from '../../mobile/background';
-import { SET_AUDIO_ONLY, setAudioOnly } from '../audio-only';
-import { isRoomValid, SET_ROOM } from '../conference';
-import { MiddlewareRegistry } from '../redux';
-import { getPropertyValue } from '../settings';
-import { isLocalVideoTrackDesktop, setTrackMuted, TRACK_ADDED } from '../tracks';
+    sendAnalytics,
+} from "../../analytics";
+import { APP_STATE_CHANGED } from "../../mobile/background";
+import { SET_AUDIO_ONLY, setAudioOnly } from "../audio-only";
+import { isRoomValid, SET_ROOM } from "../conference";
+import { MiddlewareRegistry } from "../redux";
+import { getPropertyValue } from "../settings";
+import {
+    isLocalVideoTrackDesktop,
+    setTrackMuted,
+    TRACK_ADDED,
+} from "../tracks";
 
-import { setAudioMuted, setCameraFacingMode, setVideoMuted } from './actions';
+import { setAudioMuted, setCameraFacingMode, setVideoMuted } from "./actions";
 import {
     CAMERA_FACING_MODE,
     MEDIA_TYPE,
-    VIDEO_MUTISM_AUTHORITY
-} from './constants';
-import { getStartWithAudioMuted, getStartWithVideoMuted } from './functions';
-import logger from './logger';
+    VIDEO_MUTISM_AUTHORITY,
+} from "./constants";
+import { getStartWithAudioMuted, getStartWithVideoMuted } from "./functions";
+import logger from "./logger";
 import {
     _AUDIO_INITIAL_MEDIA_STATE,
-    _VIDEO_INITIAL_MEDIA_STATE
-} from './reducer';
+    _VIDEO_INITIAL_MEDIA_STATE,
+} from "./reducer";
 
 /**
  * Implements the entry point of the middleware of the feature base/media.
@@ -33,28 +37,29 @@ import {
  * @param {Store} store - The redux store.
  * @returns {Function}
  */
-MiddlewareRegistry.register(store => next => action => {
+MiddlewareRegistry.register((store) => (next) => (action) => {
     switch (action.type) {
-    case APP_STATE_CHANGED:
-        return _appStateChanged(store, next, action);
+        case APP_STATE_CHANGED:
+            return _appStateChanged(store, next, action);
 
-    case SET_AUDIO_ONLY:
-        return _setAudioOnly(store, next, action);
+        case SET_AUDIO_ONLY:
+            return _setAudioOnly(store, next, action);
 
-    case SET_ROOM:
-        return _setRoom(store, next, action);
+        case SET_ROOM:
+            return _setRoom(store, next, action);
 
-    case TRACK_ADDED: {
-        const result = next(action);
-        const { track } = action;
+        case TRACK_ADDED: {
+            const result = next(action);
+            const { track } = action;
 
-        // Don't sync track mute state with the redux store for screenshare
-        // since video mute state represents local camera mute state only.
-        track.local && track.videoType !== 'desktop'
-            && _syncTrackMutedState(store, track);
+            // Don't sync track mute state with the redux store for screenshare
+            // since video mute state represents local camera mute state only.
+            track.local &&
+                track.videoType !== "desktop" &&
+                _syncTrackMutedState(store, track);
 
-        return result;
-    }
+            return result;
+        }
     }
 
     return next(action);
@@ -73,13 +78,20 @@ MiddlewareRegistry.register(store => next => action => {
  * @returns {Object} The value returned by {@code next(action)}.
  */
 function _appStateChanged({ dispatch, getState }, next, action) {
-    if (navigator.product === 'ReactNative') {
+    if (navigator.product === "ReactNative") {
         const { appState } = action;
-        const mute = appState !== 'active' && !isLocalVideoTrackDesktop(getState());
+        const mute =
+            appState !== "active" && !isLocalVideoTrackDesktop(getState());
 
-        sendAnalytics(createTrackMutedEvent('video', 'background mode', mute));
+        sendAnalytics(createTrackMutedEvent("video", "background mode", mute));
 
-        dispatch(setVideoMuted(mute, MEDIA_TYPE.VIDEO, VIDEO_MUTISM_AUTHORITY.BACKGROUND));
+        dispatch(
+            setVideoMuted(
+                mute,
+                MEDIA_TYPE.VIDEO,
+                VIDEO_MUTISM_AUTHORITY.BACKGROUND
+            )
+        );
     }
 
     return next(action);
@@ -100,13 +112,27 @@ function _appStateChanged({ dispatch, getState }, next, action) {
 function _setAudioOnly({ dispatch }, next, action) {
     const { audioOnly, ensureVideoTrack } = action;
 
-    sendAnalytics(createTrackMutedEvent('video', 'audio-only mode', audioOnly));
+    sendAnalytics(createTrackMutedEvent("video", "audio-only mode", audioOnly));
 
     // Make sure we mute both the desktop and video tracks.
-    dispatch(setVideoMuted(audioOnly, MEDIA_TYPE.VIDEO, VIDEO_MUTISM_AUTHORITY.AUDIO_ONLY, ensureVideoTrack));
+    dispatch(
+        setVideoMuted(
+            audioOnly,
+            MEDIA_TYPE.VIDEO,
+            VIDEO_MUTISM_AUTHORITY.AUDIO_ONLY,
+            ensureVideoTrack
+        )
+    );
 
-    if (navigator.product !== 'ReactNative') {
-        dispatch(setVideoMuted(audioOnly, MEDIA_TYPE.PRESENTER, VIDEO_MUTISM_AUTHORITY.AUDIO_ONLY, ensureVideoTrack));
+    if (navigator.product !== "ReactNative") {
+        dispatch(
+            setVideoMuted(
+                audioOnly,
+                MEDIA_TYPE.PRESENTER,
+                VIDEO_MUTISM_AUTHORITY.AUDIO_ONLY,
+                ensureVideoTrack
+            )
+        );
     }
 
     return next(action);
@@ -135,14 +161,21 @@ function _setRoom({ dispatch, getState }, next, action) {
     const state = getState();
     const { room } = action;
     const roomIsValid = isRoomValid(room);
-    const audioMuted = roomIsValid ? getStartWithAudioMuted(state) : _AUDIO_INITIAL_MEDIA_STATE.muted;
-    const videoMuted = roomIsValid ? getStartWithVideoMuted(state) : _VIDEO_INITIAL_MEDIA_STATE.muted;
+    const audioMuted = roomIsValid
+        ? getStartWithAudioMuted(state)
+        : _AUDIO_INITIAL_MEDIA_STATE.muted;
+    const videoMuted = roomIsValid
+        ? getStartWithVideoMuted(state)
+        : _VIDEO_INITIAL_MEDIA_STATE.muted;
 
     sendAnalytics(
-        createStartMutedConfigurationEvent('local', audioMuted, videoMuted));
-    //logger.log(
-        `Start muted: ${audioMuted ? 'audio, ' : ''}${
-            videoMuted ? 'video' : ''}`);
+        createStartMutedConfigurationEvent("local", audioMuted, videoMuted)
+    );
+    logger.log(
+        `Start muted: ${audioMuted ? "audio, " : ""}${
+            videoMuted ? "video" : ""
+        }`
+    );
 
     // Unconditionally express the desires/expectations/intents of the app and
     // the user i.e. the state of base/media. Eventually, practice/reality i.e.
@@ -161,36 +194,37 @@ function _setRoom({ dispatch, getState }, next, action) {
     // XXX After the introduction of the "Video <-> Voice" toggle on the
     // WelcomePage, startAudioOnly is utilized even outside of
     // conferences/meetings.
-    const audioOnly
-        = Boolean(
-            getPropertyValue(
-                state,
-                'startAudioOnly',
-                /* sources */ {
-                    // FIXME Practically, base/config is (really) correct
-                    // only if roomIsValid. At the time of this writing,
-                    // base/config is overwritten by URL params which leaves
-                    // base/config incorrect on the WelcomePage after
-                    // leaving a conference which explicitly overwrites
-                    // base/config with URL params.
-                    config: roomIsValid,
+    const audioOnly = Boolean(
+        getPropertyValue(
+            state,
+            "startAudioOnly",
+            /* sources */ {
+                // FIXME Practically, base/config is (really) correct
+                // only if roomIsValid. At the time of this writing,
+                // base/config is overwritten by URL params which leaves
+                // base/config incorrect on the WelcomePage after
+                // leaving a conference which explicitly overwrites
+                // base/config with URL params.
+                config: roomIsValid,
 
-                    // XXX We've already overwritten base/config with
-                    // urlParams if roomIsValid. However, settings are more
-                    // important than the server-side config. Consequently,
-                    // we need to read from urlParams anyway. We also
-                    // probably want to read from urlParams when
-                    // !roomIsValid.
-                    urlParams: true,
+                // XXX We've already overwritten base/config with
+                // urlParams if roomIsValid. However, settings are more
+                // important than the server-side config. Consequently,
+                // we need to read from urlParams anyway. We also
+                // probably want to read from urlParams when
+                // !roomIsValid.
+                urlParams: true,
 
-                    // The following don't have complications around whether
-                    // they are defined or not:
-                    jwt: false,
-                    settings: true
-                }));
+                // The following don't have complications around whether
+                // they are defined or not:
+                jwt: false,
+                settings: true,
+            }
+        )
+    );
 
     sendAnalytics(createStartAudioOnlyEvent(audioOnly));
-    //logger.log(`Start audio only set to ${audioOnly.toString()}`);
+    logger.log(`Start audio only set to ${audioOnly.toString()}`);
 
     dispatch(setAudioOnly(audioOnly, false));
 
@@ -206,9 +240,11 @@ function _setRoom({ dispatch, getState }, next, action) {
  * @returns {void}
  */
 function _syncTrackMutedState({ getState }, track) {
-    const state = getState()['features/base/media'];
-    const mediaType = track.mediaType === MEDIA_TYPE.PRESENTER
-        ? MEDIA_TYPE.VIDEO : track.mediaType;
+    const state = getState()["features/base/media"];
+    const mediaType =
+        track.mediaType === MEDIA_TYPE.PRESENTER
+            ? MEDIA_TYPE.VIDEO
+            : track.mediaType;
     const muted = Boolean(state[mediaType].muted);
 
     // XXX If muted state of track when it was added is different from our media
@@ -218,9 +254,11 @@ function _syncTrackMutedState({ getState }, track) {
     // fired before track gets to state.
     if (track.muted !== muted) {
         sendAnalytics(createSyncTrackStateEvent(track.mediaType, muted));
-        //logger.log(
+        logger.log(
             `Sync ${track.mediaType} track muted state to ${
-                muted ? 'muted' : 'unmuted'}`);
+                muted ? "muted" : "unmuted"
+            }`
+        );
 
         track.muted = muted;
         setTrackMuted(track.jitsiTrack, muted);

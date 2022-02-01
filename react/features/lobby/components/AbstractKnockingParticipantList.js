@@ -98,7 +98,7 @@ export default class AbstractKnockingParticipantList<
     //         name: name,
     //         approve: approve
     //     }
-    //     //logger.log("DATA: ", data);
+    //     logger.log("DATA: ", data);
     //     socket.emit('handleApprove', data) ;
     //     // dispatch(setKnockingState(false))
     // }
@@ -115,7 +115,7 @@ export function _onRespondToParticipantSocket(id, name, approve) {
         name: name,
         approve: approve,
     };
-    //logger.log("DATA: ", data);
+    logger.log("DATA: ", data);
     socket.emit("handleApprove", data);
     // dispatch(setKnockingState(false))
 }

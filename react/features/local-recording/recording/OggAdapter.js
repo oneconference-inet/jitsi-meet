@@ -94,7 +94,7 @@ export class OggAdapter extends RecordingAdapter {
 
         if (track.enabled !== shouldEnable) {
             track.enabled = shouldEnable;
-            //logger.log(muted ? 'Mute' : 'Unmute');
+            logger.log(muted ? "Mute" : "Unmute");
         }
 
         return Promise.resolve();

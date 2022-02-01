@@ -119,7 +119,7 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
 
         if (track.enabled !== shouldEnable) {
             track.enabled = shouldEnable;
-            //logger.log(muted ? 'Mute' : 'Unmute');
+            logger.log(muted ? "Mute" : "Unmute");
         }
 
         return Promise.resolve();
@@ -216,10 +216,10 @@ export class FlacAdapter extends AbstractAudioContextAdapter {
                 }
                 break;
             case DEBUG:
-                //logger.log(e.data);
+                logger.log(e.data);
                 break;
             case WORKER_LIBFLAC_READY:
-                //logger.log('libflac is ready.');
+                logger.log("libflac is ready.");
                 this._initWorkerPromiseResolver();
                 break;
             default:
