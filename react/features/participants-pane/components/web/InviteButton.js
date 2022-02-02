@@ -28,7 +28,7 @@ export const InviteButton = () => {
     }, [dispatch]);
     // const typeOption = infoConf.getVoice();
 
-    console.log("infoConf=>>>>>>>>>>>>>>>>>>>>>>>>>", infoConf);
+    logger.log("infoConf=>>>>>>>>>>>>>>>>>>>>>>>>>", infoConf);
     return (
         <div>
             {typeOption == true ? (
