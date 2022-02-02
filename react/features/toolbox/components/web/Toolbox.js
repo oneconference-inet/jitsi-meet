@@ -476,6 +476,15 @@ class Toolbox extends Component<Props, State> {
         const checkPlatform = infoConf.getService();
 
         console.log(infoConf, "infoConf ToolBox=>>>>>>");
+
+        const serviceChecker = "onemeet";
+
+        if (serviceChecker === "onemeet") {
+            console.log(serviceChecker, "ckinif");
+            dispatch(openParticipantsPane());
+            disableInviteFunctions = toState(state)["features/base/config"];
+        }
+
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
@@ -566,10 +575,10 @@ class Toolbox extends Component<Props, State> {
             }
         });
 
-        if (checkPlatform === "onemeet") {
-            console.log(checkPlatform, "ckinif");
-            dispatch(openParticipantsPane());
-        }
+        // if (checkPlatform === "onemeet") {
+        //     console.log(checkPlatform, "ckinif");
+        //     dispatch(openParticipantsPane());
+        // }
 
         if (_reactionsEnabled && _participantCount > 1) {
             const REACTION_SHORTCUTS = Object.keys(REACTIONS).map((key) => {
