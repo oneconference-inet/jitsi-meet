@@ -481,16 +481,16 @@ class Toolbox extends Component<Props, State> {
 
         const serviceChecker = "onemeet";
 
-        if (serviceChecker === "onemeet") {
-            console.log(serviceChecker, "ckinif");
-            dispatch(openParticipantsPane());
+        // if (serviceChecker === "onemeet") {
+        //     console.log(serviceChecker, "ckinif");
+        //     dispatch(openParticipantsPane());
 
-            disableInviteFunctions = toState(state)["features/base/config"];
-            console.log(
-                disableInviteFunctions,
-                "disableInviteLog Toolbox=>>>>>>"
-            );
-        }
+        //     disableInviteFunctions = toState(state)["features/base/config"];
+        //     console.log(
+        //         disableInviteFunctions,
+        //         "disableInviteLog Toolbox=>>>>>>"
+        //     );
+        // }
 
         this.setState(
             {
