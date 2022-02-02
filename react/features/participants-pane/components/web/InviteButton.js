@@ -14,6 +14,7 @@ import infoConf from "../../../../../infoConference";
 
 import { createHandlers, handleDecode } from "../../../../features/analytics/functions.js";
 
+import { useLocation } from 'react-router-dom'
 
 
 export const InviteButton = () => {
@@ -25,6 +26,8 @@ export const InviteButton = () => {
         dispatch(beginAddPeople());
     }, [dispatch]);
     const typeOption = infoConf.getVoice();
+
+    
 
     console.log(handleDecode,'handleDecode InviteButton=>>>>>>>>>>>');
     return (
