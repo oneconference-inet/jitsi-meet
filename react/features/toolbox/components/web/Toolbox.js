@@ -345,6 +345,7 @@ class Toolbox extends Component<Props, State> {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state;
         const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || [];
         const socket = socketIOClient(endpoint);
+        logger.log(socket,'socket=>>>>>>')
         // Get approve incomming conference
         let getApprove;
         if (services_check.includes(checkPlatform)) {
@@ -475,13 +476,14 @@ class Toolbox extends Component<Props, State> {
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
 
-        console.log(infoConf,'infoConf ToolBox=>>>>>>')
+        logger.log(infoConf,'infoConf=>>>>>')
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
                 roomname: infoConf.getRoomName(),
                 name: infoConf.getNameJoin(),
                 checkPlatform: infoConf.getService(),
+                
             },
             () => {
                 if (isModerator) {
