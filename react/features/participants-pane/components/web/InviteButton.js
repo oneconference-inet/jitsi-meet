@@ -21,9 +21,8 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    // const typeOption = infoConf.getVoice();
-    // logger.log(typeOption,'typeoption');
-    const typeOption = true;
+    const typeOption = infoConf.getVoice();
+    logger.log(typeOption,'typeoption');
     return (
         <div>
             {typeOption == true ? (

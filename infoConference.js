@@ -15,7 +15,7 @@ var listUrl = {
 };
 
 function setVoice(option){
-  listUrl.option = true;
+  listUrl.option = option;
 }
 
 function setRoomName(roomname) {
