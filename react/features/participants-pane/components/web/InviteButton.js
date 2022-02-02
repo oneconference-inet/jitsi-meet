@@ -27,8 +27,6 @@ export const InviteButton = () => {
     }, [dispatch]);
     const typeOption = infoConf.getVoice();
 
-    
-
     console.log(handleDecode,'handleDecode InviteButton=>>>>>>>>>>>');
     return (
         <div>
