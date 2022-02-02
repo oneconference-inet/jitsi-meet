@@ -26,8 +26,8 @@ export const InviteButton = () => {
     }, [dispatch]);
     const typeOption = false;
 
-    const dataDecodeHandle = APP.store.getState(dataDecode);
-    console.log(dataDecodeHandle,'App Storeeeee')
+    // const dataDecodeHandle = APP.store.getState(dataDecode);
+    // console.log(dataDecodeHandle,'App Storeeeee')
 
 
     return (
