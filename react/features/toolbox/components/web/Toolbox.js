@@ -476,14 +476,13 @@ class Toolbox extends Component<Props, State> {
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
 
-        logger.log(infoConf,'infoConf=>>>>>')
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
                 roomname: infoConf.getRoomName(),
                 name: infoConf.getNameJoin(),
                 checkPlatform: infoConf.getService(),
-                
+
             },
             () => {
                 if (isModerator) {

@@ -10,13 +10,11 @@ import { beginAddPeople } from "../../../invite";
 
 import { ParticipantInviteButton } from "./styled";
 
-import infoConf from "../../../../../infoConference";
 
-// import {
-//     createHandlers,
-//     handleDecode,
-// } from "../../../../features/analytics/functions.js";
-
+import {
+    createHandlers,
+    handleDecode,
+} from "../../../../features/analytics/functions.js";
 
 export const InviteButton = () => {
     const dispatch = useDispatch();
@@ -26,9 +24,10 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    // const typeOption = infoConf.getVoice();
+    const typeOption = false;
 
-    logger.log("infoConf=>>>>>>>>>>>>>>>>>>>>>>>>>", infoConf);
+    logger.log("handleDecode=>>>>>>>>>>>>",handleDecode)
+
     return (
         <div>
             {typeOption == true ? (
