@@ -92,7 +92,6 @@ MiddlewareRegistry.register(store => next => action => {
         // createHandlers is called before the SET_ROOM action is executed in order for Amplitude to initialize before
         // the deeplinking logic is executed (after the SET_ROOM action) so that the Amplitude device id is available
         // if needed.
-        logger.log(store,'store=>>>>>>>>>>>>>>');
         const createHandlersPromise = createHandlers(store);
 
         const result = next(action);
