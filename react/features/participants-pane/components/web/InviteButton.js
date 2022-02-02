@@ -12,10 +12,10 @@ import { ParticipantInviteButton } from "./styled";
 
 import infoConf from "../../../../../infoConference";
 
-import { createHandlers, handleDecode } from "../../../../features/analytics/functions.js";
-
-import { useLocation } from 'react-router-dom'
-
+import {
+    createHandlers,
+    handleDecode,
+} from "../../../../features/analytics/functions.js";
 
 export const InviteButton = () => {
     const dispatch = useDispatch();
@@ -25,9 +25,9 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    const typeOption = infoConf.getVoice();
+    // const typeOption = infoConf.getVoice();
 
-    console.log(handleDecode,'handleDecode InviteButton=>>>>>>>>>>>');
+    logger.log("infoConf=>>>>>>>>>>>>>>>>>>>>>>>>>", infoConf);
     return (
         <div>
             {typeOption == true ? (
