@@ -11,7 +11,7 @@ var listUrl = {
   isSecretRoom: false,
   isHostHangup: false,
   userRole: "",
-  option: "",
+  option: false,
 };
 
 function setVoice(option){
