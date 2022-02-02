@@ -99,15 +99,6 @@ function decode(data, checkReload) {
     }
 }
 
-export function handleDecode(data, checkReload) {
-    const { locationURL } = state["features/base/connection"];
-    const repeatAccess = reloadPage();
-    const abc = window.location.href()
-    const tokenDecode = locationURL.href.split("?")[1];
-    const dataDecode = decode(tokenDecode, repeatAccess);
-    return decode(tokenDecode, repeatAccess);
-}
-
 /**
  * Creates the analytics handlers.
  *
@@ -135,12 +126,11 @@ export async function createHandlers({ getState }: { getState: Function }) {
     logger.log("tokenDecode: ", tokenDecode);
     const tokenAccess = Boolean(tokenDecode != undefined || repeatAccess);
     const int_service = interfaceConfig.SERVICE_INT;
-    logger.log("test log pondd ", dataDecode);
-    logger.log("Audio=>>>>>>", dataDecode.option.audio);
+
+    APP.store.dispatch(dataDecode);
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
-        logger.log("Data Decode:1 ", dataDecode);
         infoConf.setMeetingId(dataDecode.meetingId);
         infoConf.setRoomName(dataDecode.roomname);
         sessionStorage.setItem(
