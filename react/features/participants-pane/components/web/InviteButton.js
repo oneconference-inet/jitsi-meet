@@ -10,10 +10,7 @@ import { beginAddPeople } from "../../../invite";
 import infoConf from "../../../../../infoConference";
 import { ParticipantInviteButton } from "./styled";
 
-import {
-    createHandlers,
-    handleDecode,
-} from "../../../../features/analytics/functions.js";
+
 
 export const InviteButton = () => {
     const dispatch = useDispatch();
@@ -23,11 +20,6 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-
-    // const typeOption = false;
-    // const dataDecodeHandle = APP.store.getState(dataDecode);
-    // console.log(dataDecodeHandle,'App Storeeeee')
-
     const typeOption = infoConf.getVoice();
 
     return (
