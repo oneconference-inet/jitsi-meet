@@ -22,7 +22,9 @@ import {
     raiseHand,
     participantRoleChanged,
     PARTICIPANT_ROLE,
+    isParticipantModerator,
 } from "../../../base/participants";
+import { toState } from '../base/redux';
 import { connect } from "../../../base/redux";
 import { getLocalVideoTrack } from "../../../base/tracks";
 import { toggleChat } from "../../../chat";
