@@ -17,6 +17,8 @@ import {
     handleDecode,
 } from "../../../../features/analytics/functions.js";
 
+import logger from "./logger";
+
 export const InviteButton = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
