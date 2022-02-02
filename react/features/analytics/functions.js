@@ -127,7 +127,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const tokenAccess = Boolean(tokenDecode != undefined || repeatAccess);
     const int_service = interfaceConfig.SERVICE_INT;
 
-    APP.store.dispatch(dataDecode);
+    infoConf.setVoice(dataDecode.option.audio);
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {

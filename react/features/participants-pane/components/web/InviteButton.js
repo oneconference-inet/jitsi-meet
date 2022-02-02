@@ -7,9 +7,8 @@ import { useDispatch } from "react-redux";
 import { createToolbarEvent, sendAnalytics } from "../../../analytics";
 import { Icon, IconInviteMore } from "../../../base/icons";
 import { beginAddPeople } from "../../../invite";
-
+import infoConf from "../../../../../infoConference";
 import { ParticipantInviteButton } from "./styled";
-
 
 import {
     createHandlers,
@@ -24,11 +23,12 @@ export const InviteButton = () => {
         sendAnalytics(createToolbarEvent("invite"));
         dispatch(beginAddPeople());
     }, [dispatch]);
-    const typeOption = false;
 
+    // const typeOption = false;
     // const dataDecodeHandle = APP.store.getState(dataDecode);
     // console.log(dataDecodeHandle,'App Storeeeee')
 
+    const typeOption = infoConf.getVoice();
 
     return (
         <div>
