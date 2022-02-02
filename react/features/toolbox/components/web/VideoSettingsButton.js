@@ -90,13 +90,25 @@ class VideoSettingsButton extends Component<Props> {
      * @param {KeyboardEvent} event - Esc key click to close the popup.
      * @returns {void}
      */
+    
     _onEscClick(event) {
+        logger.log(event,'event@videobtn')
         if (event.key === 'Escape' && this.props.isOpen) {
             event.preventDefault();
             event.stopPropagation();
             this.props.onVideoOptionsClick();
         }
     }
+    // componentDidMount(event) {
+    //     const discam = true;
+    //     if(discam = true){
+    //         event.preventDefault();
+    //         event.stopPropagation();
+    //         this.props.onVideoOptionsClick();
+    //     }else{
+
+    //     }
+    // }
 
     /**
      * Implements React's {@link Component#render}.
@@ -105,7 +117,6 @@ class VideoSettingsButton extends Component<Props> {
      */
     render() {
         const { onVideoOptionsClick, t, visible, isOpen } = this.props;
-
         return visible ? (
             <VideoSettingsPopup>
                 <ToolboxButtonWithIcon
