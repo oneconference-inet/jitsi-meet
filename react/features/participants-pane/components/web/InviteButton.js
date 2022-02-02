@@ -12,12 +12,11 @@ import { ParticipantInviteButton } from "./styled";
 
 import infoConf from "../../../../../infoConference";
 
-import {
-    createHandlers,
-    handleDecode,
-} from "../../../../features/analytics/functions.js";
+// import {
+//     createHandlers,
+//     handleDecode,
+// } from "../../../../features/analytics/functions.js";
 
-import logger from "./logger";
 
 export const InviteButton = () => {
     const dispatch = useDispatch();
@@ -29,7 +28,7 @@ export const InviteButton = () => {
     }, [dispatch]);
     // const typeOption = infoConf.getVoice();
 
-    logger.log("infoConf=>>>>>>>>>>>>>>>>>>>>>>>>>", infoConf);
+    console.log("infoConf=>>>>>>>>>>>>>>>>>>>>>>>>>", infoConf);
     return (
         <div>
             {typeOption == true ? (
