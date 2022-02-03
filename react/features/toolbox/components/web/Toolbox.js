@@ -475,7 +475,8 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
-        infoConf.setSocket(socket);
+        const socketToInfo = socketIOClient(state);
+        infoConf.setSocket(socketToInfo);
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
