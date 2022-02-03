@@ -12,6 +12,7 @@ import { AudioSettingsPopup, toggleAudioSettings } from '../../../settings';
 import { getAudioSettingsVisibility } from '../../../settings/functions';
 import { isAudioSettingsButtonDisabled } from '../../functions';
 import AudioMuteButton from '../AudioMuteButton';
+import infoConf from "../../../../../infoConference";
 
 type Props = {
 
@@ -90,6 +91,9 @@ class AudioSettingsButton extends Component<Props> {
         const settingsDisabled = !hasPermissions
             || isDisabled
             || !JitsiMeetJS.mediaDevices.isMultipleAudioInputSupported();
+
+            const ActionMic = infoConf.setSocket();
+            console.log(ActionMic);
 
         return visible ? (
             <AudioSettingsPopup>
