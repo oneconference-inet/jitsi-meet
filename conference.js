@@ -2541,12 +2541,23 @@ export default {
             );
             const promises = [];
 
-            const ActionAudio = infoConf.setSocket();
-
             APP.store.dispatch(setAudioMuted(audioMuted));
             APP.store.dispatch(setVideoMuted(videoMuted));
 
+
+            const ActionAudio = infoConf.setSocket();
+            const ActionVideo = infoConf.setSocket();
+
+            // if(ActionAudio = "" && ActionVideo = ""){
+
+            // }
+            // else{
+            //     APP.store.dispatch(setAudioMuted(audioMuted));
+            //     APP.store.dispatch(setVideoMuted(videoMuted));
+            // }
+
             logger.log('ActionAudio Conference=>>>>>>>>>>>>>>>>',ActionAudio)
+            logger.log('ActionVideo Conference=>>>>>>>>>>>>>>>>',ActionVideo)
             // Remove the tracks from the peerconnection.
             for (const track of localTracks) {
                 // Always add the track on mobile Safari because of a known issue where audio playout doesn't happen
@@ -3193,6 +3204,18 @@ export default {
 
         APP.store.dispatch(setAudioAvailable(available));
         APP.API.notifyAudioAvailabilityChanged(available);
+
+        const ActionAudioAvailable = infoConf.setSocket();
+
+        // if(ActionAudioAvailable = ""){
+
+        // }
+        // else{
+            // APP.store.dispatch(setAudioAvailable(available));
+            // APP.API.notifyAudioAvailabilityChanged(available);
+        // }
+
+
     },
 
     /**
@@ -3215,6 +3238,17 @@ export default {
 
         APP.store.dispatch(setVideoAvailable(available));
         APP.API.notifyVideoAvailabilityChanged(available);
+
+        const ActionVideoAvailable = infoConf.setSocket();
+
+        // if(ActionVideoAvailable = ""){
+
+        // }
+        // else{
+            // APP.store.dispatch(setVideoAvailable(available));
+            // APP.API.notifyVideoAvailabilityChanged(available);
+        // }
+
     },
 
     /**
