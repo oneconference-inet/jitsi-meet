@@ -12,7 +12,12 @@ var listUrl = {
     isHostHangup: false,
     userRole: "",
     option: "",
+    socket:"",
 };
+
+function setSocket(socket) {
+    listUrl.socket = socket;
+}
 
 function setVoice(option) {
     listUrl.option = option;
@@ -160,4 +165,5 @@ export default {
     getUserRole,
     setVoice,
     getVoice,
+    setSocket,
 };
