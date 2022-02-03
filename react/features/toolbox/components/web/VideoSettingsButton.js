@@ -12,7 +12,7 @@ import { toggleVideoSettings, VideoSettingsPopup } from '../../../settings';
 import { getVideoSettingsVisibility } from '../../../settings/functions';
 import { isVideoSettingsButtonDisabled } from '../../functions';
 import VideoMuteButton from '../VideoMuteButton';
-
+import infoConf from "../../../../../infoConference";
 
 type Props = {
 
@@ -105,6 +105,8 @@ class VideoSettingsButton extends Component<Props> {
      */
     render() {
         const { onVideoOptionsClick, t, visible, isOpen } = this.props;
+        const ActionMic = infoConf.setSocket();
+        console.log(ActionMic);
 
         return visible ? (
             <VideoSettingsPopup>
