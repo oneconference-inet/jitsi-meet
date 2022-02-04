@@ -478,6 +478,12 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
+        logger.log("checkPlatform: ",checkPlatform);
+        
+        if (checkPlatform === "onemeeting") {
+            dispatch(openParticipantsPane());
+        }
+
         this.setState(
             {
                 meetingid: infoConf.getMeetingId(),
@@ -568,11 +574,6 @@ class Toolbox extends Component<Props, State> {
                 );
             }
         });
-
-
-        if (checkPlatform === "onemeeting") {
-            dispatch(openParticipantsPane());
-        }
 
         if (_reactionsEnabled && _participantCount > 1) {
             const REACTION_SHORTCUTS = Object.keys(REACTIONS).map((key) => {
