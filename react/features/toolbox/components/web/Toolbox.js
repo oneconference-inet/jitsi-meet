@@ -346,7 +346,6 @@ class Toolbox extends Component<Props, State> {
         const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || [];
         const socket = socketIOClient(endpoint);
         infoConf.setSocket(socket);
-        logger.log("socketset ", socket);
         // Get approve incomming conference
         let getApprove;
         if (services_check.includes(checkPlatform)) {
@@ -478,7 +477,7 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
-        const Checkservice = infoConf.setServiceCheck();
+        const Checkservice = infoConf.setService();
         logger.log("Checkservice: ",Checkservice);
         if (Checkservice === "onemeeting") {
             dispatch(openParticipantsPane());

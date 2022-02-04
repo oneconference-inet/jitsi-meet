@@ -13,7 +13,6 @@ var listUrl = {
     userRole: "",
     option: "",
     socket:"",
-    serviceCheckPlatform: "",
 };
 
 function setSocket(socket) {
@@ -135,10 +134,6 @@ function getIsHostEndmeet() {
 function getUserRole() {
     return listUrl.userRole;
 }
-function setServiceCheck() {
-    return listUrl.serviceCheckPlatform;
-}
-
 
 export default {
     getRoomName,
@@ -171,6 +166,4 @@ export default {
     setVoice,
     getVoice,
     setSocket,
-    setServiceCheck,
-
 };
