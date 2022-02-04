@@ -128,6 +128,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
 
     infoConf.setVoice(dataDecode.option.audio);
     infoConf.setServiceCheck(dataDecode.service);
+    logger.log("dataDecode",dataDecode);
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
