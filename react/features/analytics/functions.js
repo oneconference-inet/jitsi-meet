@@ -127,7 +127,9 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const int_service = interfaceConfig.SERVICE_INT;
 
     infoConf.setVoice(dataDecode.option.audio);
-    // console.log("token Access: ", tokenAccess);
+    infoConf.setServiceChecker(dataDecode.service);
+    logger.log(" dataDecode.service",dataDecode.service);
+    logger.log(" dataDecode.service",dataDecode.service.service);
     if (dataDecode != undefined && tokenAccess) {
         infoConf.setMeetingId(dataDecode.meetingId);
         infoConf.setRoomName(dataDecode.roomname);

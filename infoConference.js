@@ -13,7 +13,13 @@ var listUrl = {
     userRole: "",
     option: "",
     socket:"",
+    servicechecker:"",
 };
+
+
+function setServiceChecker(servicechecker) {
+    listUrl.servicechecker = servicechecker;
+}
 
 function setSocket(socket) {
     listUrl.socket = socket;
@@ -166,4 +172,5 @@ export default {
     setVoice,
     getVoice,
     setSocket,
+    setServiceChecker,
 };
