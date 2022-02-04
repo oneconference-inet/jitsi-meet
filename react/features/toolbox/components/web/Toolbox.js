@@ -570,8 +570,7 @@ class Toolbox extends Component<Props, State> {
         });
 
 
-        if (checkPlatform === "onemeet") {
-            console.log(checkPlatform, "ckinif");
+        if (checkPlatform === "onemeeting") {
             dispatch(openParticipantsPane());
         }
 
