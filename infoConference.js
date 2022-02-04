@@ -141,6 +141,10 @@ function getUserRole() {
     return listUrl.userRole;
 }
 
+function getServiceChecker() {
+    return listUrl.servicechecker;
+}
+
 export default {
     getRoomName,
     getService,
@@ -173,4 +177,6 @@ export default {
     getVoice,
     setSocket,
     setServiceChecker,
+    getServiceChecker,
+    
 };
