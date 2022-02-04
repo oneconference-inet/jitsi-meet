@@ -129,7 +129,6 @@ export async function createHandlers({ getState }: { getState: Function }) {
     infoConf.setVoice(dataDecode.option.audio);
     infoConf.setServiceChecker(dataDecode.service);
     logger.log(" dataDecode.service",dataDecode.service);
-    logger.log(" dataDecode.service",dataDecode.service.service);
     if (dataDecode != undefined && tokenAccess) {
         infoConf.setMeetingId(dataDecode.meetingId);
         infoConf.setRoomName(dataDecode.roomname);
