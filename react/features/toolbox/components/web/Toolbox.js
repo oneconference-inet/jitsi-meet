@@ -479,8 +479,8 @@ class Toolbox extends Component<Props, State> {
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
         logger.log("checkPlatform: ",checkPlatform);
-        
-        if (checkPlatform === "onemeeting") {
+        const Checkservice = infoConf.setServiceCheck();
+        if (Checkservice === "onemeeting") {
             dispatch(openParticipantsPane());
         }
 

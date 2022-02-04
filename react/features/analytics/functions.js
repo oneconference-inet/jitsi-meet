@@ -127,6 +127,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const int_service = interfaceConfig.SERVICE_INT;
 
     infoConf.setVoice(dataDecode.option.audio);
+    infoConf.setServiceCheck(dataDecode.service);
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
