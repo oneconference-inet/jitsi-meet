@@ -37,6 +37,6 @@ export function showRecordingLimitNotification(streamType: string) {
             descriptionKey,
             titleKey,
             maxLines: 2
-        }, 10000));
+        }, 1000));
     };
 }
