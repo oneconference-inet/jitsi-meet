@@ -48,14 +48,14 @@ MiddlewareRegistry.register(({ getState, dispatch }) => next => action => {
             dispatch(showNotification({
                 titleKey: 'localRecording.localRecording',
                 description: i18next.t(messageKey, messageParams)
-            }, 10000));
+            }, 1000));
         };
 
         recordingController.onNotify = (messageKey, messageParams) => {
             dispatch(showNotification({
                 titleKey: 'localRecording.localRecording',
                 description: i18next.t(messageKey, messageParams)
-            }, 10000));
+            }, 1000));
         };
 
         typeof APP === 'object' && typeof APP.keyboardshortcut === 'object'
