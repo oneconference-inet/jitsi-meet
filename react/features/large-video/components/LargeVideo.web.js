@@ -78,8 +78,9 @@ class LargeVideo extends Component<Props> {
         const className = `videocontainer${this.props._isChatOpen ? ' shift-right' : ''}`;
 
         return (
+            <div style={{display: "flex",justifyContent:"center"}}>
             <div
-            className = { className }
+            className = {className}
                 id = 'largeVideoContainer'
                 style = { style }>
                 <SharedVideo />
@@ -116,6 +117,7 @@ class LargeVideo extends Component<Props> {
                 </div>
                 { interfaceConfig.DISABLE_TRANSCRIPTION_SUBTITLES
                     || <Captions /> }
+            </div>
             </div>
         );
     }
