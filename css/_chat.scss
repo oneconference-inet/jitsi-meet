@@ -1,34 +1,57 @@
-#sideToolbarContainer {
-    // background-color: $newToolbarBackgroundColor;
-    // box-sizing: border-box;
-    // color: #FFF;
-    // display: flex;
-    // flex-direction: column;
-    // height: 100%;
-    // left: -$sidebarWidth;
-    // overflow: hidden;
-    // position: absolute;
-    // top: 0;
-    // width: $sidebarWidth;
-    // z-index: $sideToolbarContainerZ;
+// #sideToolbarContainer {
+//     // background-color: $newToolbarBackgroundColor;
+//     // box-sizing: border-box;
+//     // color: #FFF;
+//     // display: flex;
+//     // flex-direction: column;
+//     // height: 100%;
+//     // left: -$sidebarWidth;
+//     // overflow: hidden;
+//     // position: absolute;
+//     // top: 0;
+//     // width: $sidebarWidth;
+//     // z-index: $sideToolbarContainerZ;
 
-    // background-color: $newToolbarBackgroundColor;
+//     // background-color: $newToolbarBackgroundColor;
+//     background-color: $chatBackgroundColor;
+//     box-sizing: border-box;
+//     color: #FFF;
+//     display: flex;
+//     flex-direction: column;
+//     /**
+//      * Make the sidebar flush with the top of the toolbar. Take the size of
+//      * the toolbar and subtract from 100%.
+//      */
+//     // height: calc(100% - #{$newToolbarSizeWithPadding});
+//     height: 100%;
+//     left: -$sidebarWidth;
+//     overflow: hidden;
+//     position: absolute;
+//     top: 0;
+//     transition: left 0.5s;
+//     width: $sidebarWidth;
+//     z-index: $sideToolbarContainerZ;
+
+//     /**
+//      * The sidebar (chat) is off-screen when hidden. Move it flush to the left
+//      * side of the window when it should be visible.
+//      */
+//     &.slideInExt {
+//         left: 0;
+//     }
+// }
+
+#sideToolbarContainer {
     background-color: $chatBackgroundColor;
     box-sizing: border-box;
     color: #FFF;
     display: flex;
     flex-direction: column;
-    /**
-     * Make the sidebar flush with the top of the toolbar. Take the size of
-     * the toolbar and subtract from 100%.
-     */
-    // height: calc(100% - #{$newToolbarSizeWithPadding});
     height: 100%;
     left: -$sidebarWidth;
     overflow: hidden;
     position: absolute;
     top: 0;
-    transition: left 0.5s;
     width: $sidebarWidth;
     z-index: $sideToolbarContainerZ;
 
