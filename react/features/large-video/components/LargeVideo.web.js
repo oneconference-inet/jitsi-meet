@@ -7,7 +7,7 @@ import { connect } from '../../base/redux';
 import { setColorAlpha } from '../../base/util';
 import { fetchCustomBrandingData } from '../../dynamic-branding';
 import { Captions } from '../../subtitles/';
-
+import { SharedVideo } from '../../shared-video/components/web';
 declare var interfaceConfig: Object;
 
 type Props = {
@@ -76,8 +76,9 @@ class LargeVideo extends Component<Props> {
                 id = 'largeVideoContainer'
                 style = { style }>
                 <div id = 'sharedVideo'>
-                    <div id = 'sharedVideoIFrame' />
+                <SharedVideo/>
                 </div>
+                
                 <div id = 'etherpad' />
 
                 <Watermarks />
