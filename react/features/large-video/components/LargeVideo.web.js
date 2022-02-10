@@ -75,11 +75,11 @@ class LargeVideo extends Component<Props> {
             _noAutoPlayVideo
         } = this.props;
         const style = this._getCustomSyles();
-        // const className = `videocontainer${this.props._isChatOpen ? ' shift-right' : ''}`;
+        const className = `videocontainer${this.props._isChatOpen ? ' shift-right' : ''}`;
 
         return (
             <div
-                className = 'videocontainer'
+            className = { className }
                 id = 'largeVideoContainer'
                 style = { style }>
                 <SharedVideo />
