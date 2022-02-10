@@ -232,11 +232,10 @@ class Conference extends AbstractConference<Props, *> {
                     onMouseMove = { this._onShowToolbar }
                     ref = { this._setBackground }>
                     <ConferenceInfo />
-
+                    <Chat />
                     <Notice />
                     <div id = 'videospace'>
                         <LargeVideo />
-                        <Chat />
                         {!_isParticipantsPaneVisible
                          && <div id = 'notification-participant-list'>
                              <KnockingParticipantList />
@@ -246,7 +245,6 @@ class Conference extends AbstractConference<Props, *> {
                     </div>
 
                     { _showPrejoin || _showLobby || <Toolbox showDominantSpeakerName = { true } /> }
-                    
 
                     { this.renderNotificationsContainer() }
 
