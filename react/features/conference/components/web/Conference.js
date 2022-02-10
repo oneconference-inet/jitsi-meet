@@ -236,6 +236,7 @@ class Conference extends AbstractConference<Props, *> {
                     <Notice />
                     <div id = 'videospace'>
                         <LargeVideo />
+                        <Chat />
                         {!_isParticipantsPaneVisible
                          && <div id = 'notification-participant-list'>
                              <KnockingParticipantList />
@@ -245,7 +246,7 @@ class Conference extends AbstractConference<Props, *> {
                     </div>
 
                     { _showPrejoin || _showLobby || <Toolbox showDominantSpeakerName = { true } /> }
-                    <Chat />
+                    
 
                     { this.renderNotificationsContainer() }
 
