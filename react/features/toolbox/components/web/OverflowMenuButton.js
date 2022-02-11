@@ -4,6 +4,7 @@ import InlineDialog from '@atlaskit/inline-dialog';
 import React, { Component } from 'react';
 
 import { createToolbarEvent, sendAnalytics } from '../../../analytics';
+import logger from '../../../analytics/logger';
 import { translate } from '../../../base/i18n';
 import { IconHorizontalPoints } from '../../../base/icons';
 import { connect } from '../../../base/redux';
@@ -108,6 +109,7 @@ class OverflowMenuButton extends Component<Props> {
     render() {
         const { children, isOpen, overflowDrawer, reactionsQueue, showMobileReactions } = this.props;
 
+        logger.log(overflowDrawer,'overflowDrawer=>>>>>')
         return (
             <div className = 'toolbox-button-wth-dialog'>
                 {
@@ -119,7 +121,7 @@ class OverflowMenuButton extends Component<Props> {
                                     isOpen = { isOpen }
                                     onClose = { this._onCloseDialog }>
                                     {children}
-                                    {showMobileReactions && <ReactionsMenu overflowMenu = { true } />}
+                                    {showMobileReactions && <ReactionsMenu overflowMenu = { false } />}
                                 </Drawer>
                                 {showMobileReactions && <div className = 'reactions-animations-container'>
                                     {reactionsQueue.map(({ reaction, uid }, index) => (<ReactionEmoji
