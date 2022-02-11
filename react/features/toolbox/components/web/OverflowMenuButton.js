@@ -109,7 +109,6 @@ class OverflowMenuButton extends Component<Props> {
     render() {
         const { children, isOpen, overflowDrawer, reactionsQueue, showMobileReactions } = this.props;
 
-        logger.log(overflowDrawer,'overflowDrawer=>>>>>')
         return (
             <div className = 'toolbox-button-wth-dialog'>
                 {
@@ -121,7 +120,7 @@ class OverflowMenuButton extends Component<Props> {
                                     isOpen = { isOpen }
                                     onClose = { this._onCloseDialog }>
                                     {children}
-                                    {showMobileReactions && <ReactionsMenu overflowMenu = { false } />}
+                                    {showMobileReactions && <ReactionsMenu overflowMenu = { true } />}
                                 </Drawer>
                                 {showMobileReactions && <div className = 'reactions-animations-container'>
                                     {reactionsQueue.map(({ reaction, uid }, index) => (<ReactionEmoji
