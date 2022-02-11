@@ -78,6 +78,16 @@ class VideoSettingsButton extends Component<Props> {
      */
     _isIconDisabled() {
         const { hasPermissions, hasVideoTrack, isDisabled } = this.props;
+
+        const ActionVidMake = "-actionVid";
+
+
+        if ((ActionVidMake = "-actionVid")) {
+            hasVideoTrack = isDisabled;
+        } else {
+            this.props.isOpen;
+        }
+
         return (!hasPermissions || isDisabled) && !hasVideoTrack;
     }
     _onEscClick: (KeyboardEvent) => void;
@@ -106,14 +116,6 @@ class VideoSettingsButton extends Component<Props> {
         const ActionVid = infoConf.setSocket();
         console.log(ActionVid,'ActionVid=>>>>');
 
-        const ActionVidMake = "-actionVid";
-
-
-        if ((ActionVidMake = "-actionVid")) {
-            visible = false;
-        } else {
-            this.props.isOpen;
-        }
 
         return visible ? (
             <VideoSettingsPopup>
