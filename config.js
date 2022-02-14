@@ -973,11 +973,4 @@ var config = {
     // no configuration value should follow this line.
 };
 
-try {
-    let o = JSON.parse(localStorage.getItem("features/base/settings"));
-    o.startWithVideoMuted = true;
-    localStorage.setItem("features/base/settings", JSON.stringify(o))
-} catch {
-}
-
 /* eslint-enable no-unused-vars, no-var */
