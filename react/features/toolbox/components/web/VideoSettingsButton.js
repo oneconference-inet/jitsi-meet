@@ -83,8 +83,8 @@ class VideoSettingsButton extends Component<Props> {
         // console.log(ActionVid,'ActionVid=>>>>');
 
 
-        const ActionVid = "-actionVid";
-        console.log(ActionVid,'ActionVid=>>>>');
+        // const ActionVid = "-actionVid";
+        // console.log(ActionVid,'ActionVid=>>>>');
 
 
         // if ((ActionVid = "-actionVid")) {
@@ -118,8 +118,8 @@ class VideoSettingsButton extends Component<Props> {
      */
     render() {
         const { onVideoOptionsClick, t, visible, isOpen } = this.props;
-        // const ActionVid = infoConf.setSocket();
-        // console.log(ActionVid,'ActionVid=>>>>');
+        const ActionVid = infoConf.setSocket();
+        console.log(ActionVid,'ActionVid=>>>>');
 
         // const ActionVidMake = "-actionVid";
 
