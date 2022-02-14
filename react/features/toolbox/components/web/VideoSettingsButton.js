@@ -86,10 +86,10 @@ class VideoSettingsButton extends Component<Props> {
             hasVideoTrack = isDisabled;
             console.log(hasVideoTrack,'hasVideoTrack=>>>>>>>>>>>>>')
         } else {
-            this.props.isOpen;
+            return (!hasPermissions || isDisabled) && !hasVideoTrack;
         }
 
-        return (!hasPermissions || isDisabled) && !hasVideoTrack;
+        // return (!hasPermissions || isDisabled) && !hasVideoTrack;
     }
     _onEscClick: (KeyboardEvent) => void;
 
