@@ -121,7 +121,7 @@ class VideoSettingsButton extends Component<Props> {
         // const ActionVid = infoConf.setSocket();
         // console.log(ActionVid,'ActionVid=>>>>');
 
-        const ActionVid = "-actionVid";
+        var ActionVid = "-actionVid";
         console.log(ActionVid,'ActionVid=>>>>>')
 
         if ((ActionVid = "-actionVid")) {
