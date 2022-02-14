@@ -118,21 +118,14 @@ class VideoSettingsButton extends Component<Props> {
      */
     render() {
         const { hasPermissions, isDisabled, onVideoOptionsClick, t, visible, isOpen } = this.props;
-        // const ActionVid = infoConf.setSocket();
-        const ActionVid = '-actionVid'
+        const ActionVid = infoConf.setSocket();
+        // const ActionVid = '-actionVid'
         console.log(ActionVid,'ActionVid=>>>>');
 
-        if (ActionVid = '-actionVid') {
-            hasPermissions = isDisabled
-        } else {
-            this.props.isOpen
-        }
-
-
-        // if ((ActionVid = "-actionVid")) {
+        // if (ActionVid = '-actionVid') {
         //     hasPermissions = isDisabled
         // } else {
-        //     this.props.isOpen;
+        //     this.props.isOpen
         // }
 
 
