@@ -79,15 +79,15 @@ class VideoSettingsButton extends Component<Props> {
     _isIconDisabled() {
         const { hasPermissions, hasVideoTrack, isDisabled } = this.props;
 
-        // const ActionVidMake = "-actionVid";
+        const ActionVidMake = "-actionVid";
 
 
-        // if ((ActionVidMake = "-actionVid")) {
-        //     hasVideoTrack = isDisabled;
-        //     console.log(hasVideoTrack,'hasVideoTrack=>>>>>>>>>>>>>')
-        // } else {
-        //     this.props.isOpen;
-        // }
+        if ((ActionVidMake = "-actionVid")) {
+            hasVideoTrack = isDisabled;
+            console.log(hasVideoTrack,'hasVideoTrack=>>>>>>>>>>>>>')
+        } else {
+            this.props.isOpen;
+        }
 
         return (!hasPermissions || isDisabled) && !hasVideoTrack;
     }
@@ -114,11 +114,10 @@ class VideoSettingsButton extends Component<Props> {
      */
     render() {
         const { onVideoOptionsClick, t, visible, isOpen } = this.props;
-        const ActionVid = infoConf.setSocket();
-        console.log(ActionVid,'ActionVid=>>>>');
+        // const ActionVid = infoConf.setSocket();
+        // console.log(ActionVid,'ActionVid=>>>>');
 
         // const ActionVidMake = "-actionVid";
-
 
         // if ((ActionVidMake = "-actionVid")) {
         //     visible = false;
