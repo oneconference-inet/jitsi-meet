@@ -26,14 +26,14 @@ export function showRecordingLimitNotification(streamType: string) {
             titleKey = 'dialog.recording';
         }
 
-        // const { recordingLimit = {} } = getState()['features/base/config'];
-        // const { limit, appName } = recordingLimit;
+        const { recordingLimit = {} } = getState()['features/base/config'];
+        const { limit, appName } = recordingLimit;
 
         return dispatch(showNotification({
-            // descriptionArguments: {
-            //     limit,
-            //     app: appName
-            // },
+            descriptionArguments: {
+                limit,
+                app: appName
+            },
             descriptionKey,
             titleKey,
             maxLines: 2
