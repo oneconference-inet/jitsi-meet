@@ -114,17 +114,17 @@ class VideoSettingsButton extends Component<Props> {
      */
     render() {
         const { onVideoOptionsClick, t, visible, isOpen } = this.props;
-        // const ActionVid = infoConf.setSocket();
-        // console.log(ActionVid,'ActionVid=>>>>');
+        const ActionVid = infoConf.setSocket();
+        console.log(ActionVid,'ActionVid=>>>>');
 
-        const ActionVidMake = "-actionVid";
+        // const ActionVidMake = "-actionVid";
 
-        if ((ActionVidMake = "-actionVid")) {
-            this.props.onVideoOptionsClick();
-            console.log(this.props.onVideoOptionsClick(),'this.props.onVideoOptionsClick=>>>>>>>>>>>>>')
-        } else {
-            this.props.isOpen;
-        }
+        // if ((ActionVidMake = "-actionVid")) {
+        //     this.props.onVideoOptionsClick();
+        //     console.log(this.props.onVideoOptionsClick(),'this.props.onVideoOptionsClick=>>>>>>>>>>>>>')
+        // } else {
+        //     this.props.isOpen;
+        // }
 
 
         return visible ? (
