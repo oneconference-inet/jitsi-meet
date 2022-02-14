@@ -516,6 +516,7 @@ export function isUserInteractionRequiredForUnmute(state) {
  */
 export function setTrackMuted(track, muted) {
     muted = Boolean(muted); // eslint-disable-line no-param-reassign
+    logger.log(track,'track=>>>>>>')
 
     if (track.isMuted() === muted) {
         return Promise.resolve();

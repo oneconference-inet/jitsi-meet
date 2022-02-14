@@ -109,7 +109,7 @@ class OverflowMenuButton extends Component<Props> {
     render() {
         const { children, isOpen, overflowDrawer, reactionsQueue, showMobileReactions } = this.props;
 
-        return (
+w        return (
             <div className = 'toolbox-button-wth-dialog'>
                 {
                     overflowDrawer ? (
