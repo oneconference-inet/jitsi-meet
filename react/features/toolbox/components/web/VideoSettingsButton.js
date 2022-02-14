@@ -79,19 +79,19 @@ class VideoSettingsButton extends Component<Props> {
     _isIconDisabled() {
         const { hasPermissions, hasVideoTrack, isDisabled } = this.props;
 
-        const ActionVid = infoConf.setSocket();
-        console.log(ActionVid,'ActionVid=>>>>');
+        // const ActionVid = infoConf.setSocket();
+        // console.log(ActionVid,'ActionVid=>>>>');
 
 
         // const ActionVid = "-actionVid";
         // console.log(ActionVid,'ActionVid=>>>>');
 
 
-        if ((ActionVid = "-actionVid")) {
-            hasPermissions = isDisabled;
-        } else {
-            return (!hasPermissions || isDisabled) && !hasVideoTrack;
-        }
+        // if ((ActionVid = "-actionVid")) {
+        //     hasPermissions = isDisabled;
+        // } else {
+        //     return (!hasPermissions || isDisabled) && !hasVideoTrack;
+        // }
 
         return (!hasPermissions || isDisabled) && !hasVideoTrack;
     }
@@ -117,18 +117,18 @@ class VideoSettingsButton extends Component<Props> {
      * @inheritdoc
      */
     render() {
-        const { onVideoOptionsClick, t, visible, isOpen } = this.props;
+        const { hasPermissions, isDisabled, onVideoOptionsClick, t, visible, isOpen } = this.props;
         // const ActionVid = infoConf.setSocket();
         // console.log(ActionVid,'ActionVid=>>>>');
 
-        // const ActionVidMake = "-actionVid";
+        const ActionVid = "-actionVid";
+        console.log(ActionVid,'ActionVid=>>>>>')
 
-        // if ((ActionVidMake = "-actionVid")) {
-        //     this.props.onVideoOptionsClick();
-        //     console.log(this.props.onVideoOptionsClick(),'this.props.onVideoOptionsClick=>>>>>>>>>>>>>')
-        // } else {
-        //     this.props.isOpen;
-        // }
+        if ((ActionVid = "-actionVid")) {
+            hasPermissions = isDisabled
+        } else {
+            this.props.isOpen;
+        }
 
 
         return visible ? (
