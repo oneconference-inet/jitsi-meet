@@ -456,7 +456,7 @@ export function isLocalCameraTrackMuted(tracks) {
  */
 export function isLocalTrackMuted(tracks, mediaType) {
     const track = getLocalTrack(tracks, mediaType);
-    logger.log('trackLocalMuted=>>>>',track)
+    // logger.log('trackLocalMuted=>>>>',track)
 
     return !track || track.muted;
 }
@@ -517,7 +517,7 @@ export function isUserInteractionRequiredForUnmute(state) {
  */
 export function setTrackMuted(track, muted) {
     muted = Boolean(muted); // eslint-disable-line no-param-reassign
-    logger.log(track,'settrackMuted=>>>>>>')
+    // logger.log(track,'settrackMuted=>>>>>>')
 
     if (track.isMuted() === muted) {
         return Promise.resolve();
