@@ -79,8 +79,8 @@ class VideoSettingsButton extends Component<Props> {
     _isIconDisabled() {
         const { hasPermissions, hasVideoTrack, isDisabled } = this.props;
 
-        // const ActionVid = infoConf.setSocket();
-        // console.log(ActionVid,'ActionVid=>>>>');
+        const ActionVid = infoConf.setSocket();
+        console.log(ActionVid,'ActionVid IconDisabled=>>>>');
 
 
         // const ActionVid = "-actionVid";

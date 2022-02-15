@@ -814,8 +814,6 @@ class Toolbox extends Component<Props, State> {
 
             dispatch(toggleBackgroundEffect(noneOptions, _localVideo));
 
-            logger.log(_localVideo,'_localVideo=>>>>>')
-
             return;
         }
 
