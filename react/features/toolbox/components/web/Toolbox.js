@@ -509,6 +509,7 @@ class Toolbox extends Component<Props, State> {
                                 share: this.state.sharingEnabled,
                             },
                         });
+                        logger.log(appData,"appData start rec");
 
                         setTimeout(() => {
                             this.props._conference.startRecording({
