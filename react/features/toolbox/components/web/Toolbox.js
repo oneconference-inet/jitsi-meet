@@ -806,8 +806,6 @@ class Toolbox extends Component<Props, State> {
             dispatch,
         } = this.props;
 
-        logger.log(_localVideo,'Toggle Sscreen Share _localVideo=>>>>')
-
         if (_backgroundType === VIRTUAL_BACKGROUND_TYPE.DESKTOP_SHARE) {
             const noneOptions = {
                 enabled: false,
@@ -1645,7 +1643,9 @@ function _mapStateToProps(state, ownProps) {
     const localVideo = getLocalVideoTrack(state["features/base/tracks"]);
     const { clientWidth } = state["features/base/responsive-ui"];
 
-    // const ActionVid = infoConf.setSocket();
+    const ActionVid = infoConf.setSocket();
+    logger.log(ActionVid,'ActionVid=>>>>>')
+    logger.log(this.props,'propsssss=>>>>>')
     // if (ActionVid = '-actionVid') {
     //     localVideo.muted = true
     //     return localVideo.muted
@@ -1654,7 +1654,7 @@ function _mapStateToProps(state, ownProps) {
 
     // }
 
-    logger.log(localVideo,'localVideo=>>>>>')
+    logger.log(localVideo,'localVideo mapStateProps=>>>>>')
     // logger.log(loc0alVideo.local,'localVideo Local=>>>>>')
 
 
