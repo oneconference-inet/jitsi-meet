@@ -1643,6 +1643,8 @@ function _mapStateToProps(state, ownProps) {
     const localVideo = getLocalVideoTrack(state["features/base/tracks"]);
     const { clientWidth } = state["features/base/responsive-ui"];
 
+    logger.log(localVideo,'localVideo=>>>>>')
+
     let desktopSharingDisabledTooltipKey;
 
     if (enableFeaturesBasedOnToken) {
