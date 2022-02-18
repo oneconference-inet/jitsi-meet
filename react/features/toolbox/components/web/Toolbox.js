@@ -876,13 +876,12 @@ class Toolbox extends Component<Props, State> {
         // logger.log(this.props._localVideo.muted,'this.props._localVideo.muted=>>>>>')
 
         // const ActionVid = infoConf.setSocket();
-        var ActionVid = '5555'
+        var ActionVid = '-actionVid'
         logger.log(ActionVid, "ActionVid=>>>>>");
 
-        if ((ActionVid = "5555")) {
-            // muteLocalAudio(mute);
-            // muteLocalVideo(mute);
-            console.log(ActionVid,'555555=>>>>>>>>>>>>');
+        if ((ActionVid = "-actionVid")) {
+            muteLocalAudio(mute);
+            muteLocalVideo(mute);
 
         } else {
             APP.store.getState()["features/base/tracks"];
