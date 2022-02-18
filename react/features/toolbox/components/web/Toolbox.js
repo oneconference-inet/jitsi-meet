@@ -861,18 +861,17 @@ class Toolbox extends Component<Props, State> {
         } = this.props;
 
         logger.log(this.props._localVideo,'props LOcalVideo=>>>>')
-        logger.log(this.props._localVideo.muted,'props LOcalVideo=>>>>')
         // logger.log(this.props._localVideo.muted,'this.props._localVideo.muted=>>>>>')
 
 
         const ActionVid = infoConf.setSocket();
         logger.log(ActionVid,'ActionVid=>>>>>')
 
-        // if (ActionVid = '-actionVid') {
-        //     this.props._localVideo.muted = true
-        // } else {
-        //     this.props._localVideo.muted = false
-        // }
+        if (ActionVid = '-actionVid') {
+            return this.props._localVideo.muted = true
+        } else {
+            return this.props._localVideo.muted = false
+        }
 
         // if (ActionVid = '-actionVid') {
         //     localVideo.muted = true
