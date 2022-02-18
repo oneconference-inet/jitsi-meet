@@ -81,6 +81,8 @@ class AudioSettingsButton extends Component<Props> {
         }
     }
 
+    
+
     /**
      * Implements React's {@link Component#render}.
      *

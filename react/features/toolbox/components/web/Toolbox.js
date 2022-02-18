@@ -856,6 +856,8 @@ class Toolbox extends Component<Props, State> {
             _reactionsEnabled,
         } = this.props;
 
+        logger.log(this.props,'props AllButton=>>>>')
+
         const microphone = {
             key: "microphone",
             Content: AudioSettingsButton,
