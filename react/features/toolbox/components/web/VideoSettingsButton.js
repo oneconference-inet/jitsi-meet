@@ -80,11 +80,6 @@ class VideoSettingsButton extends Component<Props> {
         const { hasPermissions, hasVideoTrack, isDisabled } = this.props;
 
         const ActionVid = infoConf.setSocket();
-        console.log(ActionVid,'ActionVid IconDisabled=>>>>');
-
-
-        // const ActionVid = "-actionVid";
-        // console.log(ActionVid,'ActionVid=>>>>');
 
 
         // if ((ActionVid = "-actionVid")) {
@@ -119,7 +114,6 @@ class VideoSettingsButton extends Component<Props> {
     render() {
         const { hasPermissions, isDisabled, onVideoOptionsClick, t, visible, isOpen } = this.props;
         const ActionVid = infoConf.setSocket();
-        // const ActionVid = '-actionVid'
         console.log(ActionVid,'ActionVid=>>>>');
 
         // if (ActionVid = '-actionVid') {
