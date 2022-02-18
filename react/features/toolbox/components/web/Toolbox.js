@@ -509,8 +509,10 @@ class Toolbox extends Component<Props, State> {
                                 share: this.state.sharingEnabled,
                             },
                         });
+                        logger.log(appData,"appData start rec");
 
                         setTimeout(() => {
+                            logger.log(appData,"appData start rec");
                             this.props._conference.startRecording({
                                 mode: JitsiRecordingConstants.mode.FILE,
                                 appData,
@@ -518,9 +520,11 @@ class Toolbox extends Component<Props, State> {
                         }, 5000);
                     } else {
                         this.onSocketHost(this.state);
+                        logger.log("notyourservice");
                     }
                 } else {
                     this.onAttendee(this.state);
+                    logger.log("notyourservice");
                 }
             }
         );
