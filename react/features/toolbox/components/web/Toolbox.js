@@ -95,7 +95,11 @@ import VideoSettingsButton from "./VideoSettingsButton";
 
 import Logger from "jitsi-meet-logger";
 
-import { setAudioMutedAll } from "../../../base/media";
+import {
+    setAudioMutedAll,
+    setAudioMuted,
+    setVideoMuted,
+} from "../../../base/media";
 import {
     onSocketReqJoin,
     setLobbyModeEnabled,
@@ -270,6 +274,15 @@ const logger = Logger.getLogger(__filename);
 type State = {
     reactionsShortcutsRegistered: boolean,
 };
+
+
+function muteLocalAudio(muted) {
+    APP.store.dispatch(setAudioMuted(muted));
+}
+
+function muteLocalVideo(muted) {
+    APP.store.dispatch(setVideoMuted(muted));
+}
 
 /**
  * Implements the conference toolbox on React/Web.
@@ -478,7 +491,7 @@ class Toolbox extends Component<Props, State> {
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
         const Checkservice = infoConf.getServiceChecker();
-        logger.log("Checkservice: ",Checkservice);
+        logger.log("Checkservice: ", Checkservice);
         if (Checkservice === "onemeeting") {
             dispatch(openParticipantsPane());
         }
@@ -489,7 +502,6 @@ class Toolbox extends Component<Props, State> {
                 roomname: infoConf.getRoomName(),
                 name: infoConf.getNameJoin(),
                 checkPlatform: infoConf.getService(),
-
             },
             () => {
                 if (isModerator) {
@@ -509,10 +521,10 @@ class Toolbox extends Component<Props, State> {
                                 share: this.state.sharingEnabled,
                             },
                         });
-                        logger.log(appData,"appData start rec");
+                        logger.log(appData, "appData start rec");
 
                         setTimeout(() => {
-                            logger.log(appData,"appData start rec");
+                            logger.log(appData, "appData start rec");
                             this.props._conference.startRecording({
                                 mode: JitsiRecordingConstants.mode.FILE,
                                 appData,
@@ -860,27 +872,34 @@ class Toolbox extends Component<Props, State> {
             _reactionsEnabled,
         } = this.props;
 
-        logger.log(this.props._localVideo,'props LOcalVideo=>>>>')
+        logger.log(this.props._localVideo, "props LOcalVideo=>>>>");
         // logger.log(this.props._localVideo.muted,'this.props._localVideo.muted=>>>>>')
 
+        // const ActionVid = infoConf.setSocket();
+        const ActionVid = '-actionVid'
+        logger.log(ActionVid, "ActionVid=>>>>>");
 
-        const ActionVid = infoConf.setSocket();
-        logger.log(ActionVid,'ActionVid=>>>>>')
+        if ((ActionVid = "-actionVid")) {
+            muteLocalAudio(mute);
+            muteLocalVideo(mute);
 
-        if (ActionVid = '-actionVid') {
-            return this.props._localVideo.muted = true
         } else {
-            return this.props._localVideo.muted = false
+            APP.store.getState()["features/base/tracks"];
         }
+
+        // if (ActionVid = '-actionVid') {
+        //     this.props._localVideo.muted = true
+        // } else {
+        //     this.props._localVideo.muted = false
+        // }
 
         // if (ActionVid = '-actionVid') {
         //     localVideo.muted = true
         //     return localVideo.muted
         // } else {
         //     localVideo = getLocalVideoTrack(state["features/base/tracks"]);
-    
-        // }
 
+        // }
 
         const microphone = {
             key: "microphone",

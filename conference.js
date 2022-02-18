@@ -2544,20 +2544,6 @@ export default {
             APP.store.dispatch(setAudioMuted(audioMuted));
             APP.store.dispatch(setVideoMuted(videoMuted));
 
-
-            const ActionAudio = infoConf.setSocket();
-            const ActionVideo = infoConf.setSocket();
-
-            // if(ActionAudio = "" && ActionVideo = ""){
-
-            // }
-            // else{
-            //     APP.store.dispatch(setAudioMuted(audioMuted));
-            //     APP.store.dispatch(setVideoMuted(videoMuted));
-            // }
-
-            logger.log('ActionAudio Conference=>>>>>>>>>>>>>>>>',ActionAudio)
-            logger.log('ActionVideo Conference=>>>>>>>>>>>>>>>>',ActionVideo)
             // Remove the tracks from the peerconnection.
             for (const track of localTracks) {
                 // Always add the track on mobile Safari because of a known issue where audio playout doesn't happen
