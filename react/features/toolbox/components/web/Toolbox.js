@@ -879,7 +879,7 @@ class Toolbox extends Component<Props, State> {
         var ActionVid = '-actionVid'
         logger.log(ActionVid, "ActionVid=>>>>>");
 
-        if ((ActionVid = "-actionVid")) {
+        if ((ActionVid == "-actionVid")) {
             muteLocalAudio(mute);
             muteLocalVideo(mute);
 
