@@ -860,7 +860,7 @@ class Toolbox extends Component<Props, State> {
             _reactionsEnabled,
         } = this.props;
 
-        // logger.log(this.props,'props AllButton=>>>>')
+        logger.log(this.props,'props AllButton=>>>>')
 
         const microphone = {
             key: "microphone",
@@ -1643,6 +1643,7 @@ function _mapStateToProps(state, ownProps) {
     const localVideo = getLocalVideoTrack(state["features/base/tracks"]);
     const { clientWidth } = state["features/base/responsive-ui"];
 
+    const ActionVid = infoConf.setSocket();
 
     // if (ActionVid = '-actionVid') {
     //     localVideo.muted = true
@@ -1653,7 +1654,7 @@ function _mapStateToProps(state, ownProps) {
     // }
 
     // logger.log(localVideo,'localVideo mapStateProps=>>>>>')
-    // logger.log(loc0alVideo.local,'localVideo Local=>>>>>')
+    // logger.log(localVideo.local,'localVideo Local=>>>>>')
 
 
     let desktopSharingDisabledTooltipKey;
