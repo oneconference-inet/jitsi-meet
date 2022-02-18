@@ -63,12 +63,12 @@ export const QUICK_ACTION_BUTTON: {
  * Icon mapping for possible participant audio states.
  */
 export const AudioStateIcons: {[MediaState]: React$Element<any> | null} = {
-    // [MEDIA_STATE.DOMINANT_SPEAKER]: (
-    //     <Icon
-    //         className = 'jitsi-icon-dominant-speaker'
-    //         size = { 16 }
-    //         src = { IconMicrophoneEmpty } />
-    // ),
+    [MEDIA_STATE.DOMINANT_SPEAKER]: (
+        <Icon
+            className = 'jitsi-icon-dominant-speaker'
+            size = { 16 }
+            src = { IconMicrophoneEmpty } />
+    ),
     [MEDIA_STATE.FORCE_MUTED]: (
         <Icon
             color = '#E04757'
