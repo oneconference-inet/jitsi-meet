@@ -1653,7 +1653,7 @@ function _mapStateToProps(state, ownProps) {
     // }
 
     logger.log(localVideo,'localVideo=>>>>>')
-    logger.log(localVideo.muted,'localVideo Muteddddd=>>>>>')
+    logger.log(localVideo.local,'localVideo Local=>>>>>')
 
 
     let desktopSharingDisabledTooltipKey;
