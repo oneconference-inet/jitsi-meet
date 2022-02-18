@@ -806,6 +806,8 @@ class Toolbox extends Component<Props, State> {
             dispatch,
         } = this.props;
 
+        logger.log(_localVideo,'Toggle Sscreen Share _localVideo=>>>>')
+
         if (_backgroundType === VIRTUAL_BACKGROUND_TYPE.DESKTOP_SHARE) {
             const noneOptions = {
                 enabled: false,
@@ -1653,7 +1655,7 @@ function _mapStateToProps(state, ownProps) {
     // }
 
     logger.log(localVideo,'localVideo=>>>>>')
-    // logger.log(localVideo.local,'localVideo Local=>>>>>')
+    // logger.log(loc0alVideo.local,'localVideo Local=>>>>>')
 
 
     let desktopSharingDisabledTooltipKey;
