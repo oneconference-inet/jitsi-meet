@@ -1643,7 +1643,18 @@ function _mapStateToProps(state, ownProps) {
     const localVideo = getLocalVideoTrack(state["features/base/tracks"]);
     const { clientWidth } = state["features/base/responsive-ui"];
 
+    // const ActionVid = infoConf.setSocket();
+    // if (ActionVid = '-actionVid') {
+    //     localVideo.muted = true
+    //     return localVideo.muted
+    // } else {
+    //     localVideo = getLocalVideoTrack(state["features/base/tracks"]);
+
+    // }
+
     logger.log(localVideo,'localVideo=>>>>>')
+    logger.log(localVideo.muted,'localVideo Muteddddd=>>>>>')
+
 
     let desktopSharingDisabledTooltipKey;
 
