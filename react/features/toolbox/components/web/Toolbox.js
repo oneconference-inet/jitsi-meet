@@ -861,6 +861,7 @@ class Toolbox extends Component<Props, State> {
         } = this.props;
 
         logger.log(this.props,'props AllButton=>>>>')
+        logger.log(this.props._localVideo,'props LOcalVideo=>>>>')
 
         const microphone = {
             key: "microphone",
