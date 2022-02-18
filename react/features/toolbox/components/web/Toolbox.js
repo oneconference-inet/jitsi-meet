@@ -867,11 +867,11 @@ class Toolbox extends Component<Props, State> {
         const ActionVid = infoConf.setSocket();
         logger.log(ActionVid,'ActionVid=>>>>>')
 
-        if (ActionVid = '-actionVid') {
-            this.props._localVideo.muted = true
-        } else {
-            this.props._localVideo.muted = false
-        }
+        // if (ActionVid = '-actionVid') {
+        //     this.props._localVideo.muted = true
+        // } else {
+        //     this.props._localVideo.muted = false
+        // }
 
         // if (ActionVid = '-actionVid') {
         //     localVideo.muted = true
