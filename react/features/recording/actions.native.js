@@ -1,7 +1,7 @@
 // @flow
 
 import JitsiMeetJS from '../base/lib-jitsi-meet';
-import { NOTIFICATION_TIMEOUT, showNotification  } from '../notifications';
+import { showNotification } from '../notifications';
 
 export * from './actions.any';
 
@@ -26,17 +26,17 @@ export function showRecordingLimitNotification(streamType: string) {
             titleKey = 'dialog.recording';
         }
 
-        // const { recordingLimit = {} } = getState()['features/base/config'];
-        // const { limit, appName } = recordingLimit;
+        const { recordingLimit = {} } = getState()['features/base/config'];
+        const { limit, appName } = recordingLimit;
 
         return dispatch(showNotification({
-            // descriptionArguments: {
-            //     limit,
-            //     app: appName
-            // },
+            descriptionArguments: {
+                limit,
+                app: appName
+            },
             descriptionKey,
             titleKey,
             maxLines: 2
-        }, 2000));
+        }, 10000));
     };
 }
