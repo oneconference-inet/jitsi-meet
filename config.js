@@ -904,7 +904,7 @@ var config = {
 
         A falsy value for this prop will result in having all notifications enabled (e.g null, undefined, false)
     */
-    // notifications: [
+    notifications: [
     //     'connection.CONNFAIL', // shown when the connection fails,
     //     'dialog.cameraNotSendingData', // shown when there's no feed from user's camera
     //     'dialog.kickTitle', // shown when user has been kicked
@@ -913,7 +913,7 @@ var config = {
     //     'dialog.maxUsersLimitReached', // shown when maximmum users limit has been reached
     //     'dialog.micNotSendingData', // shown when user's mic is not sending any audio
     //     'dialog.passwordNotSupportedTitle', // shown when setting conference password fails due to password format
-        'dialog.recording'// recording notifications (pending, on, off, limits)
+        'dialog.recording', // recording notifications (pending, on, off, limits)
     //     'dialog.remoteControlTitle', // remote control notifications (allowed, denied, start, stop, error)
     //     'dialog.reservationError',
     //     'dialog.serviceUnavailable', // shown when server is not reachable
@@ -961,7 +961,7 @@ var config = {
     //     'toolbar.noisyAudioInputTitle', // shown when noise is detected for the current microphone
     //     'toolbar.talkWhileMutedPopup', // shown when user tries to speak while muted
     //     'transcribing.failedToStart' // shown when transcribing fails to start
-    // ],
+    ],
 
     // Prevent the filmstrip from autohiding when screen width is under a certain threshold
     // disableFilmstripAutohiding: false,
