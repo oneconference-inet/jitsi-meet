@@ -913,7 +913,7 @@ var config = {
     //     'dialog.maxUsersLimitReached', // shown when maximmum users limit has been reached
     //     'dialog.micNotSendingData', // shown when user's mic is not sending any audio
     //     'dialog.passwordNotSupportedTitle', // shown when setting conference password fails due to password format
-    //     'dialog.recording', // recording notifications (pending, on, off, limits)
+        'dialog.recording'// recording notifications (pending, on, off, limits)
     //     'dialog.remoteControlTitle', // remote control notifications (allowed, denied, start, stop, error)
     //     'dialog.reservationError',
     //     'dialog.serviceUnavailable', // shown when server is not reachable
