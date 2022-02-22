@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => {
 export const LobbyParticipantList = () => {
     const lobbyEnabled = useSelector(getLobbyEnabled);
     const participants = useSelector(getKnockingParticipants);
-    const Userinroom = participants.length
+    const Userinroom = {count: participants.length}
     logger.log(Userinroom,"Userinroom");
     
     const { t } = useTranslation();
