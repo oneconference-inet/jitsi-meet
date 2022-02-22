@@ -52,8 +52,7 @@ const initialState = Object.freeze(Object.create(null));
 function MeetingParticipantList({ participantsCount, showInviteButton, sortedParticipantIds = [] }) {
     const dispatch = useDispatch();
     const isMouseOverMenu = useRef(false);
-    logger.log(participantsCount,'participantsCount');
-    logger.log(t,'participantsCount t');
+    console.log(participantsCount,"participantsCount")
     const [ raiseContext, setRaiseContext ] = useState<RaiseContext>(initialState);
     const { t } = useTranslation();
 

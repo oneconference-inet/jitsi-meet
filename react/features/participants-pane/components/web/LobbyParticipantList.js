@@ -35,11 +35,9 @@ const useStyles = makeStyles(theme => {
 export const LobbyParticipantList = () => {
     const lobbyEnabled = useSelector(getLobbyEnabled);
     const participants = useSelector(getKnockingParticipants);
-    const Userinroom = {count: participants.length}
-    logger.log(Userinroom,"Userinroom");
+
     
     const { t } = useTranslation();
-    logger.log(t,"Userinroom t");
     const classes = useStyles();
     const dispatch = useDispatch();
     const admitAll = useCallback(() => {
