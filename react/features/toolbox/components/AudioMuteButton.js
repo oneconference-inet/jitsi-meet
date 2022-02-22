@@ -15,8 +15,6 @@ import type { AbstractButtonProps } from '../../base/toolbox/components';
 import { isLocalTrackMuted } from '../../base/tracks';
 import { muteLocal } from '../../video-menu/actions';
 
-import logger from "./logger";
-
 declare var APP: Object;
 
 /**
@@ -158,8 +156,7 @@ function _mapStateToProps(state): Object {
     // || trackMuteAll;
     const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
 
-    logger.log(state,'State AudioMuteButton Toolbox =>>>>>>')
-
+    console.log(state,'State AudioMuteButton Toolbox =>>>>>>')
 
     return {
         _audioMuted,
