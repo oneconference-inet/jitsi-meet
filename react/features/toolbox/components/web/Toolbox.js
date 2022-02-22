@@ -872,6 +872,8 @@ class Toolbox extends Component<Props, State> {
             _reactionsEnabled,
         } = this.props;
 
+        logger.log(this.props,'props getAllButtons=>>>>>')
+
         logger.log(this.props._localVideo, "props LOcalVideo=>>>>");
         // logger.log(this.props._localVideo.muted,'this.props._localVideo.muted=>>>>>')
 
@@ -879,10 +881,9 @@ class Toolbox extends Component<Props, State> {
         var ActionVid = '-actionVid'
         logger.log(ActionVid, "ActionVid=>>>>>");
 
-        if ((ActionVid === "-actionVid")) {
+        if ((ActionVid == "-actionVid")) {
             muteLocalAudio(mute);
             muteLocalVideo(mute);
-
         } else {
             APP.store.getState()["features/base/tracks"];
         }
