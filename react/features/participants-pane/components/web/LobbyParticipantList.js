@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import logger from '../../../base/redux/logger';
 
 import { withPixelLineHeight } from '../../../base/styles/functions.web';
 import { admitMultiple } from '../../../lobby/actions.web';
@@ -34,7 +35,9 @@ const useStyles = makeStyles(theme => {
 export const LobbyParticipantList = () => {
     const lobbyEnabled = useSelector(getLobbyEnabled);
     const participants = useSelector(getKnockingParticipants);
-
+    const Userinroom = participants.length
+    logger.log(Userinroom,"Userinroom");
+    
     const { t } = useTranslation();
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -45,7 +48,6 @@ export const LobbyParticipantList = () => {
     if (!participants.length) {
         return null;
     }
-
 
     return (
     <>
