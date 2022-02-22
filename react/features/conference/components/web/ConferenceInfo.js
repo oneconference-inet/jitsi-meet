@@ -70,10 +70,11 @@ type Props = {
     _recordingLabel: boolean
 };
 
-componentDidMount() 
+componentDidMount() {
     const ParticipantsCountlogtest = ParticipantsCount
     console.log(ParticipantsCountlogtest,'ParticipantsCountlogtest')
- }
+}
+    
 
 const getLeftMargin = () => {
     const subjectContainerWidth = document.getElementById('subject-container')?.clientWidth ?? 0;
