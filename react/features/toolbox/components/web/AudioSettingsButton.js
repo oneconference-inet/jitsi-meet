@@ -95,7 +95,6 @@ class AudioSettingsButton extends Component<Props> {
             || !JitsiMeetJS.mediaDevices.isMultipleAudioInputSupported();
 
         const ActionMic = infoConf.setSocket();
-        console.log(ActionMic,'ActionMic=>>>>>')
         // if(ActionMic = "-actionMic"){
         //     settingsDisabled = isDisabled
         // }
