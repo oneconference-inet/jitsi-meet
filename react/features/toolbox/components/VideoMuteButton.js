@@ -191,14 +191,46 @@ function _mapStateToProps(state): Object {
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const tracks = state['features/base/tracks'];
     const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
+    const disabledFalg = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
 
-    return {
-        _audioOnly: Boolean(audioOnly),
-        _videoDisabled: isVideoMuteButtonDisabled(state),
-        _videoMediaType: getLocalVideoType(tracks),
-        _videoMuted: isLocalCameraTrackMuted(tracks),
-        visible: enabledFlag
-    };
+    const MakeVideo = infoConf.setSocket();
+    const MakeVideo = 'actionVid';
+    // if (MakeVideo == 'actionVid') {
+    //     var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
+    // } else {
+    //     var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
+
+    // }
+
+    if (MakeVideo == 'actionVid') {
+        return {
+            _audioOnly: Boolean(audioOnly),
+            _videoDisabled: isVideoMuteButtonDisabled(state),
+            _videoMediaType: getLocalVideoType(tracks),
+            _videoMuted: isLocalCameraTrackMuted(tracks),
+            visible: disabledFalg
+        };
+    } else {
+
+        return {
+            _audioOnly: Boolean(audioOnly),
+            _videoDisabled: isVideoMuteButtonDisabled(state),
+            _videoMediaType: getLocalVideoType(tracks),
+            _videoMuted: isLocalCameraTrackMuted(tracks),
+            visible: enabledFlag
+        };
+        
+    }
+
+
+
+    // return {
+    //     _audioOnly: Boolean(audioOnly),
+    //     _videoDisabled: isVideoMuteButtonDisabled(state),
+    //     _videoMediaType: getLocalVideoType(tracks),
+    //     _videoMuted: isLocalCameraTrackMuted(tracks),
+    //     visible: enabledFlag
+    // };
 }
 
 export default translate(connect(_mapStateToProps)(VideoMuteButton));
