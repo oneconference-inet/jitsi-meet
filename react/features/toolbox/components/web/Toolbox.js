@@ -109,6 +109,7 @@ import { _endJoin } from "../HangupButton";
 
 import { JitsiRecordingConstants } from "../../../base/lib-jitsi-meet";
 import UIEvents from "../../../../../service/UI/UIEvents";
+import ParticipantsCount from "../../../conference/components/web/ParticipantsCount";
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
@@ -467,6 +468,8 @@ class Toolbox extends Component<Props, State> {
         });
     }
     componentDidMount() {
+        const testlogParticipantsCount = ParticipantsCount
+        logger.log("testlogParticipantsCount@tool ", testlogParticipantsCount);
         const {
             _toolbarButtons,
             t,
