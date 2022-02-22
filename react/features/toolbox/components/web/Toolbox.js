@@ -881,12 +881,12 @@ class Toolbox extends Component<Props, State> {
         var ActionVid = '-actionVid'
         logger.log(ActionVid, "ActionVid=>>>>>");
 
-        if ((ActionVid == "-actionVid")) {
-            muteLocalAudio(mute);
-            muteLocalVideo(mute);
-        } else {
-            APP.store.getState()["features/base/tracks"];
-        }
+        // if ((ActionVid == "-actionVid")) {
+        //     muteLocalAudio(mute);
+        //     muteLocalVideo(mute);
+        // } else {
+        //     APP.store.getState()["features/base/tracks"];
+        // }
 
         // if (ActionVid = '-actionVid') {
         //     this.props._localVideo.muted = true
