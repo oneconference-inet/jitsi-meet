@@ -157,7 +157,15 @@ function _mapStateToProps(state): Object {
     const _audioMuted = isLocalTrackMuted(state['features/base/tracks'], MEDIA_TYPE.AUDIO);
     const _disabled = state['features/base/config'].startSilent 
     // || trackMuteAll;
-    const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
+    // const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
+
+    // const MakeVideo = infoConf.setSocket();
+    const MakeAudio = 'actionAudio';
+    if (MakeAudio == 'actionAudio') {
+        var enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, false);
+    } else {
+        var enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
+    }
 
     // console.log(state,'State AudioMuteButton Toolbox =>>>>>>')
 
