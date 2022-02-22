@@ -171,7 +171,6 @@ class MeetingParticipantList extends PureComponent<Props> {
  */
 function _mapStateToProps(state): Object {
     const _participantsCount = getParticipantCountWithFake(state);
-    logger.log(_participantsCount,'_participantsCount');
     const { remoteParticipants } = state['features/filmstrip'];
     const _showInviteButton = shouldRenderInviteButton(state);
 

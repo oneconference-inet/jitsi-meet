@@ -160,6 +160,7 @@ function _mapStateToProps(state): Object {
     // This is very important as getRemoteParticipants is not changing its reference object
     // and we will not re-render on change, but if count changes we will do
     const participantsCount = getParticipantCountWithFake(state);
+    logger.log(participantsCount,'participantsCount');
 
     const showInviteButton = shouldRenderInviteButton(state) && isToolbarButtonEnabled('invite', state);
 

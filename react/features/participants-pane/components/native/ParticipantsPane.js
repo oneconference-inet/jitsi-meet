@@ -13,7 +13,6 @@ import {
     getParticipantCount,
     isLocalParticipantModerator
 } from '../../../base/participants';
-import logger from '../../../base/redux/logger';
 import MuteEveryoneDialog
     from '../../../video-menu/components/native/MuteEveryoneDialog';
 import { close } from '../../actions.native';
@@ -34,8 +33,7 @@ const ParticipantsPane = () => {
     const closePane = useCallback(() => dispatch(close()), [ dispatch ]);
     const isLocalModerator = useSelector(isLocalParticipantModerator);
     const participantsCount = useSelector(getParticipantCount);
-    logger.log(participantsCount,'participantsCount');
-    const showlogger.log(participantsCount,'participantsCount');ContextMenu = participantsCount > 2;
+    const showContextMenu = participantsCount > 2;
     const muteAll = useCallback(() => dispatch(openDialog(MuteEveryoneDialog)),
         [ dispatch ]);
     const { t } = useTranslation();
