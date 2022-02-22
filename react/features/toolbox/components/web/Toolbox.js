@@ -872,14 +872,14 @@ class Toolbox extends Component<Props, State> {
             _reactionsEnabled,
         } = this.props;
 
-        logger.log(this.props,'props getAllButtons=>>>>>')
+        // logger.log(this.props,'props getAllButtons=>>>>>')
 
-        logger.log(this.props._localVideo, "props LOcalVideo=>>>>");
+        // logger.log(this.props._localVideo, "props LOcalVideo=>>>>");
         // logger.log(this.props._localVideo.muted,'this.props._localVideo.muted=>>>>>')
 
         // const ActionVid = infoConf.setSocket();
-        var ActionVid = '-actionVid'
-        logger.log(ActionVid, "ActionVid=>>>>>");
+        // var ActionVid = '-actionVid'
+        // logger.log(ActionVid, "ActionVid=>>>>>");
 
         // if ((ActionVid == "-actionVid")) {
         //     muteLocalAudio(mute);
