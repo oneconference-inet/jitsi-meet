@@ -193,7 +193,7 @@ function _mapStateToProps(state): Object {
     const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
     const disabledFalg = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
 
-    const MakeVideo = infoConf.setSocket();
+    // const MakeVideo = infoConf.setSocket();
     const MakeVideo = 'actionVid';
     // if (MakeVideo == 'actionVid') {
     //     var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
