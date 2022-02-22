@@ -52,7 +52,8 @@ const initialState = Object.freeze(Object.create(null));
 function MeetingParticipantList({ participantsCount, showInviteButton, sortedParticipantIds = [] }) {
     const dispatch = useDispatch();
     const isMouseOverMenu = useRef(false);
-
+    logger.log(participantsCount,'participantsCount');
+    logger.log(t,'participantsCount t');
     const [ raiseContext, setRaiseContext ] = useState<RaiseContext>(initialState);
     const { t } = useTranslation();
 
@@ -160,7 +161,6 @@ function _mapStateToProps(state): Object {
     // This is very important as getRemoteParticipants is not changing its reference object
     // and we will not re-render on change, but if count changes we will do
     const participantsCount = getParticipantCountWithFake(state);
-    logger.log(participantsCount,'participantsCount');
 
     const showInviteButton = shouldRenderInviteButton(state) && isToolbarButtonEnabled('invite', state);
 
