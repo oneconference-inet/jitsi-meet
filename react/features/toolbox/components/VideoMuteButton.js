@@ -190,19 +190,7 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
 function _mapStateToProps(state): Object {
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const tracks = state['features/base/tracks'];
-    // const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
-
-    // const MakeVideo = infoConf.setSocket();
-    const MakeVideo = 'actionVid';
-    if (MakeVideo == 'actionVid') {
-        var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
-    } else {
-        var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
-
-    }
-
-
-    // console.log(state,'State VideoMuteButton Toolbox =>>>>>>')
+    const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
 
     return {
         _audioOnly: Boolean(audioOnly),
