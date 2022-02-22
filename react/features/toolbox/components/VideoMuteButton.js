@@ -191,14 +191,13 @@ function _mapStateToProps(state): Object {
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const tracks = state['features/base/tracks'];
     // const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
-    const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED);
 
     // const MakeVideo = infoConf.setSocket();
     const MakeVideo = 'actionVid';
     if (MakeVideo == 'actionVid') {
-        enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
+        var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
     } else {
-        enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
+        var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
 
     }
 
