@@ -198,38 +198,15 @@ function _mapStateToProps(state): Object {
     //     var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
     // } else {
     //     var enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
-
     // }
 
-    if (MakeVideo == 'actionVid') {
-        return {
-            _audioOnly: Boolean(audioOnly),
-            _videoDisabled: isVideoMuteButtonDisabled(state),
-            _videoMediaType: getLocalVideoType(tracks),
-            _videoMuted: isLocalCameraTrackMuted(tracks),
-            visible: enabledFlag
-        };
-    } else {
-
-        return {
-            _audioOnly: Boolean(audioOnly),
-            _videoDisabled: isVideoMuteButtonDisabled(state),
-            _videoMediaType: getLocalVideoType(tracks),
-            _videoMuted: isLocalCameraTrackMuted(tracks),
-            visible: enabledFlag
-        };
-        
-    }
-
-
-
-    // return {
-    //     _audioOnly: Boolean(audioOnly),
-    //     _videoDisabled: isVideoMuteButtonDisabled(state),
-    //     _videoMediaType: getLocalVideoType(tracks),
-    //     _videoMuted: isLocalCameraTrackMuted(tracks),
-    //     visible: enabledFlag
-    // };
+    return {
+        _audioOnly: Boolean(audioOnly),
+        _videoDisabled: isVideoMuteButtonDisabled(state),
+        _videoMediaType: getLocalVideoType(tracks),
+        _videoMuted: isLocalCameraTrackMuted(tracks),
+        visible: enabledFlag
+    };
 }
 
 export default translate(connect(_mapStateToProps)(VideoMuteButton));
