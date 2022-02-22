@@ -191,7 +191,6 @@ function _mapStateToProps(state): Object {
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const tracks = state['features/base/tracks'];
     const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
-    const disabledFalg = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
 
     // const MakeVideo = infoConf.setSocket();
     const MakeVideo = 'actionVid';
@@ -208,7 +207,7 @@ function _mapStateToProps(state): Object {
             _videoDisabled: isVideoMuteButtonDisabled(state),
             _videoMediaType: getLocalVideoType(tracks),
             _videoMuted: isLocalCameraTrackMuted(tracks),
-            visible: disabledFalg
+            visible: enabledFlag
         };
     } else {
 
