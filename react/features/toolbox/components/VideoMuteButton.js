@@ -21,6 +21,8 @@ import type { AbstractButtonProps } from '../../base/toolbox/components';
 import { getLocalVideoType, isLocalCameraTrackMuted } from '../../base/tracks';
 import { isVideoMuteButtonDisabled } from '../functions';
 
+import infoConf from "../../../../infoConference";
+
 declare var APP: Object;
 
 /**
@@ -188,9 +190,19 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
 function _mapStateToProps(state): Object {
     const { enabled: audioOnly } = state['features/base/audio-only'];
     const tracks = state['features/base/tracks'];
-    const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
+    // const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
 
-    console.log(state,'State VideoMuteButton Toolbox =>>>>>>')
+    // const MakeVideo = infoConf.setSocket();
+    const MakeVideo = 'actionVid';
+    if (MakeVideo == 'actionVid') {
+        const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, false);
+    } else {
+        const enabledFlag = getFeatureFlag(state, VIDEO_MUTE_BUTTON_ENABLED, true);
+
+    }
+
+
+    // console.log(state,'State VideoMuteButton Toolbox =>>>>>>')
 
     return {
         _audioOnly: Boolean(audioOnly),

@@ -5,6 +5,8 @@
 import AbstractAudioMuteButton from '../base/toolbox/components/AbstractAudioMuteButton';
 import type { Props } from '../base/toolbox/components/AbstractButton';
 
+import infoConf from "../../../infoConference";
+
 const { api } = window.alwaysOnTop;
 
 /**
