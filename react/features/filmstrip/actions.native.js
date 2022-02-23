@@ -19,7 +19,6 @@ export function setTileViewDimensions() {
     return (dispatch: Function, getState: Function) => {
         const state = getState();
         const participantCount = getParticipantCountWithFake(state);
-        console.log(participantCount,'participantCount@film')
         const { clientHeight: height, clientWidth: width } = state['features/base/responsive-ui'];
         const columns = getColumnCount(state);
         const heightToUse = height - (TILE_MARGIN * 2);
