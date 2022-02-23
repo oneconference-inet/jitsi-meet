@@ -157,13 +157,30 @@ function _mapStateToProps(state): Object {
     const _audioMuted = isLocalTrackMuted(state['features/base/tracks'], MEDIA_TYPE.AUDIO);
     const _disabled = state['features/base/config'].startSilent 
     // || trackMuteAll;
-    const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
+    // const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
 
-    return {
-        _audioMuted,
-        _disabled,
-        visible: enabledFlag
-    };
+    const MakeAudio = 'actionAudio';
+    if (MakeAudio == 'actionAudio') {
+        var disabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, false);
+        return {
+            _audioMuted,
+            _disabled,
+            visible: disabledFlag
+        };
+    } else {
+        var enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
+        return {
+            _audioMuted,
+            _disabled,
+            visible: enabledFlag
+        };
+    }
+
+    // return {
+    //     _audioMuted,
+    //     _disabled,
+    //     visible: enabledFlag
+    // };
 }
 
 export default translate(connect(_mapStateToProps)(AudioMuteButton));
