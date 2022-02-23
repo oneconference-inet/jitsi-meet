@@ -894,11 +894,11 @@ export default {
                 startAudioOnly: config.startAudioOnly,
                 startScreenSharing: config.startScreenSharing,
                 startWithAudioMuted: option.muteall
-                    ? true
-                    : option.audio
                     ? false
-                    : true, // false = open , true = close
-                startWithVideoMuted: option.video ? false : true, // false = open , true = close
+                    : option.audio
+                    ? true
+                    : false, // false = open , true = close
+                startWithVideoMuted: option.video ? true : false, // false = open , true = close
             };
         } else {
             initialOptions = {
