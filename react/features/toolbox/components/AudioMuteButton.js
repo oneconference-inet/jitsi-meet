@@ -156,7 +156,7 @@ function _mapStateToProps(state): Object {
     const trackMuteAll = state['features/base/media'].audio.stateMuteAll;
     const _audioMuted = isLocalTrackMuted(state['features/base/tracks'], MEDIA_TYPE.AUDIO);
     const _disabled = state['features/base/config'].startSilent 
-    // || trackMuteAll;
+    || trackMuteAll;
     // const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
 
     const MakeAudio = 'actionAudio';
