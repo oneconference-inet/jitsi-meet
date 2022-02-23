@@ -468,8 +468,6 @@ class Toolbox extends Component<Props, State> {
         });
     }
     componentDidMount() {
-        const testlogParticipantsCount = ParticipantsCount
-        logger.log("testlogParticipantsCount@tool ", testlogParticipantsCount);
         const {
             _toolbarButtons,
             t,
