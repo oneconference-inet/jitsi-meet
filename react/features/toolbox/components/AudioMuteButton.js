@@ -159,7 +159,7 @@ function _mapStateToProps(state): Object {
     // || trackMuteAll;
     // const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
 
-    const disabledFlag = setTrackMuted(state['features/base/tracks']);
+    const disabledFlag = _setAudioMuted(audioMuted.true)
 
     const MakeAudio = 'actionAudio';
     if (MakeAudio == 'actionAudio') {
