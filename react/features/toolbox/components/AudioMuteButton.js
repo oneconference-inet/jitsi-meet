@@ -12,7 +12,7 @@ import { MEDIA_TYPE } from '../../base/media';
 import { connect } from '../../base/redux';
 import { AbstractAudioMuteButton } from '../../base/toolbox/components';
 import type { AbstractButtonProps } from '../../base/toolbox/components';
-import { isLocalTrackMuted } from '../../base/tracks';
+import { isLocalTrackMuted, setTrackMuted } from '../../base/tracks';
 import { muteLocal } from '../../video-menu/actions';
 
 import infoConf from "../../../../infoConference";
@@ -159,13 +159,15 @@ function _mapStateToProps(state): Object {
     // || trackMuteAll;
     // const enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
 
+    const disabledFlag = setTrackMuted(state['features/base/tracks'], muted);
+
     const MakeAudio = 'actionAudio';
     if (MakeAudio == 'actionAudio') {
         var enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
         return {
             _audioMuted,
             _disabled,
-            visible: _setAudioMuted
+            visible: disabledFlag
         };
     } else {
         var enabledFlag = getFeatureFlag(state, AUDIO_MUTE_BUTTON_ENABLED, true);
