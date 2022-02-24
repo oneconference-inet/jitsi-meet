@@ -148,9 +148,6 @@ import infoUser from './infoUser';
 import authXmpp from './authXmpp';
 import { _endJoin } from './react/features/toolbox/components/HangupButton'
 
-import infoConf from "./infoConference"
-
-
 const logger = Logger.getLogger(__filename);
 
 const eventEmitter = new EventEmitter();
