@@ -148,6 +148,9 @@ import infoUser from './infoUser';
 import authXmpp from './authXmpp';
 import { _endJoin } from './react/features/toolbox/components/HangupButton'
 
+import infoConf from "./infoConference"
+
+
 const logger = Logger.getLogger(__filename);
 
 const eventEmitter = new EventEmitter();
@@ -888,7 +891,16 @@ export default {
         var initialOptions = {};
         var option = infoUser.getOption();
 
-        if (!config.iAmRecorder) {
+        // var MeetingmuteCam = infoConf.setMeetingmuteCam();
+        // var MeetingmuteMic = infoConf.setMeetingmuteMic();
+        var MeetingmuteCam = true
+        var MeetingmuteMic = true
+
+        logger.log(MeetingmuteCam,'MeetingmuteCam=>>>>')
+        logger.log(MeetingmuteMic,'MeetingmuteMic=>>>>>>>')
+
+
+        if (!config.iAmRecorder && MeetingmuteCam == true && MeetingmuteMic == true) {
             // Only Voice
             initialOptions = {
                 startAudioOnly: config.startAudioOnly,
