@@ -69,11 +69,10 @@ export function shouldRemoteVideosBeVisible(state: Object) {
     // in the filmstrip.
     const participantCount = getParticipantCountWithFake(state);
 
-    getparticipantcount = true
-    if(getparticipantcoun = true ){
+    getparticipantcounteieiei = true
+    if(getparticipantcounteieiei = true ){
         console.log(participantCount,'participantCount@function');
     }
-    
     let pinnedParticipant;
     const { disable1On1Mode } = state['features/base/config'];
 

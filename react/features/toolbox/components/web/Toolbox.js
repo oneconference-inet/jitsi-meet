@@ -347,7 +347,6 @@ class Toolbox extends Component<Props, State> {
         const services_check = interfaceConfig.SERVICE_APPROVE_FEATURE || [];
         const socket = socketIOClient(endpoint);
         infoConf.setSocket(socket);
-        logger.log(socket,"socket");
 
 
         // Get approve incomming conference
