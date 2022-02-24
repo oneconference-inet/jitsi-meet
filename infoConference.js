@@ -14,7 +14,17 @@ var listUrl = {
     option: "",
     socket:"",
     servicechecker:"",
+    MeetingmuteMic: false,
+    MeetingmuteCam: false,
 };
+
+function setMeetingmuteCam(){
+    listUrl.MeetingmuteCam = true;
+}
+
+function setMeetingmuteMic(){
+    listUrl.MeetingmuteMic = true;
+}
 
 
 function setServiceChecker(servicechecker) {
@@ -178,5 +188,6 @@ export default {
     setSocket,
     setServiceChecker,
     getServiceChecker,
-    
+    setMeetingmuteCam,
+    setMeetingmuteMic,
 };
