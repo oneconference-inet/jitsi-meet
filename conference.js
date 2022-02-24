@@ -888,8 +888,29 @@ export default {
         var initialOptions = {};
         var option = infoUser.getOption();
 
-        if (!config.iAmRecorder) {
+        var MeetingmuteCam = infoConf.setMeetingmuteCam();
+        var MeetingmuteMic = infoConf.setMeetingmuteMic();
+        // var MeetingmuteCam = true
+        // var MeetingmuteMic = true
+
+        logger.log(MeetingmuteCam,'MeetingmuteCam=>>>>')
+        logger.log(MeetingmuteMic,'MeetingmuteMic=>>>>>>>')
+
+
+        if (!config.iAmRecorder && MeetingmuteCam == true && MeetingmuteMic == true) {
             // Only Voice
+            initialOptions = {
+                startAudioOnly: config.startAudioOnly,
+                startScreenSharing: config.startScreenSharing,
+                startWithAudioMuted: option.muteall
+                    ? false
+                    : option.audio
+                    ? true
+                    : false, // false = open , true = close
+                startWithVideoMuted: option.video ? true : false, // false = open , true = close
+            };
+        }
+        else {
             initialOptions = {
                 startAudioOnly: config.startAudioOnly,
                 startScreenSharing: config.startScreenSharing,
@@ -900,15 +921,16 @@ export default {
                     : true, // false = open , true = close
                 startWithVideoMuted: option.video ? false : true, // false = open , true = close
             };
-        } else {
-            initialOptions = {
-                // Bot Setting
-                startAudioOnly: true,
-                startScreenSharing: false,
-                startWithAudioMuted: false,
-                startWithVideoMuted: true,
-            };
         }
+        //  else {
+        //     initialOptions = {
+        //         // Bot Setting
+        //         startAudioOnly: true,
+        //         startScreenSharing: false,
+        //         startWithAudioMuted: false,
+        //         startWithVideoMuted: true,
+        //     };
+        // }
 
         if (option.muteall) {
             APP.store.dispatch(setAudioMutedAll(option.muteall));
