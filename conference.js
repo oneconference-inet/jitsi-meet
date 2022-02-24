@@ -909,15 +909,28 @@ export default {
                     : false, // false = open , true = close
                 startWithVideoMuted: option.video ? true : false, // false = open , true = close
             };
-        } else {
+        }
+        else {
             initialOptions = {
-                // Bot Setting
-                startAudioOnly: true,
-                startScreenSharing: false,
-                startWithAudioMuted: false,
-                startWithVideoMuted: true,
+                startAudioOnly: config.startAudioOnly,
+                startScreenSharing: config.startScreenSharing,
+                startWithAudioMuted: option.muteall
+                    ? true
+                    : option.audio
+                    ? false
+                    : true, // false = open , true = close
+                startWithVideoMuted: option.video ? false : true, // false = open , true = close
             };
         }
+        //  else {
+        //     initialOptions = {
+        //         // Bot Setting
+        //         startAudioOnly: true,
+        //         startScreenSharing: false,
+        //         startWithAudioMuted: false,
+        //         startWithVideoMuted: true,
+        //     };
+        // }
 
         if (option.muteall) {
             APP.store.dispatch(setAudioMutedAll(option.muteall));
