@@ -147,6 +147,14 @@ import infoConf from './infoConference';
 import infoUser from './infoUser';
 import authXmpp from './authXmpp';
 import { _endJoin } from './react/features/toolbox/components/HangupButton'
+import socketIOClient from 'socket.io-client';
+
+const socket = socketIOClient(endpoint)
+socket.on('MettingDevice ' , (MeetingmuteMic) => {
+    logger.log("micnaja ", micnaja )
+    const micnaja = MeetingmuteMic
+})
+
 
 const logger = Logger.getLogger(__filename);
 
