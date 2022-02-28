@@ -888,6 +888,8 @@ export default {
         var initialOptions = {};
         var option = infoUser.getOption();
 
+        logger.log(initialOptions,'initialOptions=>>>>>')
+
         var MeetingmuteCam = infoConf.setMeetingmuteCam();
         var MeetingmuteMic = infoConf.setMeetingmuteMic();
         // var MeetingmuteCam = true
