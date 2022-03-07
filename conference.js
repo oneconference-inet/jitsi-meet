@@ -898,7 +898,7 @@ export default {
         logger.log(MeetingmuteCam,'MeetingmuteCam=>>>>')
         logger.log(MeetingmuteMic,'MeetingmuteMic=>>>>>>>')
 
-        if (!config.iAmRecorder) {
+        if (!config.iAmRecorder && config.startWithAudioMuted==true && config.startWithVideoMuted==true) {
             initialOptions = {
                 startAudioOnly: config.startAudioOnly,
                 startScreenSharing: config.startScreenSharing,
@@ -920,20 +920,9 @@ export default {
         }
 
 
-        // if (!config.iAmRecorder && MeetingmuteCam == true && MeetingmuteMic == true) {
-        //     // Only Voice
-        //     initialOptions = {
-        //         startAudioOnly: config.startAudioOnly,
-        //         startScreenSharing: config.startScreenSharing,
-        //         startWithAudioMuted: option.muteall
-        //             ? false
-        //             : option.audio
-        //             ? true
-        //             : false, // false = open , true = close
-        //         startWithVideoMuted: option.video ? true : false, // false = open , true = close
-        //     };
-        // }
-        // else {
+        // If แรกเริ่มจาก JitsiMeet
+
+        // if (!config.iAmRecorder) {
         //     initialOptions = {
         //         startAudioOnly: config.startAudioOnly,
         //         startScreenSharing: config.startScreenSharing,
@@ -944,11 +933,8 @@ export default {
         //             : true, // false = open , true = close
         //         startWithVideoMuted: option.video ? false : true, // false = open , true = close
         //     };
-        // }
-
-        
-        //  else {
-        //     initialOptions = {
+        // } else {
+        //         initialOptions = {
         //         // Bot Setting
         //         startAudioOnly: true,
         //         startScreenSharing: false,
