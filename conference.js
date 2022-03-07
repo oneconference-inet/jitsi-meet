@@ -898,15 +898,15 @@ export default {
         logger.log(MeetingmuteCam,'MeetingmuteCam=>>>>')
         logger.log(MeetingmuteMic,'MeetingmuteMic=>>>>>>>')
 
-        if (!config.iAmRecorder && config.startWithAudioMuted==true && config.startWithVideoMuted==true) {
+        if (!config.iAmRecorder) {
             initialOptions = {
                 startAudioOnly: config.startAudioOnly,
                 startScreenSharing: config.startScreenSharing,
                 startWithAudioMuted: option.muteall
-                    ? false
-                    : option.audio
                     ? true
-                    : false, // false = open , true = close
+                    : option.audio
+                    ? false
+                    : true, // false = open , true = close
                 startWithVideoMuted: option.video ? false : true, // false = open , true = close
             };
         } else {
