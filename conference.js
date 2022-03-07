@@ -898,31 +898,7 @@ export default {
         logger.log(MeetingmuteCam,'MeetingmuteCam=>>>>')
         logger.log(MeetingmuteMic,'MeetingmuteMic=>>>>>>>')
 
-        if (!config.iAmRecorder && config.startWithAudioMuted==true && config.startWithVideoMuted==true) {
-            initialOptions = {
-                startAudioOnly: config.startAudioOnly,
-                startScreenSharing: config.startScreenSharing,
-                startWithAudioMuted: option.muteall
-                    ? true
-                    : option.audio
-                    ? false
-                    : true, // false = open , true = close
-                startWithVideoMuted: option.video ? false : true, // false = open , true = close
-            };
-        } else {
-                initialOptions = {
-                // Bot Setting
-                startAudioOnly: true,
-                startScreenSharing: false,
-                startWithAudioMuted: false,
-                startWithVideoMuted: true,
-            };
-        }
-
-
-        // If แรกเริ่มจาก JitsiMeet
-
-        // if (!config.iAmRecorder) {
+        // if (!config.iAmRecorder && config.startWithAudioMuted==true && config.startWithVideoMuted==true) {
         //     initialOptions = {
         //         startAudioOnly: config.startAudioOnly,
         //         startScreenSharing: config.startScreenSharing,
@@ -942,6 +918,30 @@ export default {
         //         startWithVideoMuted: true,
         //     };
         // }
+
+
+        // If แรกเริ่มจาก JitsiMeet
+
+        if (!config.iAmRecorder) {
+            initialOptions = {
+                startAudioOnly: config.startAudioOnly,
+                startScreenSharing: config.startScreenSharing,
+                startWithAudioMuted: option.muteall
+                    ? true
+                    : option.audio
+                    ? false
+                    : true, // false = open , true = close
+                startWithVideoMuted: option.video ? false : true, // false = open , true = close
+            };
+        } else {
+                initialOptions = {
+                // Bot Setting
+                startAudioOnly: true,
+                startScreenSharing: false,
+                startWithAudioMuted: false,
+                startWithVideoMuted: true,
+            };
+        }
 
         if (option.muteall) {
             APP.store.dispatch(setAudioMutedAll(option.muteall));
