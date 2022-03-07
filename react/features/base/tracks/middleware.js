@@ -38,6 +38,7 @@ import {
 } from './functions';
 
 import './subscriber';
+import logger from './logger';
 
 declare var APP: Object;
 
@@ -166,6 +167,8 @@ MiddlewareRegistry.register(store => next => action => {
             const muted = jitsiTrack.isMuted();
             const participantID = jitsiTrack.getParticipantId();
             const isVideoTrack = jitsiTrack.type !== MEDIA_TYPE.AUDIO;
+
+            console.log(isVideoTrack,'isVideoTrack=>>>>>>');
 
             if (isVideoTrack) {
                 // Do not change the video mute state for local presenter tracks.
