@@ -908,8 +908,9 @@ export default {
                     ? false
                     : true, // false = open , true = close
                 startWithVideoMuted: option.video ? false : true, // false = open , true = close
+            };
         } else {
-                        initialOptions = {
+                initialOptions = {
                 // Bot Setting
                 startAudioOnly: true,
                 startScreenSharing: false,
@@ -917,11 +918,6 @@ export default {
                 startWithVideoMuted: true,
             };
         }
-
-
-
-
-
 
 
         // if (!config.iAmRecorder && MeetingmuteCam == true && MeetingmuteMic == true) {
