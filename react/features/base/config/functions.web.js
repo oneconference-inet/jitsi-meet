@@ -1,8 +1,8 @@
 // @flow
 
-import { TOOLBAR_BUTTONS } from "./constants";
+import { TOOLBAR_BUTTONS } from './constants';
 
-export * from "./functions.any";
+export * from './functions.any';
 
 /**
  * Removes all analytics related options from the given configuration, in case of a libre build.
@@ -10,8 +10,7 @@ export * from "./functions.any";
  * @param {*} config - The configuration which needs to be cleaned up.
  * @returns {void}
  */
-export function _cleanupConfig(config: Object) {
-    // eslint-disable-line no-unused-vars
+export function _cleanupConfig(config: Object) { // eslint-disable-line no-unused-vars
 }
 
 /**
@@ -21,7 +20,7 @@ export function _cleanupConfig(config: Object) {
  * @returns {string}
  */
 export function getDialOutStatusUrl(state: Object): string {
-    return state["features/base/config"].guestDialOutStatusUrl;
+    return state['features/base/config'].guestDialOutStatusUrl;
 }
 
 /**
@@ -31,7 +30,7 @@ export function getDialOutStatusUrl(state: Object): string {
  * @returns {string}
  */
 export function getDialOutUrl(state: Object): string {
-    return state["features/base/config"].guestDialOutUrl;
+    return state['features/base/config'].guestDialOutUrl;
 }
 
 /**
@@ -51,9 +50,9 @@ export function getReplaceParticipant(state: Object): string {
  * @returns {Array<string>} - The list of enabled toolbar buttons.
  */
 export function getToolbarButtons(state: Object): Array<string> {
-    // const { toolbarButtons } = state["features/base/config"];
+    const { toolbarButtons } = state['features/base/config'];
 
-    return TOOLBAR_BUTTONS;
+    return Array.isArray(toolbarButtons) ? toolbarButtons : TOOLBAR_BUTTONS;
 }
 
 /**
@@ -68,4 +67,15 @@ export function isToolbarButtonEnabled(buttonName: string, state: Object | Array
     const buttons = Array.isArray(state) ? state : getToolbarButtons(state);
 
     return buttons.includes(buttonName);
+}
+
+/**
+ * Returns whether audio level measurement is enabled or not.
+ *
+ * @param {Object} state - The state of the app.
+ * @returns {boolean}
+ */
+export function areAudioLevelsEnabled(state: Object): boolean {
+    // Default to false for React Native as audio levels are of no interest to the mobile app.
+    return navigator.product !== 'ReactNative' && !state['features/base/config'].disableAudioLevels;
 }

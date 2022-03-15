@@ -3,15 +3,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { getJitsiMeetTransport } from '../modules/transport';
-
 import { App } from './features/app/components';
 import { getLogger } from './features/base/logging/functions';
 import { Platform } from './features/base/react';
 import { getJitsiMeetGlobalNS } from './features/base/util';
 import PrejoinApp from './features/prejoin/components/PrejoinApp';
-
-import { _endJoin } from './features/toolbox/components/HangupButton';
 
 const logger = getLogger('index.web');
 const OS = Platform.OS;
@@ -42,22 +38,6 @@ if (OS === 'ios') {
         }
     });
 }
-
-/**
- * Stops collecting the logs and disposing the API when the user closes the
- * page.
- */
-window.addEventListener('beforeunload', () => {
-    // _endJoin()
-    // Stop the LogCollector
-    if (APP.logCollectorStarted) {
-        APP.logCollector.stop();
-        APP.logCollectorStarted = false;
-    }
-    APP.API.notifyConferenceLeft(APP.conference.roomName);
-    APP.API.dispose();
-    getJitsiMeetTransport().dispose();
-});
 
 const globalNS = getJitsiMeetGlobalNS();
 

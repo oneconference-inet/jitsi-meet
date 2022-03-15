@@ -12,9 +12,19 @@ import { toggleVideoSettings, VideoSettingsPopup } from '../../../settings';
 import { getVideoSettingsVisibility } from '../../../settings/functions';
 import { isVideoSettingsButtonDisabled } from '../../functions';
 import VideoMuteButton from '../VideoMuteButton';
-import infoConf from "../../../../../infoConference";
+
 
 type Props = {
+
+    /**
+     * The button's key.
+     */
+     buttonKey?: string,
+
+    /**
+     * External handler for click action.
+     */
+    handleClick: Function,
 
     /**
      * Click handler for the small icon. Opens video options.
@@ -32,9 +42,15 @@ type Props = {
     hasVideoTrack: boolean,
 
     /**
-     * If the button should be disabled
+     * If the button should be disabled.
      */
     isDisabled: boolean,
+
+    /**
+     * Notify mode for `toolbarButtonClicked` event -
+     * whether to only notify or to also prevent button click routine.
+     */
+    notifyMode?: string,
 
     /**
      * Flag controlling the visibility of the button.
@@ -45,12 +61,12 @@ type Props = {
     visible: boolean,
 
     /**
-     * Used for translation
+     * Used for translation.
      */
     t: Function,
 
     /**
-     * Defines is popup is open
+     * Defines is popup is open.
      */
     isOpen: boolean
 };
@@ -62,7 +78,7 @@ type Props = {
  */
 class VideoSettingsButton extends Component<Props> {
     /**
-     * Initializes a new {@code AudioSettingsButton} instance.
+     * Initializes a new {@code VideoSettingsButton} instance.
      *
      * @inheritdoc
      */
@@ -70,6 +86,7 @@ class VideoSettingsButton extends Component<Props> {
         super(props);
 
         this._onEscClick = this._onEscClick.bind(this);
+        this._onClick = this._onClick.bind(this);
     }
 
     /**
@@ -94,8 +111,21 @@ class VideoSettingsButton extends Component<Props> {
         if (event.key === 'Escape' && this.props.isOpen) {
             event.preventDefault();
             event.stopPropagation();
-            this.props.onVideoOptionsClick();
+            this._onClick();
         }
+    }
+
+    _onClick: () => void;
+
+    /**
+     * Click handler for the more actions entries.
+     *
+     * @returns {void}
+     */
+    _onClick() {
+        const { onVideoOptionsClick } = this.props;
+
+        onVideoOptionsClick();
     }
 
     /**
@@ -104,9 +134,7 @@ class VideoSettingsButton extends Component<Props> {
      * @inheritdoc
      */
     render() {
-        const { onVideoOptionsClick, t, visible, isOpen } = this.props;
-        const ActionMic = infoConf.setSocket();
-        console.log(ActionMic);
+        const { t, visible, isOpen, buttonKey, notifyMode } = this.props;
 
         return visible ? (
             <VideoSettingsPopup>
@@ -115,16 +143,22 @@ class VideoSettingsButton extends Component<Props> {
                     ariaExpanded = { isOpen }
                     ariaHasPopup = { true }
                     ariaLabel = { this.props.t('toolbar.videoSettings') }
+                    buttonKey = { buttonKey }
                     icon = { IconArrowUp }
                     iconDisabled = { this._isIconDisabled() }
                     iconId = 'video-settings-button'
                     iconTooltip = { t('toolbar.videoSettings') }
-                    onIconClick = { onVideoOptionsClick }
+                    notifyMode = { notifyMode }
+                    onIconClick = { this._onClick }
                     onIconKeyDown = { this._onEscClick }>
-                    <VideoMuteButton />
+                    <VideoMuteButton
+                        buttonKey = { buttonKey }
+                        notifyMode = { notifyMode } />
                 </ToolboxButtonWithIcon>
             </VideoSettingsPopup>
-        ) : <VideoMuteButton />;
+        ) : <VideoMuteButton
+            buttonKey = { buttonKey }
+            notifyMode = { notifyMode } />;
     }
 }
 
@@ -152,5 +186,5 @@ const mapDispatchToProps = {
 
 export default translate(connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(VideoSettingsButton));

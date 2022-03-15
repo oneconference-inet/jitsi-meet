@@ -1,6 +1,7 @@
 // @flow
 
 import { getToolbarButtons } from '../../../../base/config';
+import { openDialog } from '../../../../base/dialog';
 import { translate } from '../../../../base/i18n';
 import { connect } from '../../../../base/redux';
 import AbstractRecordButton, {
@@ -8,10 +9,29 @@ import AbstractRecordButton, {
     type Props
 } from '../AbstractRecordButton';
 
-import infoConf from '../../../../../../infoConference'
-import infoUser from '../../../../../../infoUser'
+import { StartRecordingDialog, StopRecordingDialog } from './index';
 
-declare var interfaceConfig: Object;
+
+/**
+ * Button for opening a dialog where a recording session can be started.
+ */
+class RecordingButton extends AbstractRecordButton<Props> {
+
+    /**
+     * Handles clicking / pressing the button.
+     *
+     * @override
+     * @protected
+     * @returns {void}
+     */
+    _onHandleClick() {
+        const { _isRecordingRunning, dispatch } = this.props;
+
+        dispatch(openDialog(
+            _isRecordingRunning ? StopRecordingDialog : StartRecordingDialog
+        ));
+    }
+}
 
 /**
  * Maps (parts of) the redux state to the associated props for the
@@ -29,31 +49,17 @@ declare var interfaceConfig: Object;
  */
 export function _mapStateToProps(state: Object, ownProps: Props): Object {
     const abstractProps = _abstractMapStateToProps(state, ownProps);
-    const service = infoConf.getService();
-    const role = infoUser.getUserId().split('-')[1];
-    const visibleByService = checkService(service);
-    const visibleByRole = role == 'host' ? true : false ;
+    const toolbarButtons = getToolbarButtons(state);
     let { visible } = ownProps;
 
     if (typeof visible === 'undefined') {
-        visible = interfaceConfig.TOOLBAR_BUTTONS.includes('recording');
+        visible = toolbarButtons.includes('recording') && abstractProps.visible;
     }
 
     return {
         ...abstractProps,
-        visible: visible && visibleByRole
+        visible
     };
 }
 
-function checkService(service) {
-    const services_check = interfaceConfig.SERVICE_RECORD_FEATURE || []
-    // console.log("SERVICE_CHKK: ",service);
-    // console.log("SERVICE_CHK: ",services_check.includes(service));
-    if (!services_check.includes(service)) {
-        return false
-    } else {
-        return true
-    }
-}
-
-export default translate(connect(_mapStateToProps)(AbstractRecordButton));
+export default translate(connect(_mapStateToProps)(RecordingButton));

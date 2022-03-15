@@ -5,8 +5,6 @@ import React from 'react';
 import AbstractPollResults from '../AbstractPollResults';
 import type { AbstractProps } from '../AbstractPollResults';
 
-import infoConf from "../../../../../infoConference";
-
 
 /**
  * Component that renders the poll results.
@@ -18,6 +16,7 @@ const PollResults = (props: AbstractProps) => {
     const {
         answers,
         changeVote,
+        creatorName,
         haveVoted,
         showDetails,
         question,
@@ -30,6 +29,9 @@ const PollResults = (props: AbstractProps) => {
             <div className = 'poll-header'>
                 <div className = 'poll-question'>
                     <strong>{ question }</strong>
+                </div>
+                <div className = 'poll-creator'>
+                    { t('polls.by', { name: creatorName }) }
                 </div>
             </div>
             <ol className = 'poll-result-list'>
@@ -58,13 +60,11 @@ const PollResults = (props: AbstractProps) => {
                 )}
             </ol>
             <div className = { 'poll-result-links' }>
-                {infoConf && !infoConf.getIsSecretRoom() ? (
-                    <a
-                        className = { 'poll-detail-link' }
-                        onClick = { toggleIsDetailed }>
-                        {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
-                    </a>
-                ) : <div className = { 'poll-detail-link' }></div>}
+                <a
+                    className = { 'poll-detail-link' }
+                    onClick = { toggleIsDetailed }>
+                    {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
+                </a>
                 <a
                     className = { 'poll-change-vote-link' }
                     onClick = { changeVote }>

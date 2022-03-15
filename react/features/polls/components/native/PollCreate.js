@@ -5,11 +5,14 @@ import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { Icon, IconClose } from '../../../base/icons';
+import BaseTheme from '../../../base/ui/components/BaseTheme.native';
 import { BUTTON_MODES } from '../../../chat/constants';
+import { CHAR_LIMIT } from '../../constants';
 import AbstractPollCreate from '../AbstractPollCreate';
 import type { AbstractProps } from '../AbstractPollCreate';
 
 import { chatStyles, dialogStyles } from './styles';
+
 
 const PollCreate = (props: AbstractProps) => {
 
@@ -105,15 +108,19 @@ const PollCreate = (props: AbstractProps) => {
                 style = { dialogStyles.optionContainer }>
                 <TextInput
                     blurOnSubmit = { false }
+                    maxLength = { CHAR_LIMIT }
                     multiline = { true }
                     onChangeText = { text => setAnswer(index, text) }
                     onKeyPress = { ev => onAnswerKeyDown(index, ev) }
                     placeholder = { t('polls.create.answerPlaceholder', { index: index + 1 }) }
+                    placeholderTextColor = { BaseTheme.palette.text03 }
                     ref = { input => registerFieldRef(index, input) }
+                    selectionColor = { BaseTheme.palette.text03 }
                     style = { dialogStyles.field }
                     value = { answers[index] } />
 
-                {answers.length > 2
+                {
+                    answers.length > 2
                     && createIconButton(IconClose, () => removeAnswer(index))
                 }
             </View>
@@ -125,10 +132,13 @@ const PollCreate = (props: AbstractProps) => {
                 <TextInput
                     autoFocus = { true }
                     blurOnSubmit = { false }
+                    maxLength = { CHAR_LIMIT }
                     multiline = { true }
                     onChangeText = { setQuestion }
                     onSubmitEditing = { onQuestionKeyDown }
                     placeholder = { t('polls.create.questionPlaceholder') }
+                    placeholderTextColor = { BaseTheme.palette.text03 }
+                    selectionColor = { BaseTheme.palette.text03 }
                     style = { dialogStyles.question }
                     value = { question } />
                 <FlatList
@@ -138,39 +148,43 @@ const PollCreate = (props: AbstractProps) => {
                     keyExtractor = { (item, index) => index.toString() }
                     ref = { answerListRef }
                     renderItem = { renderListItem } />
+                <View style = { chatStyles.pollCreateButtonsContainer }>
+                    <Button
+                        color = { BaseTheme.palette.action02 }
+                        mode = { BUTTON_MODES.CONTAINED }
+                        onPress = { () => {
+                            // adding and answer
+                            addAnswer();
+                            requestFocus(answers.length);
+                        } }
+                        style = { chatStyles.pollCreateAddButton }>
+                        {t('polls.create.addOption')}
+                    </Button>
+                    <View
+                        style = { chatStyles.buttonRow }>
+                        <Button
+                            color = { BaseTheme.palette.action02 }
+                            mode = { BUTTON_MODES.CONTAINED }
+                            onPress = { () => setCreateMode(false) }
+                            style = { chatStyles.pollCreateButton } >
+                            {t('polls.create.cancel')}
+                        </Button>
 
-                <Button
-                    color = '#3D3D3D'
-                    mode = { BUTTON_MODES.CONTAINED }
-                    onPress = { () => {
-                        // adding and answer
-                        addAnswer();
-                        requestFocus(answers.length);
-                    } }
-                    style = { chatStyles.pollCreateAddButton }>
-                    {t('polls.create.addOption')}
-                </Button>
-            </View>
-
-            <View
-                style = { chatStyles.buttonRow }>
-
-                <Button
-                    color = '#3D3D3D'
-                    mode = { BUTTON_MODES.CONTAINED }
-                    onPress = { () => setCreateMode(false) }
-                    style = { chatStyles.pollCreateButton } >
-                    {t('polls.create.cancel')}
-                </Button>
-
-                <Button
-                    color = '#17a0db'
-                    disabled = { isSubmitDisabled }
-                    mode = { BUTTON_MODES.CONTAINED }
-                    onPress = { onSubmit }
-                    style = { chatStyles.pollCreateButton } >
-                    {t('polls.create.send')}
-                </Button>
+                        <Button
+                            color = { BaseTheme.palette.screen01Header }
+                            disabled = { isSubmitDisabled }
+                            labelStyle = {
+                                isSubmitDisabled
+                                    ? chatStyles.pollSendDisabledLabel
+                                    : chatStyles.pollSendLabel
+                            }
+                            mode = { BUTTON_MODES.CONTAINED }
+                            onPress = { onSubmit }
+                            style = { chatStyles.pollCreateButton } >
+                            {t('polls.create.send')}
+                        </Button>
+                    </View>
+                </View>
             </View>
         </View>
     );

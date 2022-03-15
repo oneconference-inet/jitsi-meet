@@ -27,6 +27,7 @@ import {
     showPendingRecordingNotification,
     showRecordingError,
     showRecordingLimitNotification,
+    showRecordingWarning,
     showStartedRecordingNotification,
     showStoppedRecordingNotification,
     updateRecordingSessionData
@@ -44,9 +45,6 @@ import {
     RECORDING_OFF_SOUND_FILE,
     RECORDING_ON_SOUND_FILE
 } from './sounds';
-import axios from "axios";
-
-import infoConf from '../../../infoConference';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -114,8 +112,6 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
         conference.on(
             JitsiConferenceEvents.RECORDER_STATE_CHANGED,
             recorderSession => {
-                // console.log("recorderSession: ",recorderSession.getID());
-                // console.log("recorderSession Error: ",recorderSession.getError());
 
                 if (recorderSession) {
                     recorderSession.getID()
@@ -140,7 +136,6 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
         const {
             iAmRecorder,
             iAmSipGateway,
-            disableRecordAudioNotification,
             recordingLimit
         } = getState()['features/base/config'];
 
@@ -169,13 +164,6 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
                 }
 
                 sendAnalytics(createRecordingEvent('start', mode));
-
-                let meetingid = infoConf.getMeetingId()
-                axios.post(interfaceConfig.DOMAIN + '/api/rooms/checkRecord' , { meeting_id: meetingid })
-
-                if (disableRecordAudioNotification) {
-                    break;
-                }
 
                 let soundID;
 
@@ -207,10 +195,6 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
                         = (Date.now() / 1000) - oldSessionData.timestamp;
                 }
                 sendAnalytics(createRecordingEvent('stop', mode, duration));
-
-                if (disableRecordAudioNotification) {
-                    break;
-                }
 
                 if (mode === JitsiRecordingConstants.mode.FILE) {
                     soundOff = RECORDING_OFF_SOUND_ID;
@@ -276,6 +260,14 @@ function _showRecordingErrorNotification(recorderSession, dispatch) {
             titleKey: isStreamMode
                 ? 'liveStreaming.busyTitle'
                 : 'recording.busyTitle'
+        }));
+        break;
+    case JitsiMeetJS.constants.recording.error.UNEXPECTED_REQUEST:
+        dispatch(showRecordingWarning({
+            descriptionKey: isStreamMode
+                ? 'liveStreaming.sessionAlreadyActive'
+                : 'recording.sessionAlreadyActive',
+            titleKey: isStreamMode ? 'liveStreaming.inProgress' : 'recording.inProgress'
         }));
         break;
     default:

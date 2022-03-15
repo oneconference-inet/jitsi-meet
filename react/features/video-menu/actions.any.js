@@ -1,5 +1,5 @@
 // @flow
-import { getLogger } from 'jitsi-meet-logger';
+import { getLogger } from '@jitsi/logger';
 import type { Dispatch } from 'redux';
 
 import UIEvents from '../../../service/UI/UIEvents';
@@ -10,7 +10,7 @@ import {
     sendAnalytics,
     VIDEO_MUTE
 } from '../analytics';
-import { showModeratedNotification } from '../av-moderation/actions';
+import { rejectParticipantAudio, rejectParticipantVideo, showModeratedNotification } from '../av-moderation/actions';
 import { shouldShowModeratedNotification } from '../av-moderation/functions';
 import {
     MEDIA_TYPE,
@@ -23,8 +23,8 @@ import {
     getRemoteParticipants,
     muteRemoteParticipant
 } from '../base/participants';
-
-import { kickParticipant } from "../base/participants";
+import { toggleScreensharing } from '../base/tracks';
+import { isModerationNotificationDisplayed } from '../notifications';
 
 declare var APP: Object;
 
@@ -35,9 +35,10 @@ const logger = getLogger(__filename);
  *
  * @param {boolean} enable - Whether to mute or unmute.
  * @param {MEDIA_TYPE} mediaType - The type of the media channel to mute.
+ * @param {boolean} stopScreenSharing - Whether or not to stop the screensharing.
  * @returns {Function}
  */
-export function muteLocal(enable: boolean, mediaType: MEDIA_TYPE) {
+export function muteLocal(enable: boolean, mediaType: MEDIA_TYPE, stopScreenSharing: boolean = false) {
     return (dispatch: Dispatch<any>, getState: Function) => {
         const isAudio = mediaType === MEDIA_TYPE.AUDIO;
 
@@ -49,9 +50,15 @@ export function muteLocal(enable: boolean, mediaType: MEDIA_TYPE) {
 
         // check for A/V Moderation when trying to unmute
         if (!enable && shouldShowModeratedNotification(MEDIA_TYPE.AUDIO, getState())) {
-            dispatch(showModeratedNotification(MEDIA_TYPE.AUDIO));
+            if (!isModerationNotificationDisplayed(MEDIA_TYPE.AUDIO, getState())) {
+                dispatch(showModeratedNotification(MEDIA_TYPE.AUDIO));
+            }
 
             return;
+        }
+
+        if (enable && stopScreenSharing) {
+            dispatch(toggleScreensharing(false, false, true));
         }
 
         sendAnalytics(createToolbarEvent(isAudio ? AUDIO_MUTE : VIDEO_MUTE, { enable }));
@@ -96,7 +103,7 @@ export function muteAllParticipants(exclude: Array<string>, mediaType: MEDIA_TYP
         const localId = getLocalParticipant(state).id;
 
         if (!exclude.includes(localId)) {
-            dispatch(muteLocal(true, mediaType));
+            dispatch(muteLocal(true, mediaType, mediaType !== MEDIA_TYPE.AUDIO));
         }
 
         getRemoteParticipants(state).forEach((p, id) => {
@@ -105,26 +112,12 @@ export function muteAllParticipants(exclude: Array<string>, mediaType: MEDIA_TYP
             }
 
             dispatch(muteRemote(id, mediaType));
+            if (mediaType === MEDIA_TYPE.AUDIO) {
+                dispatch(rejectParticipantAudio(id));
+            } else {
+                dispatch(rejectParticipantVideo(id));
+            }
         });
     };
 }
 
-/////////////////////////// End Meeting - Kick all PARTICIPANT //////////////////////////////////////
-
-export function endAllParticipants(exclude: Array<string>) {
-    return (dispatch: Dispatch<any>, getState: Function) => {
-        const state = getState();
-        const participantIds = state["features/base/participants"].map(
-            (p) => p.id
-        );
-
-        /* eslint-disable no-confusing-arrow */
-        const setParticipants = participantIds.filter(
-            (id) => !exclude.includes(id)
-        );
-
-        setParticipants.map((person) => {
-            dispatch(kickParticipant(person));
-        });
-    };
-}

@@ -1,6 +1,7 @@
 // @flow
 
 import '../analytics/middleware';
+import '../av-moderation/middleware';
 import '../base/conference/middleware';
 import '../base/config/middleware';
 import '../base/jwt/middleware';
@@ -18,9 +19,9 @@ import '../base/sounds/middleware';
 import '../base/testing/middleware';
 import '../base/tracks/middleware';
 import '../base/user-interaction/middleware';
+import '../breakout-rooms/middleware';
 import '../calendar-sync/middleware';
 import '../chat/middleware';
-// import '../note/middleware';
 import '../conference/middleware';
 import '../connection-indicator/middleware';
 import '../deep-linking/middleware';
@@ -29,6 +30,7 @@ import '../display-name/middleware';
 import '../etherpad/middleware';
 import '../filmstrip/middleware';
 import '../follow-me/middleware';
+import '../gifs/middleware';
 import '../invite/middleware';
 import '../jaas/middleware';
 import '../large-video/middleware';
@@ -43,13 +45,12 @@ import '../recording/middleware';
 import '../rejoin/middleware';
 import '../room-lock/middleware';
 import '../rtcstats/middleware';
+import '../speaker-stats/middleware';
 import '../subtitles/middleware';
 import '../toolbox/middleware';
 import '../transcribing/middleware';
 import '../video-layout/middleware';
 import '../video-quality/middleware';
 import '../videosipgw/middleware';
-import '../polls/middleware';
-import '../polls/subscriber';
 
 import './middleware';

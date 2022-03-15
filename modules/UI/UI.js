@@ -3,14 +3,19 @@
 
 const UI = {};
 
+import Logger from '@jitsi/logger';
 import EventEmitter from 'events';
-import Logger from 'jitsi-meet-logger';
 
 import { isMobileBrowser } from '../../react/features/base/environment/utils';
 import { setColorAlpha } from '../../react/features/base/util';
 import { setDocumentUrl } from '../../react/features/etherpad';
 import { setFilmstripVisible } from '../../react/features/filmstrip';
-import { joinLeaveNotificationsDisabled, setNotificationsEnabled } from '../../react/features/notifications';
+import {
+    joinLeaveNotificationsDisabled,
+    setNotificationsEnabled,
+    showNotification,
+    NOTIFICATION_TIMEOUT_TYPE
+} from '../../react/features/notifications';
 import {
     dockToolbox,
     setToolboxEnabled,
@@ -215,12 +220,10 @@ UI.updateUserStatus = (user, status) => {
 
     const displayName = user.getDisplayName();
 
-    messageHandler.participantNotification(
-        displayName,
-        '',
-        'connected',
-        'dialOut.statusMessage',
-        { status: UIUtil.escapeHtml(status) });
+    APP.store.dispatch(showNotification({
+        titleKey: `${displayName} connected`,
+        descriptionKey: 'dialOut.statusMessage'
+    }, NOTIFICATION_TIMEOUT_TYPE.SHORT));
 };
 
 /**
@@ -230,50 +233,6 @@ UI.toggleFilmstrip = function() {
     const { visible } = APP.store.getState()['features/filmstrip'];
 
     APP.store.dispatch(setFilmstripVisible(!visible));
-};
-
-/**
- * Toggles the visibility of the chat panel.
- */
-UI.toggleChat = () => APP.store.dispatch(toggleChat());
-
-/**
- * Handle new user display name.
- */
-UI.inputDisplayNameHandler = function(newDisplayName) {
-    eventEmitter.emit(UIEvents.NICKNAME_CHANGED, newDisplayName);
-};
-
-// FIXME check if someone user this
-UI.showLoginPopup = function(callback) {
-    logger.log('password is required');
-
-    const message
-        = `<input name="username" type="text"
-                placeholder="user@domain.net"
-                data-i18n="[placeholder]dialog.user"
-                class="input-control" autofocus>
-         <input name="password" type="password"
-                data-i18n="[placeholder]dialog.userPassword"
-                class="input-control"
-                placeholder="user password">`
-
-    ;
-
-    // eslint-disable-next-line max-params
-    const submitFunction = (e, v, m, f) => {
-        if (v && f.username && f.password) {
-            callback(f.username, f.password);
-        }
-    };
-
-    messageHandler.openTwoButtonDialog({
-        titleKey: 'dialog.passwordRequired',
-        msgString: message,
-        leftButtonKey: 'dialog.Ok',
-        submitFunction,
-        focus: ':input:first'
-    });
 };
 
 /**
@@ -290,7 +249,6 @@ UI.setAudioMuted = function(id) {
  * Sets muted video state for participant
  */
 UI.setVideoMuted = function(id) {
-    // VideoLayout.onVideoMute(id);
     VideoLayout._updateLargeVideoIfDisplayed(id, true);
 
     if (APP.conference.isLocalId(id)) {
@@ -378,18 +336,6 @@ UI.notifyMaxUsersLimitReached = function() {
     });
 };
 
-/**
- * Notify user that he was automatically muted when joned the conference.
- */
-UI.notifyInitiallyMuted = function() {
-    messageHandler.participantNotification(
-        null,
-        'notify.mutedTitle',
-        'connected',
-        'notify.muted',
-        null);
-};
-
 UI.handleLastNEndpoints = function(leavingIds, enteringIds) {
     VideoLayout.onLastNEndpointsChanged(leavingIds, enteringIds);
 };
@@ -406,15 +352,6 @@ UI.notifyTokenAuthFailed = function() {
         descriptionKey: 'dialog.tokenAuthFailed',
         titleKey: 'dialog.tokenAuthFailedTitle'
     });
-};
-
-UI.notifyFocusDisconnected = function(focus, retrySec) {
-    messageHandler.participantNotification(
-        null, 'notify.focus',
-        'disconnected', 'notify.focusFail',
-        { component: focus,
-            ms: retrySec }
-    );
 };
 
 /**

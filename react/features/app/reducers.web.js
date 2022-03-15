@@ -1,8 +1,9 @@
 // @flow
 
-import '../av-moderation/reducer';
 import '../base/devices/reducer';
 import '../e2ee/reducer';
+import '../face-centering/reducer';
+import '../facial-recognition/reducer';
 import '../feedback/reducer';
 import '../local-recording/reducer';
 import '../no-audio-signal/reducer';

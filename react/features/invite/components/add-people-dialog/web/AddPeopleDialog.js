@@ -8,7 +8,7 @@ import { Dialog } from '../../../../base/dialog';
 import { translate } from '../../../../base/i18n';
 import { JitsiRecordingConstants } from '../../../../base/lib-jitsi-meet';
 import { connect } from '../../../../base/redux';
-import { isDynamicBrandingDataLoaded } from '../../../../dynamic-branding/functions';
+import { isDynamicBrandingDataLoaded } from '../../../../dynamic-branding';
 import EmbedMeetingTrigger from '../../../../embed-meeting/components/EmbedMeetingTrigger';
 import { isVpaasMeeting } from '../../../../jaas/functions';
 import { getActiveSession } from '../../../../recording';
@@ -28,7 +28,6 @@ import DialInSection from './DialInSection';
 import InviteByEmailSection from './InviteByEmailSection';
 import InviteContactsSection from './InviteContactsSection';
 import LiveStreamSection from './LiveStreamSection';
-import infoConf from '../../../../../../infoConference';
 
 declare var interfaceConfig: Object;
 
@@ -66,7 +65,7 @@ type Props = {
 
     /**
      * The custom no new-lines meeting invitation text for iOS default email.
-     * Needed because of this mailto: iOS issue: https://developer.apple.com/forums/thread/681023
+     * Needed because of this mailto: iOS issue: https://developer.apple.com/forums/thread/681023.
      */
     _invitationTextiOS: string,
 
@@ -143,11 +142,11 @@ function AddPeopleDialog({
      */
     useEffect(() => {
         sendAnalytics(createInviteDialogEvent(
-            'invite.dialog.opened', 'dialog'));
+            'opened', 'dialog'));
 
         return () => {
             sendAnalytics(createInviteDialogEvent(
-                'invite.dialog.closed', 'dialog'));
+                'closed', 'dialog'));
         };
     }, []);
 
@@ -164,7 +163,7 @@ function AddPeopleDialog({
             width = { 'small' }>
             <div className = 'invite-more-dialog'>
                 { _inviteContactsVisible && <InviteContactsSection /> }
-                {_urlSharingVisible ? <CopyMeetingLinkSection url = { infoConf.geturlInvite() } /> : null}
+                {_urlSharingVisible ? <CopyMeetingLinkSection url = { _inviteUrl } /> : null}
                 {
                     _emailSharingVisible
                         ? <InviteByEmailSection

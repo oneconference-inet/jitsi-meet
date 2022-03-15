@@ -8,8 +8,6 @@ import type { AbstractProps, AnswerInfo } from '../AbstractPollResults';
 
 import { chatStyles, dialogStyles, resultsStyles } from './styles';
 
-import infoConf from "../../../../../infoConference";
-
 
 /**
  * Component that renders the poll results.
@@ -40,7 +38,9 @@ const PollResults = (props: AbstractProps) => {
     const renderHeader = (answer: string, percentage: number, nbVotes: number) => (
         <View style = { resultsStyles.answerHeader }>
             <Text style = { resultsStyles.answer }>{ answer }</Text>
-            <Text style = { resultsStyles.answer }>({nbVotes}) {percentage}%</Text>
+            <View>
+                <Text style = { resultsStyles.answer }>({nbVotes}) {percentage}%</Text>
+            </View>
 
             {/* <Text style = { resultsStyles.answer }>{ answer } - { percentage }%</Text>
             <Text style = { resultsStyles.answerVoteCount }>
@@ -50,8 +50,9 @@ const PollResults = (props: AbstractProps) => {
     );
 
     /**
-     * Render voters of and answer
-     * @param {AnswerInfo} answer - the answer info
+     * Render voters of and answer.
+     *
+     * @param {AnswerInfo} answer - The answer info.
      * @returns {React.Node}
      */
     const renderRow = useCallback((answer: AnswerInfo) => {
@@ -64,7 +65,11 @@ const PollResults = (props: AbstractProps) => {
                     { voters && voterCount > 0
                     && <View style = { resultsStyles.voters }>
                         {voters.map(({ id, name: voterName }) =>
-                            <Text key = { id }>{ voterName }</Text>
+                            (<Text
+                                key = { id }
+                                style = { resultsStyles.voter }>
+                                { voterName }
+                            </Text>)
                         )}
                     </View>}
                 </View>
@@ -96,14 +101,12 @@ const PollResults = (props: AbstractProps) => {
                 keyExtractor = { (item, index) => index.toString() }
                 renderItem = { answer => renderRow(answer.item) } />
             <View style = { chatStyles.bottomLinks }>
-                {infoConf && !infoConf.getIsSecretRoom() ? (
-                    <TouchableOpacity onPress = { toggleIsDetailed }>
-                        <Text
-                            style = { chatStyles.toggleText }>
-                            {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
-                        </Text>
-                    </TouchableOpacity>
-                ) : null}
+                <TouchableOpacity onPress = { toggleIsDetailed }>
+                    <Text
+                        style = { chatStyles.toggleText }>
+                        {showDetails ? t('polls.results.hideDetailedResults') : t('polls.results.showDetailedResults')}
+                    </Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress = { changeVote }>
                     <Text
                         style = { chatStyles.toggleText }>

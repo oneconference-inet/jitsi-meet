@@ -1,11 +1,12 @@
 // @flow
 
-import React, { PureComponent } from "react";
-import type { Dispatch } from "redux";
+import React, { PureComponent } from 'react';
+import type { Dispatch } from 'redux';
 
 import { openDialog } from '../../../base/dialog';
 import { IconUserGroups } from '../../../base/icons';
 import { Label } from '../../../base/label';
+import { COLORS } from '../../../base/label/constants';
 import { getParticipantCount } from '../../../base/participants';
 import { connect } from '../../../base/redux';
 import { SpeakerStats } from '../../../speaker-stats';
@@ -15,10 +16,11 @@ import { SpeakerStats } from '../../../speaker-stats';
  * The type of the React {@code Component} props of {@link ParticipantsCount}.
  */
 type Props = {
+
     /**
      * Number of the conference participants.
      */
-    count: string,
+    count: number,
 
     /**
      * Conference data.
@@ -70,20 +72,23 @@ class ParticipantsCount extends PureComponent<Props> {
      * @inheritdoc
      * @returns {ReactElement}
      */
-
     render() {
+        const { count } = this.props;
+
+        if (count <= 2) {
+            return null;
+        }
+
         return (
-            <div
-                className = 'participants-count'
-                onClick = { this._onClick }>
-                <Label
-                    className = 'label--white'
-                    icon = { IconUserGroups }
-                    text = { this.props.count } />
-            </div>
+            <Label
+                color = { COLORS.white }
+                icon = { IconUserGroups }
+                onClick = { this._onClick }
+                text = { count } />
         );
     }
 }
+
 
 /**
  * Maps (parts of) the Redux state to the associated props for the
@@ -95,8 +100,8 @@ class ParticipantsCount extends PureComponent<Props> {
  */
 function mapStateToProps(state) {
     return {
-        conference: state["features/base/conference"].conference,
-        count: getParticipantCount(state),
+        conference: state['features/base/conference'].conference,
+        count: getParticipantCount(state)
     };
 }
 

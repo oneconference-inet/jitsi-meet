@@ -24,7 +24,7 @@ type State = {
 };
 
 /**
- * Stateless "mute/unmute audioj" button for the Always-on-Top windows.
+ * Stateless "mute/unmute audio" button for the Always-on-Top windows.
  */
 export default class AudioMuteButton
     extends AbstractAudioMuteButton<Props, State> {
@@ -58,13 +58,8 @@ export default class AudioMuteButton
      * @returns {void}
      */
     componentDidMount() {
-        let checkAudio = true
         api.on('audioAvailabilityChanged', this._audioAvailabilityListener);
         api.on('audioMuteStatusChanged', this._audioMutedListener);
-
-        if (checkAudio = true) {
-            isAudioMuted()
-        }
 
         Promise.all([
             api.isAudioAvailable(),
