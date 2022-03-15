@@ -7,9 +7,7 @@ import { IconMuteEveryone } from '../../base/icons';
 import { getLocalParticipant, isLocalParticipantModerator } from '../../base/participants';
 import { connect } from '../../base/redux';
 import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox/components';
-import { MuteEveryoneDialog } from '../../video-menu/components/web';
-
-import infoConf from '../../../../infoConference';
+import { MuteEveryoneDialog } from '../../video-menu/components';
 
 type Props = AbstractButtonProps & {
 
@@ -26,14 +24,13 @@ type Props = AbstractButtonProps & {
 
 /**
  * Implements a React {@link Component} which displays a button for audio muting
- * every participant (except the local one)
+ * every participant (except the local one).
  */
 class MuteEveryoneButton extends AbstractButton<Props, *> {
-
     accessibilityLabel = 'toolbar.accessibilityLabel.muteEveryone';
     icon = IconMuteEveryone;
-    label = !infoConf.getMuteAllState() ? 'toolbar.muteEveryone' : 'toolbar.notMuteEveryone';
-    tooltip = !infoConf.getMuteAllState() ? 'toolbar.muteEveryone' : 'toolbar.notMuteEveryone';
+    label = 'toolbar.muteEveryone';
+    tooltip = 'toolbar.muteEveryone';
 
     /**
      * Handles clicking / pressing the button, and opens a confirmation dialog.

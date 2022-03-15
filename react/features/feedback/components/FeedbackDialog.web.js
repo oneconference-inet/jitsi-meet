@@ -19,84 +19,87 @@ import { cancelFeedback, submitFeedback } from '../actions';
 declare var APP: Object;
 declare var interfaceConfig: Object;
 
-const scoreAnimationClass = interfaceConfig.ENABLE_FEEDBACK_ANIMATION
-  ? "shake-rotate"
-  : "";
+const scoreAnimationClass
+    = interfaceConfig.ENABLE_FEEDBACK_ANIMATION ? 'shake-rotate' : '';
 
 /**
  * The scores to display for selecting. The score is the index in the array and
  * the value of the index is a translation key used for display in the dialog.
- *
- * @types {string[]}
  */
 const SCORES = [
-  "feedback.veryBad",
-  "feedback.bad",
-  "feedback.average",
-  "feedback.good",
-  "feedback.veryGood",
+    'feedback.veryBad',
+    'feedback.bad',
+    'feedback.average',
+    'feedback.good',
+    'feedback.veryGood'
 ];
+
+type Scrollable = {
+    scroll: Function
+}
 
 /**
  * The type of the React {@code Component} props of {@link FeedbackDialog}.
  */
 type Props = {
-  /**
-   * The cached feedback message, if any, that was set when closing a previous
-   * instance of {@code FeedbackDialog}.
-   */
-  _message: string,
 
-  /**
-   * The cached feedback score, if any, that was set when closing a previous
-   * instance of {@code FeedbackDialog}.
-   */
-  _score: number,
+    /**
+     * The cached feedback message, if any, that was set when closing a previous
+     * instance of {@code FeedbackDialog}.
+     */
+    _message: string,
 
-  /**
-   * The JitsiConference that is being rated. The conference is passed in
-   * because feedback can occur after a conference has been left, so
-   * references to it may no longer exist in redux.
-   */
-  conference: Object,
+    /**
+     * The cached feedback score, if any, that was set when closing a previous
+     * instance of {@code FeedbackDialog}.
+     */
+    _score: number,
 
-  /**
-   * Invoked to signal feedback submission or canceling.
-   */
-  dispatch: Dispatch<any>,
+    /**
+     * The JitsiConference that is being rated. The conference is passed in
+     * because feedback can occur after a conference has been left, so
+     * references to it may no longer exist in redux.
+     */
+    conference: Object,
 
-  /**
-   * Callback invoked when {@code FeedbackDialog} is unmounted.
-   */
-  onClose: Function,
+    /**
+     * Invoked to signal feedback submission or canceling.
+     */
+    dispatch: Dispatch<any>,
 
-  /**
-   * Invoked to obtain translated strings.
-   */
-  t: Function,
+    /**
+     * Callback invoked when {@code FeedbackDialog} is unmounted.
+     */
+    onClose: Function,
+
+    /**
+     * Invoked to obtain translated strings.
+     */
+    t: Function
 };
 
 /**
  * The type of the React {@code Component} state of {@link FeedbackDialog}.
  */
 type State = {
-  /**
-   * The currently entered feedback message.
-   */
-  message: string,
 
-  /**
-   * The score selection index which is currently being hovered. The value -1
-   * is used as a sentinel value to match store behavior of using -1 for no
-   * score having been selected.
-   */
-  mousedOverScore: number,
+    /**
+     * The currently entered feedback message.
+     */
+    message: string,
 
-  /**
-   * The currently selected score selection index. The score will not be 0
-   * indexed so subtract one to map with SCORES.
-   */
-  score: number,
+    /**
+     * The score selection index which is currently being hovered. The value -1
+     * is used as a sentinel value to match store behavior of using -1 for no
+     * score having been selected.
+     */
+    mousedOverScore: number,
+
+    /**
+     * The currently selected score selection index. The score will not be 0
+     * indexed so subtract one to map with SCORES.
+     */
+    score: number
 };
 
 /**
@@ -104,249 +107,274 @@ type State = {
  * conference quality, write a message describing the experience, and submit
  * the feedback.
  *
- * @extends Component
+ * @augments Component
  */
 class FeedbackDialog extends Component<Props, State> {
-  /**
-   * An array of objects with click handlers for each of the scores listed in
-   * the constant SCORES. This pattern is used for binding event handlers only
-   * once for each score selection icon.
-   */
-  _scoreClickConfigurations: Array<Object>;
+    /**
+     * An array of objects with click handlers for each of the scores listed in
+     * the constant SCORES. This pattern is used for binding event handlers only
+     * once for each score selection icon.
+     */
+    _scoreClickConfigurations: Array<Object>;
 
-  /**
-   * Initializes a new {@code FeedbackDialog} instance.
-   *
-   * @param {Object} props - The read-only React {@code Component} props with
-   * which the new instance is to be initialized.
-   */
-  constructor(props: Props) {
-    super(props);
+    /**
+     * Initializes a new {@code FeedbackDialog} instance.
+     *
+     * @param {Object} props - The read-only React {@code Component} props with
+     * which the new instance is to be initialized.
+     */
+    constructor(props: Props) {
+        super(props);
 
-    const { _message, _score } = this.props;
+        const { _message, _score } = this.props;
 
-    this.state = {
-      /**
-       * The currently entered feedback message.
-       *
-       * @type {string}
-       */
-      message: _message,
+        this.state = {
+            /**
+             * The currently entered feedback message.
+             *
+             * @type {string}
+             */
+            message: _message,
 
-      /**
-       * The score selection index which is currently being hovered. The
-       * value -1 is used as a sentinel value to match store behavior of
-       * using -1 for no score having been selected.
-       *
-       * @type {number}
-       */
-      mousedOverScore: -1,
+            /**
+             * The score selection index which is currently being hovered. The
+             * value -1 is used as a sentinel value to match store behavior of
+             * using -1 for no score having been selected.
+             *
+             * @type {number}
+             */
+            mousedOverScore: -1,
 
-      /**
-       * The currently selected score selection index. The score will not
-       * be 0 indexed so subtract one to map with SCORES.
-       *
-       * @type {number}
-       */
-      score: _score > -1 ? _score - 1 : _score,
-    };
+            /**
+             * The currently selected score selection index. The score will not
+             * be 0 indexed so subtract one to map with SCORES.
+             *
+             * @type {number}
+             */
+            score: _score > -1 ? _score - 1 : _score
+        };
 
-    this._scoreClickConfigurations = SCORES.map((textKey, index) => {
-      return {
-        _onClick: () => this._onScoreSelect(index),
-        _onMouseOver: () => this._onScoreMouseOver(index),
-      };
-    });
+        this._scoreClickConfigurations = SCORES.map((textKey, index) => {
+            return {
+                _onClick: () => this._onScoreSelect(index),
+                _onKeyPres: e => {
+                    if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        this._onScoreSelect(index);
+                    }
+                },
+                _onMouseOver: () => this._onScoreMouseOver(index)
+            };
+        });
 
-    // Bind event handlers so they are only bound once for every instance.
-    this._onCancel = this._onCancel.bind(this);
-    this._onMessageChange = this._onMessageChange.bind(this);
-    this._onScoreContainerMouseLeave = this._onScoreContainerMouseLeave.bind(
-      this
-    );
-    this._onSubmit = this._onSubmit.bind(this);
-  }
+        // Bind event handlers so they are only bound once for every instance.
+        this._onCancel = this._onCancel.bind(this);
+        this._onMessageChange = this._onMessageChange.bind(this);
+        this._onScoreContainerMouseLeave
+            = this._onScoreContainerMouseLeave.bind(this);
+        this._onSubmit = this._onSubmit.bind(this);
 
-  /**
-   * Emits an analytics event to notify feedback has been opened.
-   *
-   * @inheritdoc
-   */
-  componentDidMount() {
-    sendAnalytics(createFeedbackOpenEvent());
-    if (typeof APP !== "undefined") {
-      APP.API.notifyFeedbackPromptDisplayed();
+        // On some mobile browsers opening Feedback dialog scrolls down the whole content because of the keyboard.
+        // By scrolling to the top we prevent hiding the feedback stars so the user knows those exist.
+        this._onScrollTop = (node: ?Scrollable) => {
+            node && node.scroll && node.scroll(0, 0);
+        };
     }
-  }
 
-  /**
-   * Invokes the onClose callback, if defined, to notify of the close event.
-   *
-   * @inheritdoc
-   */
-  componentWillUnmount() {
-    if (this.props.onClose) {
-      this.props.onClose();
+    /**
+     * Emits an analytics event to notify feedback has been opened.
+     *
+     * @inheritdoc
+     */
+    componentDidMount() {
+        sendAnalytics(createFeedbackOpenEvent());
+        if (typeof APP !== 'undefined') {
+            APP.API.notifyFeedbackPromptDisplayed();
+        }
     }
-  }
 
-  /**
-   * Implements React's {@link Component#render()}.
-   *
-   * @inheritdoc
-   * @returns {ReactElement}
-   */
-  render() {
-    const { message, mousedOverScore, score } = this.state;
-    const scoreToDisplayAsSelected =
-      mousedOverScore > -1 ? mousedOverScore : score;
+    /**
+     * Invokes the onClose callback, if defined, to notify of the close event.
+     *
+     * @inheritdoc
+     */
+    componentWillUnmount() {
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
+    }
 
-    const scoreIcons = this._scoreClickConfigurations.map((config, index) => {
-      const isFilled = index <= scoreToDisplayAsSelected;
-      const activeClass = isFilled ? "active" : "";
-      const className = `star-btn ${scoreAnimationClass} ${activeClass}`;
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {ReactElement}
+     */
+    render() {
+        const { message, mousedOverScore, score } = this.state;
+        const scoreToDisplayAsSelected
+            = mousedOverScore > -1 ? mousedOverScore : score;
 
-      return (
-        <a
-          className={className}
-          key={index}
-          onClick={config._onClick}
-          onMouseOver={config._onMouseOver}
-        >
-          {isFilled ? (
-            <StarFilledIcon label="star-filled" size="xlarge" />
-          ) : (
-            <StarIcon label="star" size="xlarge" />
-          )}
-        </a>
-      );
-    });
+        const { t } = this.props;
 
-    const { t } = this.props;
+        const scoreIcons = this._scoreClickConfigurations.map(
+            (config, index) => {
+                const isFilled = index <= scoreToDisplayAsSelected;
+                const activeClass = isFilled ? 'active' : '';
+                const className
+                    = `star-btn ${scoreAnimationClass} ${activeClass}`;
 
-    return (
-      <Dialog
-        okKey="dialog.Submit"
-        onCancel={this._onCancel}
-        onSubmit={this._onSubmit}
-        titleKey="feedback.rateExperience"
-      >
-        <div className="feedback-dialog">
-          <div className="rating">
-            <div className="star-label">
-              <p id="starLabel">{t(SCORES[scoreToDisplayAsSelected])}</p>
-            </div>
-            <div
-              className="stars"
-              onMouseLeave={this._onScoreContainerMouseLeave}
-            >
-              {scoreIcons}
-            </div>
-          </div>
-          <div className="details">
-            <FieldTextAreaStateless
-              autoFocus={true}
-              className="input-control"
-              id="feedbackTextArea"
-              label={t("feedback.detailsLabel")}
-              onChange={this._onMessageChange}
-              shouldFitContainer={true}
-              value={message}
-            />
-          </div>
-        </div>
-      </Dialog>
-    );
-  }
+                return (
+                    <span
+                        aria-label = { t(SCORES[index]) }
+                        className = { className }
+                        key = { index }
+                        onClick = { config._onClick }
+                        onKeyPress = { config._onKeyPres }
+                        role = 'button'
+                        tabIndex = { 0 }
+                        { ...(isMobileBrowser() ? {} : {
+                            onMouseOver: config._onMouseOver
+                        }) }>
+                        { isFilled
+                            ? <StarFilledIcon
+                                label = 'star-filled'
+                                size = 'xlarge' />
+                            : <StarIcon
+                                label = 'star'
+                                size = 'xlarge' /> }
+                    </span>
+                );
+            });
 
-  _onCancel: () => boolean;
 
-  /**
-   * Dispatches an action notifying feedback was not submitted. The submitted
-   * score will have one added as the rest of the app does not expect 0
-   * indexing.
-   *
-   * @private
-   * @returns {boolean} Returns true to close the dialog.
-   */
-  _onCancel() {
-    const { message, score } = this.state;
-    const scoreToSubmit = score > -1 ? score + 1 : score;
+        return (
+            <Dialog
+                okKey = 'dialog.Submit'
+                onCancel = { this._onCancel }
+                onDialogRef = { this._onScrollTop }
+                onSubmit = { this._onSubmit }
+                titleKey = 'feedback.rateExperience'>
+                <div className = 'feedback-dialog'>
+                    <div className = 'rating'>
+                        <div
+                            aria-label = { this.props.t('feedback.star') }
+                            className = 'star-label' >
+                            <p id = 'starLabel'>
+                                { t(SCORES[scoreToDisplayAsSelected]) }
+                            </p>
+                        </div>
+                        <div
+                            className = 'stars'
+                            onMouseLeave = { this._onScoreContainerMouseLeave }>
+                            { scoreIcons }
+                        </div>
+                    </div>
+                    <div className = 'details'>
+                        <FieldTextAreaStateless
+                            autoFocus = { true }
+                            className = 'input-control'
+                            id = 'feedbackTextArea'
+                            label = { t('feedback.detailsLabel') }
+                            onChange = { this._onMessageChange }
+                            shouldFitContainer = { true }
+                            value = { message } />
+                    </div>
+                </div>
+            </Dialog>
+        );
+    }
 
-    this.props.dispatch(cancelFeedback(scoreToSubmit, message));
+    _onCancel: () => boolean;
 
-    return true;
-  }
+    /**
+     * Dispatches an action notifying feedback was not submitted. The submitted
+     * score will have one added as the rest of the app does not expect 0
+     * indexing.
+     *
+     * @private
+     * @returns {boolean} Returns true to close the dialog.
+     */
+    _onCancel() {
+        const { message, score } = this.state;
+        const scoreToSubmit = score > -1 ? score + 1 : score;
 
-  _onMessageChange: (Object) => void;
+        this.props.dispatch(cancelFeedback(scoreToSubmit, message));
 
-  /**
-   * Updates the known entered feedback message.
-   *
-   * @param {Object} event - The DOM event from updating the textfield for the
-   * feedback message.
-   * @private
-   * @returns {void}
-   */
-  _onMessageChange(event) {
-    this.setState({ message: event.target.value });
-  }
+        return true;
+    }
 
-  /**
-   * Updates the currently selected score.
-   *
-   * @param {number} score - The index of the selected score in SCORES.
-   * @private
-   * @returns {void}
-   */
-  _onScoreSelect(score) {
-    this.setState({ score });
-  }
+    _onMessageChange: (Object) => void;
 
-  _onScoreContainerMouseLeave: () => void;
+    /**
+     * Updates the known entered feedback message.
+     *
+     * @param {Object} event - The DOM event from updating the textfield for the
+     * feedback message.
+     * @private
+     * @returns {void}
+     */
+    _onMessageChange(event) {
+        this.setState({ message: event.target.value });
+    }
 
-  /**
-   * Sets the currently hovered score to null to indicate no hover is
-   * occurring.
-   *
-   * @private
-   * @returns {void}
-   */
-  _onScoreContainerMouseLeave() {
-    this.setState({ mousedOverScore: -1 });
-  }
+    /**
+     * Updates the currently selected score.
+     *
+     * @param {number} score - The index of the selected score in SCORES.
+     * @private
+     * @returns {void}
+     */
+    _onScoreSelect(score) {
+        this.setState({ score });
+    }
 
-  /**
-   * Updates the known state of the score icon currently behind hovered over.
-   *
-   * @param {number} mousedOverScore - The index of the SCORES value currently
-   * being moused over.
-   * @private
-   * @returns {void}
-   */
-  _onScoreMouseOver(mousedOverScore) {
-    this.setState({ mousedOverScore });
-  }
+    _onScoreContainerMouseLeave: () => void;
 
-  _onSubmit: () => void;
+    /**
+     * Sets the currently hovered score to null to indicate no hover is
+     * occurring.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onScoreContainerMouseLeave() {
+        this.setState({ mousedOverScore: -1 });
+    }
 
-  /**
-   * Dispatches the entered feedback for submission. The submitted score will
-   * have one added as the rest of the app does not expect 0 indexing.
-   *
-   * @private
-   * @returns {boolean} Returns true to close the dialog.
-   */
-  _onSubmit() {
-    const { conference, dispatch, room } = this.props;
-    const { message, score } = this.state;
+    /**
+     * Updates the known state of the score icon currently behind hovered over.
+     *
+     * @param {number} mousedOverScore - The index of the SCORES value currently
+     * being moused over.
+     * @private
+     * @returns {void}
+     */
+    _onScoreMouseOver(mousedOverScore) {
+        this.setState({ mousedOverScore });
+    }
 
-    const scoreToSubmit = score > -1 ? score + 1 : score;
+    _onSubmit: () => void;
 
-    dispatch(submitFeedback(scoreToSubmit, message, conference, room));
+    /**
+     * Dispatches the entered feedback for submission. The submitted score will
+     * have one added as the rest of the app does not expect 0 indexing.
+     *
+     * @private
+     * @returns {boolean} Returns true to close the dialog.
+     */
+    _onSubmit() {
+        const { conference, dispatch } = this.props;
+        const { message, score } = this.state;
 
-    return true;
-  }
+        const scoreToSubmit = score > -1 ? score + 1 : score;
+
+        dispatch(submitFeedback(scoreToSubmit, message, conference));
+
+        return true;
+    }
+
+    _onScrollTop: (node: ?Scrollable) => void;
 }
 
 /**
@@ -359,29 +387,24 @@ class FeedbackDialog extends Component<Props, State> {
  * }}
  */
 function _mapStateToProps(state) {
-  const { message, score } = state["features/feedback"];
-  const { room } = state['features/base/conference'];
+    const { message, score } = state['features/feedback'];
 
-  // console.log("STATE: ",state);
-  
-  return {
-    /**
-     * The cached feedback message, if any, that was set when closing a
-     * previous instance of {@code FeedbackDialog}.
-     *
-     * @type {string}
-     */
-    _message: message,
+    return {
+        /**
+         * The cached feedback message, if any, that was set when closing a
+         * previous instance of {@code FeedbackDialog}.
+         *
+         * @type {string}
+         */
+        _message: message,
 
-    /**
-     * The currently selected score selection index.
-     *
-     * @type {number}
-     */
-    _score: score,
-
-    room
-  };
+        /**
+         * The currently selected score selection index.
+         *
+         * @type {number}
+         */
+        _score: score
+    };
 }
 
 export default translate(connect(_mapStateToProps)(FeedbackDialog));

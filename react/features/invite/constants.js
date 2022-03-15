@@ -1,9 +1,11 @@
 // @flow
 
 /**
- * Modal ID for the AddPeopleDialog modal.
+ * The pathName for the dialInInfo page.
+ *
+ * @type {string}
  */
-export const ADD_PEOPLE_DIALOG_VIEW_ID = 'ADD_PEOPLE_DIALOG_VIEW_ID';
+export const DIAL_IN_INFO_PAGE_PATH_NAME = 'static/dialInInfo.html';
 
 /**
  * Modal ID for the DialInSummary modal.
@@ -17,7 +19,7 @@ export const DIAL_IN_SUMMARY_VIEW_ID = 'DIAL_IN_SUMMARY_VIEW_ID';
  * @type {string}
  */
 export const OUTGOING_CALL_EXPIRED_SOUND_ID
-    = 'OUTGOING_CALL_EXPIRED_SOUND_ID';
+    = 'OUTGOING_CALL_EXPIRED_SOUND';
 
 /**
  * The identifier of the sound to be played when the status of an outgoing call
@@ -26,7 +28,7 @@ export const OUTGOING_CALL_EXPIRED_SOUND_ID
  * @type {string}
  */
 export const OUTGOING_CALL_REJECTED_SOUND_ID
-    = 'OUTGOING_CALL_REJECTED_SOUND_ID';
+    = 'OUTGOING_CALL_REJECTED_SOUND';
 
 /**
  * The identifier of the sound to be played when the status of an outgoing call
@@ -34,14 +36,14 @@ export const OUTGOING_CALL_REJECTED_SOUND_ID
  *
  * @type {string}
  */
-export const OUTGOING_CALL_RINGING_SOUND_ID = 'OUTGOING_CALL_RINGING_SOUND_ID';
+export const OUTGOING_CALL_RINGING_SOUND_ID = 'OUTGOING_CALL_RINGING_SOUND';
 
 /**
  * The identifier of the sound to be played when outgoing call is started.
  *
  * @type {string}
  */
-export const OUTGOING_CALL_START_SOUND_ID = 'OUTGOING_CALL_START_SOUND_ID';
+export const OUTGOING_CALL_START_SOUND_ID = 'OUTGOING_CALL_START_SOUND';
 
 /**
  * Regex for matching sip addresses.
@@ -50,7 +52,7 @@ export const OUTGOING_CALL_START_SOUND_ID = 'OUTGOING_CALL_START_SOUND_ID';
 export const SIP_ADDRESS_REGEX = /^[+a-zA-Z0-9]+(?:([^\s>:@]+)(?::([^\s@>]+))?@)?([\w\-.]+)(?::(\d+))?((?:;[^\s=?>;]+(?:=[^\s?;]+)?)*)(?:\?(([^\s&=>]+=[^\s&=>]+)(&[^\s&=>]+=[^\s&=>]+)*))?$/;
 
 /**
- * Different invite types mapping
+ * Different invite types mapping.
  */
 export const INVITE_TYPES = {
     PHONE: 'phone',

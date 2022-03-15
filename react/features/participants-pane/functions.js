@@ -3,16 +3,22 @@
 import {
     isParticipantApproved,
     isEnabledFromState,
-    isLocalParticipantApprovedFromState
+    isLocalParticipantApprovedFromState,
+    isSupported
 } from '../av-moderation/functions';
 import { getFeatureFlag, INVITE_ENABLED } from '../base/flags';
 import { MEDIA_TYPE, type MediaType } from '../base/media/constants';
 import {
     getDominantSpeakerParticipant,
     isLocalParticipantModerator,
-    isParticipantModerator
+    isParticipantModerator,
+    getLocalParticipant,
+    getRemoteParticipantsSorted,
+    getRaiseHandsQueue
 } from '../base/participants/functions';
 import { toState } from '../base/redux';
+import { normalizeAccents } from '../base/util/strings';
+import { isInBreakoutRoom } from '../breakout-rooms/functions';
 
 import { QUICK_ACTION_BUTTON, REDUCER_KEY, MEDIA_STATE } from './constants';
 
@@ -24,20 +30,19 @@ import { QUICK_ACTION_BUTTON, REDUCER_KEY, MEDIA_STATE } from './constants';
  */
 export const classList = (...args: Array<string | boolean>) => args.filter(Boolean).join(' ');
 
-
 /**
  * Find the first styled ancestor component of an element.
  *
  * @param {Element} target - Element to look up.
- * @param {StyledComponentClass} component - Styled component reference.
+ * @param {string} cssClass - Styled component reference.
  * @returns {Element|null} Ancestor.
  */
-export const findStyledAncestor = (target: Object, component: any) => {
-    if (!target || target.matches(`.${component.styledComponentId}`)) {
+export const findAncestorByClass = (target: Object, cssClass: string) => {
+    if (!target || target.classList.contains(cssClass)) {
         return target;
     }
 
-    return findStyledAncestor(target.parentElement, component);
+    return findAncestorByClass(target.parentElement, cssClass);
 };
 
 /**
@@ -76,12 +81,32 @@ export function isForceMuted(participant: Object, mediaType: MediaType, state: O
 export function getParticipantAudioMediaState(participant: Object, muted: Boolean, state: Object) {
     const dominantSpeaker = getDominantSpeakerParticipant(state);
 
+    if (muted) {
+        if (isForceMuted(participant, MEDIA_TYPE.AUDIO, state)) {
+            return MEDIA_STATE.FORCE_MUTED;
+        }
+
+        return MEDIA_STATE.MUTED;
+    }
+
     if (participant === dominantSpeaker) {
         return MEDIA_STATE.DOMINANT_SPEAKER;
     }
 
+    return MEDIA_STATE.UNMUTED;
+}
+
+/**
+ * Determines the video media state (the mic icon) for a participant.
+ *
+ * @param {Object} participant - The participant.
+ * @param {boolean} muted - The mute state of the participant.
+ * @param {Object} state - The redux state.
+ * @returns {MediaState}
+ */
+export function getParticipantVideoMediaState(participant: Object, muted: Boolean, state: Object) {
     if (muted) {
-        if (isForceMuted(participant, MEDIA_TYPE.AUDIO, state)) {
+        if (isForceMuted(participant, MEDIA_TYPE.VIDEO, state)) {
             return MEDIA_STATE.FORCE_MUTED;
         }
 
@@ -144,11 +169,11 @@ export const getParticipantsPaneOpen = (state: Object) => Boolean(getState(state
 export function getQuickActionButtonType(participant: Object, isAudioMuted: Boolean, state: Object) {
     // handled only by moderators
     if (isLocalParticipantModerator(state)) {
-        if (isForceMuted(participant, MEDIA_TYPE.AUDIO, state)) {
-            return QUICK_ACTION_BUTTON.ASK_TO_UNMUTE;
-        }
         if (!isAudioMuted) {
             return QUICK_ACTION_BUTTON.MUTE;
+        }
+        if (isSupported()(state)) {
+            return QUICK_ACTION_BUTTON.ASK_TO_UNMUTE;
         }
     }
 
@@ -164,6 +189,83 @@ export function getQuickActionButtonType(participant: Object, isAudioMuted: Bool
 export const shouldRenderInviteButton = (state: Object) => {
     const { disableInviteFunctions } = toState(state)['features/base/config'];
     const flagEnabled = getFeatureFlag(state, INVITE_ENABLED, true);
+    const inBreakoutRoom = isInBreakoutRoom(state);
 
-    return flagEnabled && !disableInviteFunctions;
+    return flagEnabled && !disableInviteFunctions && !inBreakoutRoom;
 };
+
+/**
+ * Selector for retrieving ids of participants in the order that they are displayed in the filmstrip (with the
+ * exception of participants with raised hand). The participants are reordered as follows.
+ * 1. Dominant speaker.
+ * 2. Local participant.
+ * 3. Participants with raised hand.
+ * 4. Participants with screenshare sorted alphabetically by their display name.
+ * 5. Shared video participants.
+ * 6. Recent speakers sorted alphabetically by their display name.
+ * 7. Rest of the participants sorted alphabetically by their display name.
+ *
+ * @param {(Function|Object)} stateful - The (whole) redux state, or redux's
+ * {@code getState} function to be used to retrieve the state features/base/participants.
+ * @returns {Array<string>}
+ */
+export function getSortedParticipantIds(stateful: Object | Function): Array<string> {
+    const { id } = getLocalParticipant(stateful);
+    const remoteParticipants = getRemoteParticipantsSorted(stateful);
+    const reorderedParticipants = new Set(remoteParticipants);
+    const raisedHandParticipants = getRaiseHandsQueue(stateful).map(({ id: particId }) => particId);
+    const remoteRaisedHandParticipants = new Set(raisedHandParticipants || []);
+    const dominantSpeaker = getDominantSpeakerParticipant(stateful);
+
+    for (const participant of remoteRaisedHandParticipants.keys()) {
+        // Avoid duplicates.
+        if (reorderedParticipants.has(participant)) {
+            reorderedParticipants.delete(participant);
+        }
+    }
+
+    const dominant = [];
+    const dominantId = dominantSpeaker?.id;
+    const local = remoteRaisedHandParticipants.has(id) ? [] : [ id ];
+
+    // In case dominat speaker has raised hand, keep the order in the raised hand queue.
+    // In case they don't have raised hand, goes first in the participants list.
+    if (dominantId && dominantId !== id && !remoteRaisedHandParticipants.has(dominantId)) {
+        reorderedParticipants.delete(dominantId);
+        dominant.push(dominantId);
+    }
+
+    // Move self and participants with raised hand to the top of the list.
+    return [
+        ...dominant,
+        ...local,
+        ...Array.from(remoteRaisedHandParticipants.keys()),
+        ...Array.from(reorderedParticipants.keys())
+    ];
+}
+
+/**
+ * Checks if a participant matches the search string.
+ *
+ * @param {Object} participant - The participant to be checked.
+ * @param {string} searchString - The participants search string.
+ * @returns {boolean}
+ */
+export function participantMatchesSearch(participant: Object, searchString: string) {
+    if (searchString === '') {
+        return true;
+    }
+
+    const names = normalizeAccents(participant?.name || participant?.displayName || '')
+        .toLowerCase()
+        .split(' ');
+    const lowerCaseSearchString = searchString.toLowerCase();
+
+    for (const name of names) {
+        if (name.startsWith(lowerCaseSearchString)) {
+            return true;
+        }
+    }
+
+    return false;
+}

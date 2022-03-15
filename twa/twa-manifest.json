@@ -13,7 +13,6 @@
   "enableNotifications": false,
   "startUrl": "/",
   "iconUrl": "https://meet.jit.si/static/pwa/icons/icon512.png",
-  "maskableIconUrl": "https://meet.jit.si/static/pwa/icons/iconMask.png",
   "splashScreenFadeOutDuration": 300,
   "appVersionName": "1.0.0",
   "appVersionCode": 2000000000,

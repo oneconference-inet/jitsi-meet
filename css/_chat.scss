@@ -1,78 +1,40 @@
-// #sideToolbarContainer {
-//     // background-color: $newToolbarBackgroundColor;
-//     // box-sizing: border-box;
-//     // color: #FFF;
-//     // display: flex;
-//     // flex-direction: column;
-//     // height: 100%;
-//     // left: -$sidebarWidth;
-//     // overflow: hidden;
-//     // position: absolute;
-//     // top: 0;
-//     // width: $sidebarWidth;
-//     // z-index: $sideToolbarContainerZ;
-
-//     // background-color: $newToolbarBackgroundColor;
-//     background-color: $chatBackgroundColor;
-//     box-sizing: border-box;
-//     color: #FFF;
-//     display: flex;
-//     flex-direction: column;
-//     /**
-//      * Make the sidebar flush with the top of the toolbar. Take the size of
-//      * the toolbar and subtract from 100%.
-//      */
-//     // height: calc(100% - #{$newToolbarSizeWithPadding});
-//     height: 100%;
-//     left: -$sidebarWidth;
-//     overflow: hidden;
-//     position: absolute;
-//     top: 0;
-//     transition: left 0.5s;
-//     width: $sidebarWidth;
-//     z-index: $sideToolbarContainerZ;
-
-//     /**
-//      * The sidebar (chat) is off-screen when hidden. Move it flush to the left
-//      * side of the window when it should be visible.
-//      */
-//     &.slideInExt {
-//         left: 0;
-//     }
-// }
-
 #sideToolbarContainer {
     background-color: $chatBackgroundColor;
     box-sizing: border-box;
     color: #FFF;
-    display: flex;
-    flex-direction: column;
     height: 100%;
-    left: -$sidebarWidth;
-    overflow: hidden;
     position: absolute;
     top: 0;
     width: $sidebarWidth;
     z-index: $sideToolbarContainerZ;
 
-    /**
-     * The sidebar (chat) is off-screen when hidden. Move it flush to the left
-     * side of the window when it should be visible.
-     */
-    &.slideInExt {
-        left: 0;
+    @media (max-width: 580px) {
+        width: 100%;
     }
+}
+
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    // extract header + tabs height
+    height: calc(100% - 102px);
+}
+
+.chat-panel-no-tabs {
+    // extract header height
+    height: calc(100% - 70px);
 }
 
 #chatconversation {
     box-sizing: border-box;
     flex: 1;
     font-size: 10pt;
+    // extract message input height
+    height: calc(100% - 68px);
     line-height: 20px;
     overflow: auto;
     padding: 16px;
     text-align: left;
-    width: $sidebarWidth;
     word-wrap: break-word;
 
     display: flex;
@@ -101,28 +63,6 @@
     a:active {
         color: black;
     }
-
-    &::-webkit-scrollbar {
-        background: #06a5df;
-        width: 7px;
-    }
-
-    &::-webkit-scrollbar-button {
-        display: none;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: black;
-    }
-
-    &::-webkit-scrollbar-track-piece {
-        background: black;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: #06a5df;
-        border-radius: 4px;
-    }
 }
 
 #chat-recipient {
@@ -144,6 +84,10 @@
             cursor: pointer;
             fill: white;
         }
+    }
+
+    &.lobby-chat-recipient {
+        background-color: $chatLobbyMessageBackgroundColor;
     }
 }
 
@@ -256,6 +200,7 @@
 }
 
 #usermsg {
+    -ms-overflow-style: none;
     border: 0px none;
     border-radius:0;
     box-shadow: none;
@@ -264,8 +209,13 @@
     padding: 10px;
     overflow-y: auto;
     resize: none;
+    scrollbar-width: none;
     width: 100%;
     word-break: break-word;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 #usermsg:hover {
@@ -355,10 +305,6 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-    }
-
-    @media (max-width: 580px) {
-        display: none !important;
     }
 }
 
@@ -513,6 +459,9 @@
             &.privatemessage {
                 background-color: $chatPrivateMessageBackgroundColor;
             }
+            &.lobbymessage {
+                background-color: $chatLobbyMessageBackgroundColor;
+            }
         }
 
         .display-name {
@@ -552,6 +501,10 @@
                 justify-content: center;
                 padding: 5px;
 
+                &.lobbychatmessageactions {
+                    border-left-color: $chatLobbyActionsSeparatorColor;
+                }
+
                 .toolbox-icon {
                     cursor: pointer;
                 }
@@ -568,6 +521,9 @@
 
         &.privatemessage {
             background-color: $chatPrivateMessageBackgroundColor;
+        }
+        &.lobbymessage {
+            background-color: $chatLobbyMessageBackgroundColor;
         }
     }
 }
@@ -600,11 +556,6 @@
     }
 }
 
-.touchmove-hack {
-    display: flex;
-    flex: 1;
-    overflow: auto;
-}
 
 /**
  * Make header close button more easily tappable on mobile.

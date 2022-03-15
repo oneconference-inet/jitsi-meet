@@ -29,7 +29,7 @@
     margin: 8px 16px 8px 0;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 580px) {
     .participants_pane {
         height: 100vh;
         height: -webkit-fill-available;
@@ -54,5 +54,11 @@
     &-dominant-speaker {
         background-color: #1EC26A;
         border-radius: 3px;
+    }
+}
+
+.mobile-browser.shift-right {
+    .participants_pane {
+        z-index: -1;
     }
 }

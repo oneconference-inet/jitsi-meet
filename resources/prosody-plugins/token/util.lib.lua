@@ -128,9 +128,9 @@ function Util:get_public_key(keyId)
     local content = self.cache:get(keyId);
     if content == nil then
         -- If the key is not found in the cache.
-        module:log("debug", "Cache miss for key: "..keyId);
+        module:log("debug", "Cache miss for key: %s", keyId);
         local keyurl = path.join(self.asapKeyServer, hex.to(sha256(keyId))..'.pem');
-        module:log("debug", "Fetching public key from: "..keyurl);
+        module:log("debug", "Fetching public key from: %s", keyurl);
         content = http_get_with_retry(keyurl, nr_retries);
         if content ~= nil then
             self.cache:set(keyId, content);
@@ -138,7 +138,7 @@ function Util:get_public_key(keyId)
         return content;
     else
         -- If the key is in the cache, use it.
-        module:log("debug", "Cache hit for key: "..keyId);
+        module:log("debug", "Cache hit for key: %s", keyId);
         return content;
     end
 end
@@ -261,7 +261,7 @@ function Util:process_and_verify_token(session, acceptedIssuers)
         pubKey = session.public_key;
     elseif self.asapKeyServer and session.auth_token ~= nil then
         local dotFirst = session.auth_token:find("%.");
-        if not dotFirst then return nil, "Invalid token" end
+        if not dotFirst then return false, "not-allowed", "Invalid token" end
         local header, err = json_safe.decode(basexx.from_url64(session.auth_token:sub(1,dotFirst-1)));
         if err then
             return false, "not-allowed", "bad token format";

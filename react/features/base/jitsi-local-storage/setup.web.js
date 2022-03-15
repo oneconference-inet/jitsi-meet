@@ -55,7 +55,6 @@ function shouldUseHostPageLocalStorage(urlParams) {
         return true;
     }
 
-    // if (browser.isSafari()) { // Webkit browsers don't persist local storage for third-party iframes.
     if (browser.isWebKitBased() && _inIframe()) {
         // WebKit browsers don't persist local storage for third-party iframes.
 

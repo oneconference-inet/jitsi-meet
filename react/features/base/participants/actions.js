@@ -1,7 +1,5 @@
-import { NOTIFICATION_TIMEOUT, showNotification } from "../../notifications";
-import { set } from "../redux";
-
-import Logger from "jitsi-meet-logger";
+import { NOTIFICATION_TIMEOUT_TYPE, showNotification } from '../../notifications';
+import { set } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -9,6 +7,7 @@ import {
     HIDDEN_PARTICIPANT_LEFT,
     GRANT_MODERATOR,
     KICK_PARTICIPANT,
+    LOCAL_PARTICIPANT_AUDIO_LEVEL_CHANGED,
     LOCAL_PARTICIPANT_RAISE_HAND,
     MUTE_REMOTE_PARTICIPANT,
     PARTICIPANT_ID_CHANGED,
@@ -18,7 +17,8 @@ import {
     PARTICIPANT_UPDATED,
     PIN_PARTICIPANT,
     SET_LOADABLE_AVATAR_URL,
-} from "./actionTypes";
+    RAISE_HAND_UPDATED
+} from './actionTypes';
 import {
     DISCO_REMOTE_CONTROL_FEATURE
 } from './constants';
@@ -28,8 +28,8 @@ import {
     getParticipantDisplayName,
     getParticipantById
 } from './functions';
+import logger from './logger';
 
-const logger = Logger.getLogger(__filename);
 /**
  * Create an action for when dominant speaker changes.
  *
@@ -71,7 +71,7 @@ export function dominantSpeakerChanged(dominantSpeaker, previousSpeakers, confer
 export function grantModerator(id) {
     return {
         type: GRANT_MODERATOR,
-        id,
+        id
     };
 }
 
@@ -87,7 +87,7 @@ export function grantModerator(id) {
 export function kickParticipant(id) {
     return {
         type: KICK_PARTICIPANT,
-        id,
+        id
     };
 }
 
@@ -105,12 +105,9 @@ export function localParticipantConnectionStatusChanged(connectionStatus) {
         const participant = getLocalParticipant(getState);
 
         if (participant) {
-            return dispatch(
-                participantConnectionStatusChanged(
-                    participant.id,
-                    connectionStatus
-                )
-            );
+            return dispatch(participantConnectionStatusChanged(
+                participant.id,
+                connectionStatus));
         }
     };
 }
@@ -135,7 +132,7 @@ export function localParticipantIdChanged(id) {
                 // Only the local participant is with an undefined conference.
                 conference: undefined,
                 newValue: id,
-                oldValue: participant.id,
+                oldValue: participant.id
             });
         }
     };
@@ -151,7 +148,7 @@ export function localParticipantIdChanged(id) {
  * }}
  */
 export function localParticipantJoined(participant = {}) {
-    return participantJoined(set(participant, "local", true));
+    return participantJoined(set(participant, 'local', true));
 }
 
 /**
@@ -164,20 +161,19 @@ export function localParticipantLeft() {
         const participant = getLocalParticipant(getState);
 
         if (participant) {
-            return dispatch(
-                participantLeft(
-                    participant.id,
+            return (
+                dispatch(
+                    participantLeft(
+                        participant.id,
 
-                    // XXX Only the local participant is allowed to leave
-                    // without stating the JitsiConference instance because
-                    // the local participant is uniquely identified by the
-                    // very fact that there is only one local participant
-                    // (and the fact that the local participant "joins" at
-                    // the beginning of the app and "leaves" at the end of
-                    // the app).
-                    undefined
-                )
-            );
+                        // XXX Only the local participant is allowed to leave
+                        // without stating the JitsiConference instance because
+                        // the local participant is uniquely identified by the
+                        // very fact that there is only one local participant
+                        // (and the fact that the local participant "joins" at
+                        // the beginning of the app and "leaves" at the end of
+                        // the app).
+                        undefined)));
         }
     };
 }
@@ -238,8 +234,8 @@ export function participantConnectionStatusChanged(id, connectionStatus) {
         type: PARTICIPANT_UPDATED,
         participant: {
             connectionStatus,
-            id,
-        },
+            id
+        }
     };
 }
 
@@ -257,7 +253,7 @@ export function participantJoined(participant) {
     if (participant.local) {
         return {
             type: PARTICIPANT_JOINED,
-            participant,
+            participant
         };
     }
 
@@ -267,8 +263,7 @@ export function participantJoined(participant) {
 
     if (!conference) {
         throw Error(
-            "A remote participant must be associated with a JitsiConference!"
-        );
+            'A remote participant must be associated with a JitsiConference!');
     }
 
     return (dispatch, getState) => {
@@ -278,17 +273,14 @@ export function participantJoined(participant) {
         // sneak a PARTICIPANT_JOINED in if its leave is delayed for any purpose
         // (which is not outragous given that leaving involves network
         // requests.)
-        const stateFeaturesBaseConference = getState()[
-            "features/base/conference"
-        ];
+        const stateFeaturesBaseConference
+            = getState()['features/base/conference'];
 
-        if (
-            conference === stateFeaturesBaseConference.conference ||
-            conference === stateFeaturesBaseConference.joining
-        ) {
+        if (conference === stateFeaturesBaseConference.conference
+                || conference === stateFeaturesBaseConference.joining) {
             return dispatch({
                 type: PARTICIPANT_JOINED,
-                participant,
+                participant
             });
         }
     };
@@ -352,7 +344,7 @@ export function hiddenParticipantJoined(id, displayName) {
     return {
         type: HIDDEN_PARTICIPANT_JOINED,
         id,
-        displayName,
+        displayName
     };
 }
 
@@ -368,7 +360,7 @@ export function hiddenParticipantJoined(id, displayName) {
 export function hiddenParticipantLeft(id) {
     return {
         type: HIDDEN_PARTICIPANT_LEFT,
-        id,
+        id
     };
 }
 
@@ -416,7 +408,7 @@ export function participantLeft(id, conference, isReplaced) {
 export function participantPresenceChanged(id, presence) {
     return participantUpdated({
         id,
-        presence,
+        presence
     });
 }
 
@@ -436,7 +428,7 @@ export function participantPresenceChanged(id, presence) {
 export function participantRoleChanged(id, role) {
     return participantUpdated({
         id,
-        role,
+        role
     });
 }
 
@@ -454,7 +446,7 @@ export function participantRoleChanged(id, role) {
  */
 export function participantUpdated(participant = {}) {
     const participantToUpdate = {
-        ...participant,
+        ...participant
     };
 
     if (participant.name) {
@@ -463,7 +455,7 @@ export function participantUpdated(participant = {}) {
 
     return {
         type: PARTICIPANT_UPDATED,
-        participant: participantToUpdate,
+        participant: participantToUpdate
     };
 }
 
@@ -480,18 +472,14 @@ export function participantMutedUs(participant, track) {
             return;
         }
 
-        dispatch(
-            showNotification({
-                descriptionKey: "notify.mutedRemotelyDescription",
-                titleKey: "notify.mutedRemotelyTitle",
-                titleArguments: {
-                    participantDisplayName: getParticipantDisplayName(
-                        getState,
-                        participant.getId()
-                    ),
-                },
-            })
-        );
+        const isAudio = track.isAudioTrack();
+
+        dispatch(showNotification({
+            titleKey: isAudio ? 'notify.mutedRemotelyTitle' : 'notify.videoMutedRemotelyTitle',
+            titleArguments: {
+                participantDisplayName: getParticipantDisplayName(getState, participant.getId())
+            }
+        }, NOTIFICATION_TIMEOUT_TYPE.LONG));
     };
 }
 
@@ -504,6 +492,7 @@ export function participantMutedUs(participant, track) {
  */
 export function participantKicked(kicker, kicked) {
     return (dispatch, getState) => {
+
         dispatch({
             type: PARTICIPANT_KICKED,
             kicked: kicked.getId(),
@@ -522,7 +511,7 @@ export function participantKicked(kicker, kicked) {
                     getParticipantDisplayName(getState, kicker.getId())
             },
             titleKey: 'notify.kickParticipant'
-        }, NOTIFICATION_TIMEOUT * 2)); // leave more time for this
+        }, NOTIFICATION_TIMEOUT_TYPE.MEDIUM));
     };
 }
 
@@ -542,8 +531,8 @@ export function pinParticipant(id) {
     return {
         type: PIN_PARTICIPANT,
         participant: {
-            id,
-        },
+            id
+        }
     };
 }
 
@@ -552,21 +541,24 @@ export function pinParticipant(id) {
  *
  * @param {string} participantId - The ID of the participant.
  * @param {string} url - The new URL.
+ * @param {boolean} useCORS - Indicates whether we need to use CORS for this URL.
  * @returns {{
  *     type: SET_LOADABLE_AVATAR_URL,
  *     participant: {
  *         id: string,
- *         loadableAvatarUrl: string
+ *         loadableAvatarUrl: string,
+ *         loadableAvatarUrlUseCORS: boolean
  *     }
  * }}
- */
-export function setLoadableAvatarUrl(participantId, url) {
+*/
+export function setLoadableAvatarUrl(participantId, url, useCORS) {
     return {
         type: SET_LOADABLE_AVATAR_URL,
         participant: {
             id: participantId,
             loadableAvatarUrl: url,
-        },
+            loadableAvatarUrlUseCORS: useCORS
+        }
     };
 }
 
@@ -576,12 +568,44 @@ export function setLoadableAvatarUrl(participantId, url) {
  * @param {boolean} enabled - Raise or lower hand.
  * @returns {{
  *     type: LOCAL_PARTICIPANT_RAISE_HAND,
- *     enabled: boolean
+ *     raisedHandTimestamp: number
  * }}
  */
 export function raiseHand(enabled) {
     return {
         type: LOCAL_PARTICIPANT_RAISE_HAND,
-        enabled
+        raisedHandTimestamp: enabled ? Date.now() : 0
+    };
+}
+
+/**
+ * Update raise hand queue of participants.
+ *
+ * @param {Object} participant - Participant that updated raised hand.
+ * @returns {{
+ *      type: RAISE_HAND_UPDATED,
+ *      participant: Object
+ * }}
+ */
+export function raiseHandUpdateQueue(participant) {
+    return {
+        type: RAISE_HAND_UPDATED,
+        participant
+    };
+}
+
+/**
+ * Notifies if the local participant audio level has changed.
+ *
+ * @param {number} level - The audio level.
+ * @returns {{
+ *      type: LOCAL_PARTICIPANT_AUDIO_LEVEL_CHANGED,
+ *      level: number
+ * }}
+ */
+export function localParticipantAudioLevelChanged(level) {
+    return {
+        type: LOCAL_PARTICIPANT_AUDIO_LEVEL_CHANGED,
+        level
     };
 }

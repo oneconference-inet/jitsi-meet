@@ -1,5 +1,7 @@
 // @flow
 
+import { PlatformColor } from 'react-native';
+
 import {
     MD_FONT_SIZE,
     MD_ITEM_HEIGHT,
@@ -67,5 +69,25 @@ export default createStyleSheet({
 
     divider: {
         backgroundColor: BaseTheme.palette.dividerColor
+    },
+
+    dividerDialog: {
+        // eslint-disable-next-line new-cap
+        backgroundColor: PlatformColor('separator'),
+        marginBottom: BaseTheme.spacing[3]
+    },
+
+    contextMenuItem: {
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'row',
+        height: BaseTheme.spacing[7],
+        marginLeft: BaseTheme.spacing[3]
+    },
+
+    contextMenuItemText: {
+        ...BaseTheme.typography.bodyShortRegularLarge,
+        color: BaseTheme.palette.text01,
+        marginLeft: BaseTheme.spacing[4]
     }
 });

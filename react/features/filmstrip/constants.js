@@ -1,6 +1,7 @@
 // @flow
 
 import { BoxModel } from '../base/styles';
+import { LAYOUTS } from '../video-layout/constants';
 
 /**
  * The size (height and width) of the small (not tile view) thumbnails.
@@ -46,6 +47,21 @@ export const TWO_COLUMN_BREAKPOINT = 1000;
 export const ASPECT_RATIO_BREAKPOINT = 500;
 
 /**
+ * Minimum height of tile for small screens.
+ */
+export const TILE_MIN_HEIGHT_SMALL = 150;
+
+/**
+ * Minimum height of tile for large screens.
+ */
+export const TILE_MIN_HEIGHT_LARGE = 200;
+
+/**
+ * Aspect ratio for portrait tiles. (height / width).
+ */
+export const TILE_PORTRAIT_ASPECT_RATIO = 1.3;
+
+/**
  * The default number of columns for tile view.
  */
 export const DEFAULT_MAX_COLUMNS = 5;
@@ -81,6 +97,7 @@ export const VIDEO_TEST_EVENTS = [
 
 /**
  * Display mode constant used when video is being displayed on the small video.
+ *
  * @type {number}
  * @constant
  */
@@ -89,59 +106,21 @@ export const DISPLAY_VIDEO = 0;
 /**
  * Display mode constant used when the user's avatar is being displayed on
  * the small video.
+ *
  * @type {number}
  * @constant
  */
 export const DISPLAY_AVATAR = 1;
 
 /**
- * Display mode constant used when neither video nor avatar is being displayed
- * on the small video. And we just show the display name.
- * @type {number}
- * @constant
- */
-export const DISPLAY_BLACKNESS_WITH_NAME = 2;
-
-/**
- * Display mode constant used when video is displayed and display name
- * at the same time.
- * @type {number}
- * @constant
- */
-export const DISPLAY_VIDEO_WITH_NAME = 3;
-
-/**
- * Display mode constant used when neither video nor avatar is being displayed
- * on the small video. And we just show the display name.
- * @type {number}
- * @constant
- */
-export const DISPLAY_AVATAR_WITH_NAME = 4;
-
-/**
  * Maps the display modes to class name that will be applied on the thumbnail container.
+ *
  * @type {Array<string>}
  * @constant
  */
 export const DISPLAY_MODE_TO_CLASS_NAME = [
     'display-video',
-    'display-avatar-only',
-    'display-name-on-black',
-    'display-name-on-video',
-    'display-avatar-with-name'
-];
-
-/**
- * Maps the display modes to string.
- * @type {Array<string>}
- * @constant
- */
-export const DISPLAY_MODE_TO_STRING = [
-    'video',
-    'avatar',
-    'blackness-with-name',
-    'video-with-name',
-    'avatar-with-name'
+    'display-avatar-only'
 ];
 
 /**
@@ -157,6 +136,28 @@ export const TILE_VERTICAL_MARGIN = 4;
  * @type {number}
  */
 export const TILE_HORIZONTAL_MARGIN = 4;
+
+/**
+ * The horizontal margin of a vertical filmstrip tile container.
+ *
+ * @type {number}
+ */
+export const TILE_VERTICAL_CONTAINER_HORIZONTAL_MARGIN = 2;
+
+
+/**
+ * The vertical margin of the tile grid container.
+ *
+ * @type {number}
+ */
+export const TILE_VIEW_GRID_VERTICAL_MARGIN = 12;
+
+/**
+ * The horizontal margin of the tile grid container.
+ *
+ * @type {number}
+ */
+export const TILE_VIEW_GRID_HORIZONTAL_MARGIN = 12;
 
 /**
  * The height of the whole toolbar.
@@ -196,7 +197,7 @@ export const SCROLL_SIZE = 7;
  *
  * @type {number}
  */
-export const VERTICAL_FILMSTRIP_VERTICAL_MARGIN = 60;
+export const VERTICAL_FILMSTRIP_VERTICAL_MARGIN = 26;
 
 /**
  * The min horizontal space between the thumbnails container and the edges of the window.
@@ -231,3 +232,60 @@ export const SHOW_TOOLBAR_CONTEXT_MENU_AFTER = 600;
  * @type {number}
  */
 export const TILE_MARGIN = 10;
+
+/**
+ * The popover position for the connection stats table.
+ */
+export const STATS_POPOVER_POSITION = {
+    [LAYOUTS.TILE_VIEW]: 'right-start',
+    [LAYOUTS.VERTICAL_FILMSTRIP_VIEW]: 'left-start',
+    [LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW]: 'top-end'
+};
+
+/**
+ * The tooltip position for the indicators on the thumbnail.
+ */
+export const INDICATORS_TOOLTIP_POSITION = {
+    [LAYOUTS.TILE_VIEW]: 'right',
+    [LAYOUTS.VERTICAL_FILMSTRIP_VIEW]: 'left',
+    [LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW]: 'top'
+};
+
+/**
+ * The default (and minimum) width for the vertical filmstrip (user resizable).
+ */
+export const DEFAULT_FILMSTRIP_WIDTH = 120;
+
+/**
+ * The default aspect ratio for the local tile.
+ */
+export const DEFAULT_LOCAL_TILE_ASPECT_RATIO = 16 / 9;
+
+/**
+ * The width of the filmstrip at which it no longer goes above the stage view, but it pushes it.
+ */
+export const FILMSTRIP_BREAKPOINT = 180;
+
+/**
+ * The width of the filmstrip at which the display mode changes from column to grid.
+ */
+export const FILMSTRIP_GRID_BREAKPOINT = 300;
+
+/**
+ * How much before the breakpoint should we display the background.
+ * (We display the opaque background before we resize the stage view to make sure
+ * the resize is not visible behind the filmstrip).
+ */
+export const FILMSTRIP_BREAKPOINT_OFFSET = 5;
+
+/**
+ * The minimum width for the stage view
+ * (used to determine the maximum width of the user-resizable vertical filmstrip).
+ */
+export const MIN_STAGE_VIEW_WIDTH = 800;
+
+/**
+ * Horizontal margin used for the vertical filmstrip.
+ */
+export const VERTICAL_VIEW_HORIZONTAL_MARGIN = VERTICAL_FILMSTRIP_MIN_HORIZONTAL_MARGIN
+    + SCROLL_SIZE + TILE_HORIZONTAL_MARGIN + STAGE_VIEW_THUMBNAIL_HORIZONTAL_BORDER;

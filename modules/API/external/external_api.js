@@ -24,28 +24,41 @@ const ALWAYS_ON_TOP_FILENAMES = [
 
 /**
  * Maps the names of the commands expected by the API with the name of the
- * commands expected by jitsi-meet
+ * commands expected by jitsi-meet.
  */
 const commands = {
+    addBreakoutRoom: 'add-breakout-room',
+    answerKnockingParticipant: 'answer-knocking-participant',
+    approveVideo: 'approve-video',
+    askToUnmute: 'ask-to-unmute',
+    autoAssignToBreakoutRooms: 'auto-assign-to-breakout-rooms',
     avatarUrl: 'avatar-url',
     cancelPrivateChat: 'cancel-private-chat',
+    closeBreakoutRoom: 'close-breakout-room',
     displayName: 'display-name',
     e2eeKey: 'e2ee-key',
     email: 'email',
     toggleLobby: 'toggle-lobby',
     hangup: 'video-hangup',
     initiatePrivateChat: 'initiate-private-chat',
+    joinBreakoutRoom: 'join-breakout-room',
+    localSubject: 'local-subject',
     kickParticipant: 'kick-participant',
     muteEveryone: 'mute-everyone',
     overwriteConfig: 'overwrite-config',
     password: 'password',
     pinParticipant: 'pin-participant',
+    rejectParticipant: 'reject-participant',
+    removeBreakoutRoom: 'remove-breakout-room',
     resizeLargeVideo: 'resize-large-video',
     sendChatMessage: 'send-chat-message',
     sendEndpointTextMessage: 'send-endpoint-text-message',
+    sendParticipantToRoom: 'send-participant-to-room',
     sendTones: 'send-tones',
     setFollowMe: 'set-follow-me',
     setLargeVideoParticipant: 'set-large-video-participant',
+    setMediaEncryptionKey: 'set-media-encryption-key',
+    setParticipantVolume: 'set-participant-volume',
     setTileView: 'set-tile-view',
     setVideoQuality: 'set-video-quality',
     startRecording: 'start-recording',
@@ -58,7 +71,10 @@ const commands = {
     toggleCamera: 'toggle-camera',
     toggleCameraMirror: 'toggle-camera-mirror',
     toggleChat: 'toggle-chat',
+    toggleE2EE: 'toggle-e2ee',
     toggleFilmStrip: 'toggle-film-strip',
+    toggleModeration: 'toggle-moderation',
+    toggleParticipantsPane: 'toggle-participants-pane',
     toggleRaiseHand: 'toggle-raise-hand',
     toggleShareAudio: 'toggle-share-audio',
     toggleShareScreen: 'toggle-share-screen',
@@ -69,15 +85,17 @@ const commands = {
 
 /**
  * Maps the names of the events expected by the API with the name of the
- * events expected by jitsi-meet
+ * events expected by jitsi-meet.
  */
 const events = {
     'avatar-changed': 'avatarChanged',
     'audio-availability-changed': 'audioAvailabilityChanged',
     'audio-mute-status-changed': 'audioMuteStatusChanged',
+    'browser-support': 'browserSupport',
     'camera-error': 'cameraError',
     'chat-updated': 'chatUpdated',
     'content-sharing-participants-changed': 'contentSharingParticipantsChanged',
+    'data-channel-opened': 'dataChannelOpened',
     'device-list-changed': 'deviceListChanged',
     'display-name-change': 'displayNameChange',
     'email-change': 'emailChange',
@@ -87,8 +105,12 @@ const events = {
     'feedback-prompt-displayed': 'feedbackPromptDisplayed',
     'filmstrip-display-changed': 'filmstripDisplayChanged',
     'incoming-message': 'incomingMessage',
+    'knocking-participant': 'knockingParticipant',
     'log': 'log',
     'mic-error': 'micError',
+    'moderation-participant-approved': 'moderationParticipantApproved',
+    'moderation-participant-rejected': 'moderationParticipantRejected',
+    'moderation-status-changed': 'moderationStatusChanged',
     'mouse-enter': 'mouseEnter',
     'mouse-leave': 'mouseLeave',
     'mouse-move': 'mouseMove',
@@ -100,6 +122,7 @@ const events = {
     'password-required': 'passwordRequired',
     'proxy-connection-event': 'proxyConnectionEvent',
     'raise-hand-updated': 'raiseHandUpdated',
+    'recording-link-available': 'recordingLinkAvailable',
     'recording-status-changed': 'recordingStatusChanged',
     'video-ready-to-close': 'readyToClose',
     'video-conference-joined': 'videoConferenceJoined',
@@ -111,11 +134,13 @@ const events = {
     'dominant-speaker-changed': 'dominantSpeakerChanged',
     'subject-change': 'subjectChange',
     'suspend-detected': 'suspendDetected',
-    'tile-view-changed': 'tileViewChanged'
+    'tile-view-changed': 'tileViewChanged',
+    'toolbar-button-clicked': 'toolbarButtonClicked'
 };
 
 /**
- * Last id of api object
+ * Last id of api object.
+ *
  * @type {number}
  */
 let id = 0;
@@ -145,6 +170,7 @@ function changeParticipantNumber(APIInstance, number) {
  * configuration options defined in interface_config.js to be overridden.
  * @param {string} [options.jwt] - The JWT token if needed by jitsi-meet for
  * authentication.
+ * @param {string} [options.lang] - The meeting's default language.
  * @param {string} [options.roomName] - The name of the room to join.
  * @returns {string} The URL.
  */
@@ -183,7 +209,8 @@ function parseArguments(args) {
             configOverwrite,
             interfaceConfigOverwrite,
             jwt,
-            onload
+            onload,
+            lang
         ] = args;
 
         return {
@@ -194,7 +221,8 @@ function parseArguments(args) {
             configOverwrite,
             interfaceConfigOverwrite,
             jwt,
-            onload
+            onload,
+            lang
         };
     }
     case 'object': // new arguments format
@@ -255,6 +283,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
      * configuration options defined in interface_config.js to be overridden.
      * @param {string} [options.jwt] - The JWT token if needed by jitsi-meet for
      * authentication.
+     * @param {string} [options.lang] - The meeting's default language.
      * @param {string} [options.onload] - The onload function that will listen
      * for iframe onload event.
      * @param {Array<Object>} [options.invitees] - Array of objects containing
@@ -276,6 +305,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
             configOverwrite = {},
             interfaceConfigOverwrite = {},
             jwt = undefined,
+            lang = undefined,
             onload = undefined,
             invitees,
             devices,
@@ -289,6 +319,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
             configOverwrite,
             interfaceConfigOverwrite,
             jwt,
+            lang,
             roomName,
             devices,
             userInfo,
@@ -373,7 +404,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
         }
 
         return ALWAYS_ON_TOP_FILENAMES.map(
-            filename => (new URL(filename, baseURL)).href
+            filename => new URL(filename, baseURL).href
         );
     }
 
@@ -893,6 +924,48 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
     }
 
     /**
+     * Returns the moderation on status on the given mediaType.
+     *
+     * @param {string} mediaType - The media type for which to check moderation.
+     * @returns {Promise} - Resolves with the moderation on status and rejects on
+     * failure.
+     */
+    isModerationOn(mediaType) {
+        return this._transport.sendRequest({
+            name: 'is-moderation-on',
+            mediaType
+        });
+    }
+
+    /**
+     * Returns force muted status of the given participant id for the given media type.
+     *
+     * @param {string} participantId - The id of the participant to check.
+     * @param {string} mediaType - The media type for which to check.
+     * @returns {Promise} - Resolves with the force muted status and rejects on
+     * failure.
+     */
+    isParticipantForceMuted(participantId, mediaType) {
+        return this._transport.sendRequest({
+            name: 'is-participant-force-muted',
+            participantId,
+            mediaType
+        });
+    }
+
+    /**
+     * Returns whether the participants pane is open.
+     *
+     * @returns {Promise} - Resolves with true if the participants pane is open
+     * and with false if not.
+     */
+    isParticipantsPaneOpen() {
+        return this._transport.sendRequest({
+            name: 'is-participants-pane-open'
+        });
+    }
+
+    /**
      * Returns screen sharing status.
      *
      * @returns {Promise} - Resolves with screensharing status and rejects on failure.
@@ -913,6 +986,17 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
         const { avatarURL } = this._participants[participantId] || {};
 
         return avatarURL;
+    }
+
+    /**
+     * Gets the deployment info.
+     *
+     * @returns {Promise} - Resolves with the deployment info object.
+     */
+    getDeploymentInfo() {
+        return this._transport.sendRequest({
+            name: 'deployment-info'
+        });
     }
 
     /**
@@ -979,6 +1063,17 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
     isVideoMuted() {
         return this._transport.sendRequest({
             name: 'is-video-muted'
+        });
+    }
+
+    /**
+     * Returns the list of breakout rooms.
+     *
+     * @returns {Promise} Resolves with the list of breakout rooms.
+     */
+    listBreakoutRooms() {
+        return this._transport.sendRequest({
+            name: 'list-breakout-rooms'
         });
     }
 
@@ -1129,6 +1224,40 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
      * @returns {void}
      */
     stopRecording(mode) {
-        this.executeCommand('startRecording', mode);
+        this.executeCommand('stopRecording', mode);
+    }
+
+    /**
+     * Sets e2ee enabled/disabled.
+     *
+     * @param {boolean} enabled - The new value for e2ee enabled.
+     * @returns {void}
+     */
+    toggleE2EE(enabled) {
+        this.executeCommand('toggleE2EE', enabled);
+    }
+
+    /**
+     * Sets the key and keyIndex for e2ee.
+     *
+     * @param {Object} keyInfo - Json containing key information.
+     * @param {CryptoKey} [keyInfo.encryptionKey] - The encryption key.
+     * @param {number} [keyInfo.index] - The index of the encryption key.
+     * @returns {void}
+     */
+    async setMediaEncryptionKey(keyInfo) {
+        const { key, index } = keyInfo;
+
+        if (key) {
+            const exportedKey = await crypto.subtle.exportKey('raw', key);
+
+            this.executeCommand('setMediaEncryptionKey', JSON.stringify({
+                exportedKey: Array.from(new Uint8Array(exportedKey)),
+                index }));
+        } else {
+            this.executeCommand('setMediaEncryptionKey', JSON.stringify({
+                exportedKey: false,
+                index }));
+        }
     }
 }

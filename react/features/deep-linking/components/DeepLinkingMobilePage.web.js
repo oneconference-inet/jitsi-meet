@@ -41,6 +41,11 @@ type Props = {
     _room: string,
 
     /**
+     * The page current url.
+     */
+    _url: URL,
+
+    /**
      * Used to dispatch actions from the buttons.
      */
     dispatch: Dispatch<any>,
@@ -90,7 +95,7 @@ class DeepLinkingMobilePage extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        const { _downloadUrl, _room, t } = this.props;
+        const { _downloadUrl, _room, t, _url } = this.props;
         const { HIDE_DEEP_LINKING_LOGO, NATIVE_APP_NAME, SHOW_DEEP_LINKING_IMAGE } = interfaceConfig;
         const downloadButtonClassName
             = `${_SNS}__button ${_SNS}__button_primary`;
@@ -134,10 +139,10 @@ class DeepLinkingMobilePage extends Component<Props> {
                             : null
                     }
                     <p className = { `${_SNS}__text` }>
-                        { t(`${_TNS}.comingSoon`, { app: NATIVE_APP_NAME }) }
+                        { t(`${_TNS}.appNotInstalled`, { app: NATIVE_APP_NAME }) }
                     </p>
                     <p className = { `${_SNS}__text` }>
-                        { t(`${_TNS}.joinMeeting`) }
+                        { t(`${_TNS}.ifHaveApp`) }
                     </p>
                     <a
                         { ...onOpenLinkProperties }
@@ -145,11 +150,11 @@ class DeepLinkingMobilePage extends Component<Props> {
                         href = { generateDeepLinkingURL() }
                         onClick = { this._onOpenApp }
                         target = '_top'>
-                        {/* <button className = { `${_SNS}__button ${_SNS}__button_primary` }>
+                        <button className = { `${_SNS}__button ${_SNS}__button_primary` }>
                             { t(`${_TNS}.joinInApp`) }
-                        </button> */}
+                        </button>
                     </a>
-                    {/* <p className = { `${_SNS}__text` }>
+                    <p className = { `${_SNS}__text` }>
                         { t(`${_TNS}.ifDoNotHaveApp`) }
                     </p>
                     <a
@@ -160,22 +165,29 @@ class DeepLinkingMobilePage extends Component<Props> {
                         <button className = { downloadButtonClassName }>
                             { t(`${_TNS}.downloadApp`) }
                         </button>
-                    </a> */}
+                    </a>
                     {
                         isSupportedMobileBrowser()
-                            && <a
-                                onClick = { this._onLaunchWeb }
-                                target = '_top'>
-                                <button className = { downloadButtonClassName }>
-                                    { t(`${_TNS}.launchWebButton`) }
-                                </button>
-                            </a>
+                            ? (
+                                <a
+                                    onClick = { this._onLaunchWeb }
+                                    target = '_top'>
+                                    <button className = { downloadButtonClassName }>
+                                        { t(`${_TNS}.launchWebButton`) }
+                                    </button>
+                                </a>
+                            ) : (
+                                <b>
+                                    { t(`${_TNS}.unsupportedBrowser`) }
+                                </b>
+                            )
                     }
                     { renderPromotionalFooter() }
                     <DialInSummary
                         className = 'deep-linking-dial-in'
                         clickableNumbers = { true }
-                        room = { _room } />
+                        room = { _room }
+                        url = { _url } />
                 </div>
             </div>
         );
@@ -268,9 +280,12 @@ class DeepLinkingMobilePage extends Component<Props> {
  * @returns {Props}
  */
 function _mapStateToProps(state) {
+    const { locationURL = {} } = state['features/base/connection'];
+
     return {
         _downloadUrl: interfaceConfig[`MOBILE_DOWNLOAD_LINK_${Platform.OS.toUpperCase()}`],
-        _room: decodeURIComponent(state['features/base/conference'].room)
+        _room: decodeURIComponent(state['features/base/conference'].room),
+        _url: locationURL
     };
 }
 

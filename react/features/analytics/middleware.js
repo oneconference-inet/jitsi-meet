@@ -93,7 +93,6 @@ MiddlewareRegistry.register(store => next => action => {
         // the deeplinking logic is executed (after the SET_ROOM action) so that the Amplitude device id is available
         // if needed.
         const createHandlersPromise = createHandlers(store);
-
         const result = next(action);
 
         createHandlersPromise.then(handlers => {

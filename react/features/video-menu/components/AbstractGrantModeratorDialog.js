@@ -6,14 +6,7 @@ import {
     createRemoteVideoMenuButtonEvent,
     sendAnalytics
 } from '../../analytics';
-import {
-    grantModerator,
-    participantRoleChanged,
-} from '../../base/participants';
-import socketIOClient from 'socket.io-client';
-import infoConf from '../../../../infoConference';
-
-declare var interfaceConfig: Object;
+import { getParticipantById, grantModerator } from '../../base/participants';
 
 type Props = {
 
@@ -26,6 +19,11 @@ type Props = {
      * The ID of the remote participant to be granted moderator rights.
      */
     participantID: string,
+
+    /**
+     * The name of the remote participant to be granted moderator rights.
+     */
+    participantName: string,
 
     /**
      * Function to translate i18n labels.
@@ -46,10 +44,6 @@ export default class AbstractGrantModeratorDialog
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            endpoint: interfaceConfig.SOCKET_NODE || '',
-        };
-
         this._onSubmit = this._onSubmit.bind(this);
     }
 
@@ -63,23 +57,29 @@ export default class AbstractGrantModeratorDialog
      */
     _onSubmit() {
         const { dispatch, participantID } = this.props;
-        const socket = socketIOClient(this.state.endpoint);
-        const meetingId = infoConf.getMeetingId();
 
-        sendAnalytics(
-            createRemoteVideoMenuButtonEvent('grant.moderator.button', {
-                participant_id: participantID,
-            })
-        );
+        sendAnalytics(createRemoteVideoMenuButtonEvent(
+            'grant.moderator.button',
+            {
+                'participant_id': participantID
+            }));
 
         dispatch(grantModerator(participantID));
 
-        socket.emit('coHost', {
-            meetingId: meetingId,
-            participantID: participantID,
-        });
-        dispatch(participantRoleChanged(participantID, 'moderator'));
-
         return true;
     }
+}
+
+/**
+ * Maps (parts of) the Redux state to the associated {@code AbstractMuteEveryoneDialog}'s props.
+ *
+ * @param {Object} state - The redux state.
+ * @param {Object} ownProps - The properties explicitly passed to the component.
+ * @returns {Props}
+ */
+export function abstractMapStateToProps(state: Object, ownProps: Props) {
+
+    return {
+        participantName: getParticipantById(state, ownProps.participantID).name
+    };
 }
