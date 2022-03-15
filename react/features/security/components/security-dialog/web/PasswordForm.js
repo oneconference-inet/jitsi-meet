@@ -57,7 +57,7 @@ type State = {
 /**
  * React {@code Component} for displaying and editing the conference password.
  *
- * @extends Component
+ * @augments Component
  */
 class PasswordForm extends Component<Props, State> {
     /**
@@ -85,10 +85,8 @@ class PasswordForm extends Component<Props, State> {
         super(props);
 
         // Bind event handlers so they are only bound once per instance.
-        this._onEnteredPasswordChange
-            = this._onEnteredPasswordChange.bind(this);
-        this._onPasswordSubmit = this._onPasswordSubmit.bind(this);
-        this._onKeyDown = this._onKeyDown.bind(this);
+        this._onEnteredPasswordChange = this._onEnteredPasswordChange.bind(this);
+        this._onKeyPress = this._onKeyPress.bind(this);
     }
 
     /**
@@ -122,30 +120,28 @@ class PasswordForm extends Component<Props, State> {
      */
     _renderPasswordField() {
         if (this.props.editEnabled) {
-            let digitPattern, placeHolderText;
+            let placeHolderText;
 
             if (this.props.passwordNumberOfDigits) {
                 placeHolderText = this.props.t('passwordDigitsOnly', {
                     number: this.props.passwordNumberOfDigits });
-                digitPattern = '\\d*';
             }
 
             return (
-                <form
-                    className = 'info-password-form'
-                    onKeyDown = { this._onKeyDown }
-                    onSubmit = { this._onPasswordSubmit }>
+                <div
+                    className = 'info-password-form'>
                     <input
+                        aria-label = { this.props.t('info.addPassword') }
                         autoFocus = { true }
                         className = 'info-password-input'
                         maxLength = { this.props.passwordNumberOfDigits }
                         onChange = { this._onEnteredPasswordChange }
-                        pattern = { digitPattern }
+                        onKeyPress = { this._onKeyPress }
                         placeholder = { placeHolderText }
                         spellCheck = { 'false' }
                         type = 'text'
                         value = { this.state.enteredPassword } />
-                </form>
+                </div>
             );
         } else if (this.props.locked === LOCKED_LOCALLY) {
             return (
@@ -181,24 +177,7 @@ class PasswordForm extends Component<Props, State> {
         this.setState({ enteredPassword: event.target.value });
     }
 
-    _onPasswordSubmit: (Object) => void;
-
-    /**
-     * Invokes the passed in onSubmit callback to notify the parent that a
-     * password submission has been attempted.
-     *
-     * @param {Object} event - DOM Event for form submission.
-     * @private
-     * @returns {void}
-     */
-    _onPasswordSubmit(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        this.props.onSubmit(this.state.enteredPassword);
-    }
-
-    _onKeyDown: (Object) => void;
+    _onKeyPress: (Object) => void;
 
     /**
      * Stops the the EnterKey for propagation in order to prevent the dialog
@@ -208,9 +187,12 @@ class PasswordForm extends Component<Props, State> {
      * @private
      * @returns {void}
      */
-    _onKeyDown(event) {
+    _onKeyPress(event) {
         if (event.key === 'Enter') {
+            event.preventDefault();
             event.stopPropagation();
+
+            this.props.onSubmit(this.state.enteredPassword);
         }
     }
 }

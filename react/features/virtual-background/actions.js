@@ -2,7 +2,7 @@
 
 import { createVirtualBackgroundEffect } from '../stream-effects/virtual-background';
 
-import { BACKGROUND_ENABLED, SET_VIRTUAL_BACKGROUND } from './actionTypes';
+import { BACKGROUND_ENABLED, SET_VIRTUAL_BACKGROUND, VIRTUAL_BACKGROUND_TRACK_CHANGED } from './actionTypes';
 import logger from './logger';
 
 /**
@@ -22,7 +22,7 @@ export function toggleBackgroundEffect(options: Object, jitsiTrack: Object) {
         if (jitsiTrack) {
             try {
                 if (options.enabled) {
-                    await jitsiTrack.setEffect(await createVirtualBackgroundEffect(virtualBackground));
+                    await jitsiTrack.setEffect(await createVirtualBackgroundEffect(virtualBackground, dispatch));
                 } else {
                     await jitsiTrack.setEffect(undefined);
                     dispatch(backgroundEnabled(false));
@@ -69,5 +69,18 @@ export function backgroundEnabled(backgroundEffectEnabled: boolean) {
     return {
         type: BACKGROUND_ENABLED,
         backgroundEffectEnabled
+    };
+}
+
+/**
+ * Signals if the local track was changed due to a changes of the virtual background.
+ *
+ * @returns {{
+ *    type: VIRTUAL_BACKGROUND_TRACK_CHANGED
+ * }}
+ */
+export function virtualBackgroundTrackChanged() {
+    return {
+        type: VIRTUAL_BACKGROUND_TRACK_CHANGED
     };
 }

@@ -10,7 +10,10 @@ import { Dialog } from '../../../base/dialog';
 import { translate, translateToHTML } from '../../../base/i18n';
 import { JitsiConnectionErrors } from '../../../base/lib-jitsi-meet';
 import { connect as reduxConnect } from '../../../base/redux';
-import { authenticateAndUpgradeRole, cancelLogin } from '../../actions.web';
+import {
+    authenticateAndUpgradeRole,
+    cancelLogin
+} from '../../actions.web';
 
 /**
  * The type of the React {@code Component} props of {@link LoginDialog}.
@@ -18,7 +21,7 @@ import { authenticateAndUpgradeRole, cancelLogin } from '../../actions.web';
 type Props = {
 
     /**
-     * {@link JitsiConference} that needs authentication - will hold a valid
+     * {@link JitsiConference} That needs authentication - will hold a valid
      * value in XMPP login + guest access mode.
      */
     _conference: Object,
@@ -242,6 +245,8 @@ class LoginDialog extends Component<Props, State> {
 
         return (
             <Dialog
+                disableBlanketClickDismiss = { true }
+                hideCloseIconButton = { true }
                 okDisabled = {
                     connecting
                     || loginStarted
@@ -294,7 +299,7 @@ function mapStateToProps(state) {
         progress,
         thenableWithCancel
     } = state['features/authentication'];
-    const { authRequired } = state['features/base/conference'];
+    const { authRequired, conference } = state['features/base/conference'];
     const { hosts: configHosts } = state['features/base/config'];
     const {
         connecting,
@@ -302,7 +307,7 @@ function mapStateToProps(state) {
     } = state['features/base/connection'];
 
     return {
-        _conference: authRequired,
+        _conference: authRequired || conference,
         _configHosts: configHosts,
         _connecting: connecting || thenableWithCancel,
         _error: connectionError || authenticateAndUpgradeRoleError,

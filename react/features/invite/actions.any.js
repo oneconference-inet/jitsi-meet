@@ -3,9 +3,10 @@
 import type { Dispatch } from 'redux';
 
 import { getInviteURL } from '../base/connection';
-import { getLocalParticipant, getParticipants } from '../base/participants';
+import { getLocalParticipant, getParticipantCount } from '../base/participants';
 import { inviteVideoRooms } from '../videosipgw';
 
+import { getDialInConferenceID, getDialInNumbers } from './_utils';
 import {
     ADD_PENDING_INVITE_REQUEST,
     BEGIN_ADD_PEOPLE,
@@ -17,8 +18,6 @@ import {
 } from './actionTypes';
 import { INVITE_TYPES } from './constants';
 import {
-    getDialInConferenceID,
-    getDialInNumbers,
     invitePeopleAndChatRooms,
     inviteSipEndpoints
 } from './functions';
@@ -71,14 +70,14 @@ export function invite(
             dispatch: Dispatch<any>,
             getState: Function): Promise<Array<Object>> => {
         const state = getState();
-        const participants = getParticipants(state);
+        const participantsCount = getParticipantCount(state);
         const { calleeInfoVisible } = state['features/invite'];
 
         if (showCalleeInfo
                 && !calleeInfoVisible
                 && invitees.length === 1
                 && invitees[0].type === INVITE_TYPES.USER
-                && participants.length === 1) {
+                && participantsCount === 1) {
             dispatch(setCalleeInfoVisible(true, invitees[0]));
         }
 
@@ -209,11 +208,12 @@ export function updateDialInNumbers() {
             return;
         }
 
+        const { locationURL = {} } = state['features/base/connection'];
         const { room } = state['features/base/conference'];
 
         Promise.all([
             getDialInNumbers(dialInNumbersUrl, room, mucURL),
-            getDialInConferenceID(dialInConfCodeUrl, room, mucURL)
+            getDialInConferenceID(dialInConfCodeUrl, room, mucURL, locationURL)
         ])
             .then(([ dialInNumbers, { conference, id, message, sipUri } ]) => {
                 if (!conference || !id) {

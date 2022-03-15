@@ -2,6 +2,8 @@
 
 import _ from 'lodash';
 
+import { getName } from '../../app/functions';
+import { determineTranscriptionLanguage } from '../../transcribing/functions';
 import { JitsiTrackErrors } from '../lib-jitsi-meet';
 import {
     getLocalParticipant,
@@ -11,7 +13,11 @@ import {
     participantLeft
 } from '../participants';
 import { toState } from '../redux';
-import { safeDecodeURIComponent } from '../util';
+import {
+    getBackendSafePath,
+    getJitsiMeetGlobalNS,
+    safeDecodeURIComponent
+} from '../util';
 
 import {
     AVATAR_URL_COMMAND,
@@ -87,6 +93,8 @@ export function commonUserJoinedHandling(
     if (user.isHidden()) {
         dispatch(hiddenParticipantJoined(id, displayName));
     } else {
+        const isReplacing = user.isReplacing && user.isReplacing();
+
         dispatch(participantJoined({
             botType: user.getBotType(),
             connectionStatus: user.getConnectionStatus(),
@@ -94,7 +102,8 @@ export function commonUserJoinedHandling(
             id,
             name: displayName,
             presence: user.getStatus(),
-            role: user.getRole()
+            role: user.getRole(),
+            isReplacing
         }));
     }
 }
@@ -119,7 +128,9 @@ export function commonUserLeftHandling(
     if (user.isHidden()) {
         dispatch(hiddenParticipantLeft(id));
     } else {
-        dispatch(participantLeft(id, conference));
+        const isReplaced = user.isReplaced && user.isReplaced();
+
+        dispatch(participantLeft(id, conference, isReplaced));
     }
 }
 
@@ -173,9 +184,9 @@ export function getConferenceName(stateful: Function | Object): string {
     const state = toState(stateful);
     const { callee } = state['features/base/jwt'];
     const { callDisplayName } = state['features/base/config'];
-    const { pendingSubjectChange, room, subject } = getConferenceState(state);
+    const { localSubject, room, subject } = getConferenceState(state);
 
-    return pendingSubjectChange
+    return localSubject
         || subject
         || callDisplayName
         || (callee && callee.name)
@@ -191,6 +202,54 @@ export function getConferenceName(stateful: Function | Object): string {
  */
 export function getConferenceNameForTitle(stateful: Function | Object) {
     return safeStartCase(safeDecodeURIComponent(getConferenceState(toState(stateful)).room));
+}
+
+/**
+ * Returns an object aggregating the conference options.
+ *
+ * @param {Object|Function} stateful - The redux store state.
+ * @returns {Object} - Options object.
+ */
+export function getConferenceOptions(stateful: Function | Object) {
+    const state = toState(stateful);
+
+    const config = state['features/base/config'];
+    const { locationURL } = state['features/base/connection'];
+    const { tenant } = state['features/base/jwt'];
+    const { email, name: nick } = getLocalParticipant(state);
+    const options = { ...config };
+
+    if (tenant) {
+        options.siteID = tenant;
+    }
+
+    if (options.enableDisplayNameInStats && nick) {
+        options.statisticsDisplayName = nick;
+    }
+
+    if (options.enableEmailInStats && email) {
+        options.statisticsId = email;
+    }
+
+    if (locationURL) {
+        options.confID = `${locationURL.host}${getBackendSafePath(locationURL.pathname)}`;
+    }
+
+    options.applicationName = getName();
+    options.transcriptionLanguage = determineTranscriptionLanguage(options);
+
+    // Disable analytics, if requested.
+    if (options.disableThirdPartyRequests) {
+        delete config.analytics?.scriptURLs;
+        delete config.analytics?.amplitudeAPPKey;
+        delete config.analytics?.googleAnalyticsTrackingId;
+        delete options.callStatsID;
+        delete options.callStatsSecret;
+    } else {
+        options.getWiFiStatsMethod = getWiFiStatsMethod;
+    }
+
+    return options;
 }
 
 /**
@@ -237,6 +296,21 @@ export function getCurrentConference(stateful: Function | Object) {
  */
 export function getRoomName(state: Object): string {
     return getConferenceState(state).room;
+}
+
+/**
+ * Returns the result of getWiFiStats from the global NS or does nothing
+ * (returns empty result).
+ * Fixes a concurrency problem where we need to pass a function when creating
+ * a JitsiConference, but that method is added to the context later.
+ *
+ * @returns {Promise}
+ * @private
+ */
+function getWiFiStatsMethod() {
+    const gloabalNS = getJitsiMeetGlobalNS();
+
+    return gloabalNS.getWiFiStats ? gloabalNS.getWiFiStats() : Promise.resolve('{}');
 }
 
 /**
@@ -316,7 +390,7 @@ function _reportError(msg, err) {
 
 /**
  * Sends a representation of the local participant such as her avatar (URL),
- * e-mail address, and display name to (the remote participants of) a specific
+ * email address, and display name to (the remote participants of) a specific
  * conference.
  *
  * @param {Function|Object} stateful - The redux store, state, or

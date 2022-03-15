@@ -1,8 +1,12 @@
 // @flow
 
 import { JitsiRecordingConstants } from '../base/lib-jitsi-meet';
+import { getLocalParticipant } from '../base/participants';
+import { isEnabled as isDropboxEnabled } from '../dropbox';
+import { extractFqnFromPath } from '../dynamic-branding';
 
-import { RECORDING_STATUS_PRIORITIES } from './constants';
+import { RECORDING_STATUS_PRIORITIES, RECORDING_TYPES } from './constants';
+import logger from './logger';
 
 /**
  * Searches in the passed in redux state for an active recording session of the
@@ -47,6 +51,48 @@ export function getSessionById(state: Object, id: string) {
 }
 
 /**
+ * Fetches the recording link from the server.
+ *
+ * @param {string} url - The base url.
+ * @param {string} recordingSessionId - The ID of the recording session to find.
+ * @param {string} region - The meeting region.
+ * @param {string} tenant - The meeting tenant.
+ * @returns {Promise<any>}
+ */
+export async function getRecordingLink(url: string, recordingSessionId: string, region: string, tenant: string) {
+    const fullUrl = `${url}?recordingSessionId=${recordingSessionId}&region=${region}&tenant=${tenant}`;
+    const res = await fetch(fullUrl, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const json = await res.json();
+
+    return res.ok ? json : Promise.reject(json);
+}
+
+/**
+ * Selector used for determining if recording is saved on dropbox.
+ *
+ * @param {Object} state - The redux state to search in.
+ * @returns {string}
+ */
+export function isSavingRecordingOnDropbox(state: Object) {
+    return isDropboxEnabled(state)
+        && state['features/recording'].selectedRecordingService === RECORDING_TYPES.DROPBOX;
+}
+
+/**
+ * Selector used for determining disable state for the meeting highlight button.
+ *
+ * @param {Object} state - The redux state to search in.
+ * @returns {string}
+ */
+export function isHighlightMeetingMomentDisabled(state: Object) {
+    return state['features/recording'].disableHighlightMeetingMoment;
+}
+
+/**
  * Returns the recording session status that is to be shown in a label. E.g. If
  * there is a session with the status OFF and one with PENDING, then the PENDING
  * one will be shown, because that is likely more important for the user to see.
@@ -71,4 +117,67 @@ export function getSessionStatusToShow(state: Object, mode: string): ?string {
     }
 
     return status;
+}
+
+
+/**
+ * Returns the resource id.
+ *
+ * @param {Object | string} recorder - A participant or it's resource.
+ * @returns {string|undefined}
+ */
+export function getResourceId(recorder: string | Object) {
+    if (recorder) {
+        return typeof recorder === 'string'
+            ? recorder
+            : recorder.getId();
+    }
+}
+
+/**
+ * Sends a meeting highlight to backend.
+ *
+ * @param  {Object} state - Redux state.
+ * @returns {boolean} - True if sent, false otherwise.
+ */
+export async function sendMeetingHighlight(state: Object) {
+    const { webhookProxyUrl: url } = state['features/base/config'];
+    const { conference } = state['features/base/conference'];
+    const { jwt } = state['features/base/jwt'];
+    const { connection } = state['features/base/connection'];
+    const jid = connection.getJid();
+    const localParticipant = getLocalParticipant(state);
+
+    const headers = {
+        ...jwt ? { 'Authorization': `Bearer ${jwt}` } : {},
+        'Content-Type': 'application/json'
+    };
+
+    const reqBody = {
+        meetingFqn: extractFqnFromPath(),
+        sessionId: conference.sessionId,
+        submitted: Date.now(),
+        participantId: localParticipant.jwtId,
+        participantName: localParticipant.name,
+        participantJid: jid
+    };
+
+    if (url) {
+        try {
+            const res = await fetch(`${url}/v2/highlights`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(reqBody)
+            });
+
+            if (res.ok) {
+                return true;
+            }
+            logger.error('Status error:', res.status);
+        } catch (err) {
+            logger.error('Could not send request', err);
+        }
+    }
+
+    return false;
 }

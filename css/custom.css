@@ -1,0 +1,69 @@
+/* #knocking-participant-list {
+    margin-top: 20px;
+}
+
+#knocking-participant-list ul li {
+    display: block;
+}
+
+#knocking-participant-list ul li button {
+    margin: 5 5px;
+} */
+
+/* ul.poll-answer-field-list {
+    list-style-type: none;
+    padding: 0 0 0 0;
+}
+
+li.poll-answer-field {
+    display: inline-flex;
+    width: 100%;
+}
+
+ul.poll-answer-list {
+    list-style-type: none;
+}
+
+.poll-question {
+    font-size: 1.8em !important;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    color: #b8c7e0 !important;
+}
+
+.poll-add-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.poll-answer-list-label {
+    font-size: 1em !important;
+    color: #b8c7e0 !important;
+} */
+
+.display-avatar-with-name {
+    order: 1;
+}
+
+.display-name-on-black {
+    order: 1;
+}
+
+.display-avatar-only {
+    order: 1;
+}
+
+.vertical-filmstrip .filmstrip__videos #filmstripRemoteVideos #remoteVideos {
+    flex-direction: column;
+}
+
+.vertical-filmstrip .filmstrip__videos #filmstripRemoteVideos #filmstripRemoteVideosContainer #remoteVideos {
+    flex-direction: column;
+}
+
+.label.secret-room {
+    background: #59ba46;
+    color: #000;
+}

@@ -14,6 +14,36 @@
         background: #31B76A;
     }
 
+    .circular-label {
+        background: #b8c7e0;
+    }
+
+    .circular-label.secret {
+        background: #1d4987;
+        border: 2px solid white;
+    }
+
+    .circular-label.e2ee {
+        align-items: center;
+        background: #76cf9c;
+        display: flex;
+        justify-content: center;
+    }
+
+    .circular-label.file {
+        background: #ff5630;
+    }
+
+    .circular-label.local-rec {
+        background: #ff5630;
+    }
+
+    .circular-label.stream {
+        background: #0065ff;
+    }
+
+    .circular-label.insecure {
+        background: $defaultWarningColor;
     &--red {
         background: #E34F56
     }
@@ -34,4 +64,5 @@
 
 .participants-count {
     cursor: pointer;
+}
 }
