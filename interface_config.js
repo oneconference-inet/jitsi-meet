@@ -8,7 +8,7 @@
  * config.js, and no new options should be added here.
  */
 
-var interfaceConfig = {
+ var interfaceConfig = {
     APP_NAME: "ONECONFERENCE",
     AUDIO_LEVEL_PRIMARY_COLOR: "rgba(255,255,255,0.4)",
     AUDIO_LEVEL_SECONDARY_COLOR: "rgba(255,255,255,0.2)",
@@ -37,7 +37,7 @@ var interfaceConfig = {
     SECRET_KEY_ONECONF: 'OoLdyF822kaIi28K35qCzXMwAxQP56Mt53p0T3O3VcgofWjbq8Kr9Ajz6WId3ffilkZXm0pWBCgfd8FVqaPBkYAbH4kXbqFph4p7',
 
     // service Intregate ['oneconference','onechat','ManageAi'] // onemail only!!
-    SERVICE_INT: ['onechat', 'manageAi','onebinar', 'onedental', 'jmc', 'telemedicine'],
+    SERVICE_INT: ['onechat', 'manageAi','onebinar', 'onedental', 'jmc', 'telemedicine', 'education'],
     SERVICE_INVITE_FEATURE: ['oneconference'],
     SERVICE_RECORD_FEATURE: ['oneconference'],
     SERVICE_LIVE_FEATURE: ['oneconference'],

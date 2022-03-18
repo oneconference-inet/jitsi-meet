@@ -294,7 +294,7 @@ class Toolbox extends Component<Props, State> {
             name: '',
             checkPlatform: '',
             endpoint: interfaceConfig.SOCKET_NODE || '',
-            windowWidth: window.innerWidth,
+            windowWidth: window.innerWidth
         };
 
         // Bind event handlers so they are only bound once per instance.
@@ -378,7 +378,6 @@ class Toolbox extends Component<Props, State> {
     async onAttendee(state) {
         const { meetingid, roomname, name, checkPlatform, endpoint } = state
         const socket = socketIOClient(endpoint)
-        infoConf.setSocket(socket);
         logger.log('Attendee ONE-Conference On Socket-for-Feature')
         socket.on(meetingid, async(payload) => {
             logger.log("Socket-payload: ", payload);
@@ -443,11 +442,6 @@ class Toolbox extends Component<Props, State> {
 
         const isModerator = infoConf.getIsModerator();
         const checkPlatform = infoConf.getService();
-        const Checkservice = infoConf.getServiceChecker();
-        logger.log("Checkservice: ",Checkservice);
-        if (Checkservice === "onemeeting") {
-            dispatch(openParticipantsPane());
-        }
         this.setState({
             meetingid: infoConf.getMeetingId(),
             roomname: infoConf.getRoomName(),

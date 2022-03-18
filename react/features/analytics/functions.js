@@ -123,9 +123,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const meetingIdForCheck = locationURL.href.split("/")[3].split("?")[0];
     const tokenDecode = locationURL.href.split("?")[1];
     const dataDecode = decode(tokenDecode, repeatAccess);
+    logger.log("tokenDecode: ", tokenDecode);
     const tokenAccess = Boolean(tokenDecode != undefined || repeatAccess);
     const int_service = interfaceConfig.SERVICE_INT;
-    infoConf.setServiceChecker(dataDecode.service);
+    logger.log("Data Decode:123456 ", dataDecode);
+
+    // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {
         logger.log("Data Decode:1 ", dataDecode);
         infoConf.setMeetingId(dataDecode.meetingId);
@@ -150,10 +153,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
             authXmpp.setUser(dataDecode.userXmpAuth);
             authXmpp.setPass(dataDecode.passXmpAuth);
             infoConf.setUserRole(dataDecode.role);
+            logger.log("1 ");
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
                     infoConf.setService(dataDecode.service);
+                    logger.log("2 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_BACK + "/checkkey",
                         {
@@ -164,6 +169,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                     // optioncon.seturlInvite(keydb.data.urlInvite)
                 } else if (dataDecode.service == "onemail") {
+                    logger.log("3 ");
                     infoConf.setService(dataDecode.service);
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL + "/checkkey",
@@ -174,6 +180,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                         }
                     );
                 } else if (dataDecode.service == "onemail_dga") {
+                    logger.log("4 ");
                     infoConf.setService(dataDecode.service);
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL_DGA + "/checkkey",
@@ -184,6 +191,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                 } else {
                     infoConf.setService("oneconference");
+                    logger.log("5 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN + "/checkkey",
                         {
@@ -194,13 +202,21 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     infoConf.seturlInvite(keydb.data.urlInvite);
                 }
             } catch (error) {
-                logger.log("catch");
-                console.error("Server is not defined ERROR: ", error);
-                APP.store.dispatch(
-                    redirectToStaticPage("static/errorServer.html")
-                );
+                logger.log("6 ");
+                // logger.log("catch");
+                // console.error("Server is not defined ERROR: ", error);
+                // APP.store.dispatch(
+                //     redirectToStaticPage("static/errorServer.html")
+                // );
                 
             }
+        // } catch {
+        //     logger.log("6 ");
+        //     // console.error("Server is not defined ERROR: ", error);
+        //     // APP.store.dispatch(
+        //     //     redirectToStaticPage("static/errorServer.html")
+        //     // );
+        // }
         } else if (
             dataDecode.role == "attendee" &&
             meetingIdForCheck == dataDecode.meetingId
@@ -213,10 +229,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
             infoUser.setUserId(dataDecode.clientid);
             infoUser.setRedirect(dataDecode.redirect);
             infoConf.setUserRole(dataDecode.role);
+            logger.log("5 ");
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
                     infoConf.setService(dataDecode.service);
+                    logger.log("6 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_BACK + "/checkkey",
                         {
@@ -227,6 +245,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                 } else if (dataDecode.service == "onemail") {
                     infoConf.setService(dataDecode.service);
+                    logger.log("7 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL + "/checkkey",
                         {
@@ -236,6 +255,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     );
                 } else if (dataDecode.service == "onemail_dga") {
                     infoConf.setService(dataDecode.service);
+                    logger.log("8 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_ONEMAIL_DGA + "/checkkey",
                         {
