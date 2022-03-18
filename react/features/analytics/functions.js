@@ -152,12 +152,10 @@ export async function createHandlers({ getState }: { getState: Function }) {
             authXmpp.setUser(dataDecode.userXmpAuth);
             authXmpp.setPass(dataDecode.passXmpAuth);
             infoConf.setUserRole(dataDecode.role);
-            logger.log("1 ");
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {
                     infoConf.setService(dataDecode.service);
-                    logger.log("2 ");
                     keydb = await axios.post(
                         interfaceConfig.DOMAIN_BACK + "/checkkey",
                         {
@@ -201,20 +199,12 @@ export async function createHandlers({ getState }: { getState: Function }) {
                     infoConf.seturlInvite(keydb.data.urlInvite);
                 }
             } catch (error) {
-                logger.log("6 ");
-                // logger.log("catch");
-                // console.error("Server is not defined ERROR: ", error);
-                // APP.store.dispatch(
-                //     redirectToStaticPage("static/errorServer.html")
-                // );
+                logger.log("catch");
+                console.error("Server is not defined ERROR: ", error);
+                APP.store.dispatch(
+                    redirectToStaticPage("static/errorServer.html")
+                );
             }
-            // } catch {
-            //     logger.log("6 ");
-            //     // console.error("Server is not defined ERROR: ", error);
-            //     // APP.store.dispatch(
-            //     //     redirectToStaticPage("static/errorServer.html")
-            //     // );
-            // }
         } else if (
             dataDecode.role == "attendee" &&
             meetingIdForCheck == dataDecode.meetingId
@@ -227,7 +217,6 @@ export async function createHandlers({ getState }: { getState: Function }) {
             infoUser.setUserId(dataDecode.clientid);
             infoUser.setRedirect(dataDecode.redirect);
             infoConf.setUserRole(dataDecode.role);
-            logger.log("5 ");
             try {
                 let keydb;
                 if (int_service.includes(dataDecode.service)) {

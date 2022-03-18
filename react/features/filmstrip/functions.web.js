@@ -71,7 +71,7 @@ export function shouldRemoteVideosBeVisible(state: Object) {
 
     const getparticipantcount = true
     if(getparticipantcount = true ){
-        console.log(participantCount,'participantCount@function');
+        // console.log(participantCount,'participantCount@function');
     }
     let pinnedParticipant;
     const { disable1On1Mode } = state['features/base/config'];
