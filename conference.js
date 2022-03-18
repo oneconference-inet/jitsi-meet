@@ -147,8 +147,6 @@ import infoConf from './infoConference';
 import infoUser from './infoUser';
 import authXmpp from './authXmpp';
 import { _endJoin } from './react/features/toolbox/components/HangupButton'
-import socketIOClient from 'socket.io-client';
-
 
 const logger = Logger.getLogger(__filename);
 
@@ -890,29 +888,8 @@ export default {
         var initialOptions = {};
         var option = infoUser.getOption();
 
-        var MeetingmuteCam = infoConf.setMeetingmuteCam();
-        var MeetingmuteMic = infoConf.setMeetingmuteMic();
-        // var MeetingmuteCam = true
-        // var MeetingmuteMic = true
-
-        logger.log(MeetingmuteCam,'MeetingmuteCam=>>>>')
-        logger.log(MeetingmuteMic,'MeetingmuteMic=>>>>>>>')
-
-
-        if (!config.iAmRecorder && MeetingmuteCam == true && MeetingmuteMic == true) {
+        if (!config.iAmRecorder) {
             // Only Voice
-            initialOptions = {
-                startAudioOnly: config.startAudioOnly,
-                startScreenSharing: config.startScreenSharing,
-                startWithAudioMuted: option.muteall
-                    ? false
-                    : option.audio
-                    ? true
-                    : false, // false = open , true = close
-                startWithVideoMuted: option.video ? true : false, // false = open , true = close
-            };
-        }
-        else {
             initialOptions = {
                 startAudioOnly: config.startAudioOnly,
                 startScreenSharing: config.startScreenSharing,
@@ -923,16 +900,15 @@ export default {
                     : true, // false = open , true = close
                 startWithVideoMuted: option.video ? false : true, // false = open , true = close
             };
+        } else {
+            initialOptions = {
+                // Bot Setting
+                startAudioOnly: true,
+                startScreenSharing: false,
+                startWithAudioMuted: false,
+                startWithVideoMuted: true,
+            };
         }
-        //  else {
-        //     initialOptions = {
-        //         // Bot Setting
-        //         startAudioOnly: true,
-        //         startScreenSharing: false,
-        //         startWithAudioMuted: false,
-        //         startWithVideoMuted: true,
-        //     };
-        // }
 
         if (option.muteall) {
             APP.store.dispatch(setAudioMutedAll(option.muteall));
@@ -2568,20 +2544,6 @@ export default {
             APP.store.dispatch(setAudioMuted(audioMuted));
             APP.store.dispatch(setVideoMuted(videoMuted));
 
-
-            const ActionAudio = infoConf.setSocket();
-            const ActionVideo = infoConf.setSocket();
-
-            // if(ActionAudio = "" && ActionVideo = ""){
-
-            // }
-            // else{
-            //     APP.store.dispatch(setAudioMuted(audioMuted));
-            //     APP.store.dispatch(setVideoMuted(videoMuted));
-            // }
-
-            logger.log('ActionAudio Conference=>>>>>>>>>>>>>>>>',ActionAudio)
-            logger.log('ActionVideo Conference=>>>>>>>>>>>>>>>>',ActionVideo)
             // Remove the tracks from the peerconnection.
             for (const track of localTracks) {
                 // Always add the track on mobile Safari because of a known issue where audio playout doesn't happen
@@ -3228,18 +3190,6 @@ export default {
 
         APP.store.dispatch(setAudioAvailable(available));
         APP.API.notifyAudioAvailabilityChanged(available);
-
-        const ActionAudioAvailable = infoConf.setSocket();
-
-        // if(ActionAudioAvailable = ""){
-
-        // }
-        // else{
-            // APP.store.dispatch(setAudioAvailable(available));
-            // APP.API.notifyAudioAvailabilityChanged(available);
-        // }
-
-
     },
 
     /**
@@ -3262,17 +3212,6 @@ export default {
 
         APP.store.dispatch(setVideoAvailable(available));
         APP.API.notifyVideoAvailabilityChanged(available);
-
-        const ActionVideoAvailable = infoConf.setSocket();
-
-        // if(ActionVideoAvailable = ""){
-
-        // }
-        // else{
-            // APP.store.dispatch(setVideoAvailable(available));
-            // APP.API.notifyVideoAvailabilityChanged(available);
-        // }
-
     },
 
     /**
