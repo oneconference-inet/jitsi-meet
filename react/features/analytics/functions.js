@@ -195,11 +195,10 @@ export async function createHandlers({ getState }: { getState: Function }) {
                 }
             } catch (error) {
                 logger.log("catch");
-                console.error("Server is not defined ERROR: ", error);
-                APP.store.dispatch(
-                    redirectToStaticPage("static/errorServer.html")
-                );
-                
+                // console.error("Server is not defined ERROR: ", error);
+                // APP.store.dispatch(
+                //     redirectToStaticPage("static/errorServer.html")
+                // );
             }
         } else if (
             dataDecode.role == "attendee" &&
