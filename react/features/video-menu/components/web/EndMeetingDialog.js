@@ -1,19 +1,19 @@
-import React from 'react';
-import axios from 'axios';
-import infoConf from '../../../../../infoConference';
-import infoUser from '../../../../../infoUser';
+import React from "react";
+import axios from "axios";
+import infoConf from "../../../../../infoConference";
+import infoUser from "../../../../../infoUser";
 
-import { Dialog } from '../../../base/dialog';
-import { translate } from '../../../base/i18n';
-import { connect } from '../../../base/redux';
-import { endAllParticipants } from '../../actions';
-import UIEvents from '../../../../../service/UI/UIEvents';
+import { Dialog } from "../../../base/dialog";
+import { translate } from "../../../base/i18n";
+import { connect } from "../../../base/redux";
+import { endAllParticipants } from "../../actions";
+import UIEvents from "../../../../../service/UI/UIEvents";
 import AbstractEndMeetingParticipantDialog, {
     type Props as AbstractProps,
-} from '../AbstractEndMeetingParticipantDialog';
-import { _endJoin } from '../../../toolbox/components/HangupButton';
+} from "../AbstractEndMeetingParticipantDialog";
+import { _endJoin } from "../../../toolbox/components/HangupButton";
 
-import socketIOClient from 'socket.io-client';
+import socketIOClient from "socket.io-client";
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -67,10 +67,10 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
 
         return (
             <Dialog
-                okKey='dialog.endmeet'
+                okKey="dialog.endmeet"
                 onSubmit={this._onSubmit}
                 titleString={title}
-                width='small'
+                width="small"
                 onLeave={_endJoin}
             >
                 <div>{content}</div>
@@ -107,10 +107,10 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             const meetingId = infoConf.getMeetingId();
             // APP.store.dispatch(maybeOpenFeedbackDialog(conference));
 
-            console.log(service,'service EndMeetingDialog=>>>>>')
-            console.log(socket,'socket EndMeetingDialog=>>>>>')
-            
-            socket.emit('endMeet', {
+            console.log(service, "service EndMeetingDialog=>>>>>");
+            console.log(socket, "socket EndMeetingDialog=>>>>>");
+
+            socket.emit("endMeet", {
                 meetingId: meetingId,
                 isMod: isModerator,
                 userId: userId,
@@ -119,104 +119,111 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             infoConf.setIsHostEndmeet();
             dispatch(endAllParticipants(exclude));
 
-            if (service == 'onechat') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            if (service == "onechat") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
-                    { headers: { Authorization: 'Bearer ' + secretKeyOnechat } }
+                    { headers: { Authorization: "Bearer " + secretKeyOnechat } }
                 );
-            } else if (service == 'manageAi') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            } else if (service == "manageAi") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + secretKeyManageAi,
+                            Authorization: "Bearer " + secretKeyManageAi,
                         },
                     }
                 );
-            } else if (service == 'onemail') {
+            } else if (service == "onemail") {
                 domainEnd =
                     interfaceConfig.DOMAIN_ONEMAIL +
-                    '/api/v1/oneconf/service/endmeeting';
+                    "/api/v1/oneconf/service/endmeeting";
                 await axios.post(domainEnd, {
                     meeting_id: infoConf.getMeetingId(),
                     tag: service,
                 });
-            } else if (service == 'onemail_dga') {
-                domainEnd = interfaceConfig.DOMAIN_ONEMAIL_DGA + '/endmeeting';
+            } else if (service == "onemail_dga") {
+                domainEnd = interfaceConfig.DOMAIN_ONEMAIL_DGA + "/endmeeting";
                 await axios.post(domainEnd, {
                     meetingid: infoConf.getMeetingId(),
                     tag: service,
                 });
-            } else if (service == 'onedental') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            } else if (service == "onedental") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + secretKeyOneDental,
+                            Authorization: "Bearer " + secretKeyOneDental,
                         },
                     }
                 );
-            } else if (service == 'onebinar') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            } else if (service == "onebinar") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + secretKeyOneBinar,
+                            Authorization: "Bearer " + secretKeyOneBinar,
                         },
                     }
                 );
-            } else if (service == 'jmc') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            } else if (service == "jmc") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
-                    { headers: { Authorization: 'Bearer ' + secretKeyJmc } }
+                    { headers: { Authorization: "Bearer " + secretKeyJmc } }
                 );
-            } else if (service == 'telemedicine') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
-                await axios.post(
-                    domainEnd,
-                    { meetingid: infoConf.getMeetingId(), tag: service },
-                    {
-                        headers: {
-                            Authorization: 'Bearer ' + secretKeyTelemedicine,
-                        },
-                    }
-                );
-            } else if (service == 'emeeting') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            } else if (service == "telemedicine") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + secretKeyEmeeting,
+                            Authorization: "Bearer " + secretKeyTelemedicine,
                         },
                     }
                 );
-            } else if (service == 'education') {
-                domainEnd = interfaceConfig.DOMAIN_BACK + '/service/endmeeting';
+            } else if (service == "emeeting") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
                 await axios.post(
                     domainEnd,
                     { meetingid: infoConf.getMeetingId(), tag: service },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + secretKeyEducation,
+                            Authorization: "Bearer " + secretKeyEmeeting,
                         },
                     }
                 );
-            } else {
-                await axios.post(interfaceConfig.DOMAIN + '/endmeeting', {
+            } else if (service == "education") {
+                domainEnd = interfaceConfig.DOMAIN_BACK + "/service/endmeeting";
+                await axios.post(
+                    domainEnd,
+                    { meetingid: infoConf.getMeetingId(), tag: service },
+                    {
+                        headers: {
+                            Authorization: "Bearer " + secretKeyEducation,
+                        },
+                    }
+                );
+            } else if (service == "oneconference") {
+                await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
                     meetingid: infoConf.getMeetingId(),
-                    user_endmeeting: infoUser.getName()
+                    user_endmeeting: infoUser.getName(),
+                    timeout: 5000,
+                });
+                console.log("Ping Passed");
+            } else {
+                await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
+                    meetingid: infoConf.getMeetingId(),
+                    user_endmeeting: infoUser.getName(),
                 });
             }
             conference.UI.emitEvent(UIEvents.LOGOUT);
@@ -224,6 +231,7 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             return true;
         } catch (error) {
             console.log(error);
+            console.log("Ping Failed");
             return false;
         }
     }
@@ -238,8 +246,8 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
     _getTranslations(): Translations {
         const { exclude, t } = this.props;
         const dialog = {
-            content: t('dialog.endMeetingDialog'),
-            title: t('dialog.endMeetingTitle'),
+            content: t("dialog.endMeetingDialog"),
+            title: t("dialog.endMeetingTitle"),
         };
 
         return dialog;
