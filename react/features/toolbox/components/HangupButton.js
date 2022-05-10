@@ -144,6 +144,8 @@ export async function _endJoin() {
         const secretKeyTelemedicine = interfaceConfig.SECRET_KEY_TELEMEDICINE;
         const secretKeyEmeeting = interfaceConfig.SECRET_KEY_EMEETING;
         const secretKeyEducation = interfaceConfig.SECRET_KEY_EDUCATION;
+
+        logger.log(service,'service HangupButton=>>>>>')
         
         if (isModerator && infoConf.getUserRole() == "moderator") {
             infoConf.setIsHostHangup();
