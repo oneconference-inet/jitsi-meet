@@ -214,11 +214,13 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
                     }
                 );
             } else if (service == "oneconference") {
-                await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
-                    meetingid: infoConf.getMeetingId(),
-                    user_endmeeting: infoUser.getName(),
-                    setInterval: 5000,
-                });
+                await setInterval(() => {
+                    axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
+                        meetingid: infoConf.getMeetingId(),
+                        user_endmeeting: infoUser.getName(),
+                    });
+                }, 30000);
+
                 console.log("Ping Passed");
             } else {
                 await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
@@ -231,7 +233,6 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             return true;
         } catch (error) {
             console.log(error);
-            console.log("Ping Failed");
             return false;
         }
     }
