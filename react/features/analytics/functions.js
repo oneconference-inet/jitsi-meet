@@ -127,7 +127,7 @@ export async function createHandlers({ getState }: { getState: Function }) {
     const int_service = interfaceConfig.SERVICE_INT;
 
     logger.log(infoConf, "infoConf=>>>>");
-    logger.log(dataDecode.service, "dataDecode.service");
+    logger.log(dataDecode, "dataDecode");
 
     // console.log("token Access: ", tokenAccess);
     if (dataDecode != undefined && tokenAccess) {

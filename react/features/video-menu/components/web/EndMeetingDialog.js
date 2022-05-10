@@ -108,6 +108,7 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
             // APP.store.dispatch(maybeOpenFeedbackDialog(conference));
 
             console.log(service,'service EndMeetingDialog=>>>>>')
+            console.log(socket,'socket EndMeetingDialog=>>>>>')
             
             socket.emit('endMeet', {
                 meetingId: meetingId,
