@@ -217,7 +217,7 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
                 await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
                     meetingid: infoConf.getMeetingId(),
                     user_endmeeting: infoUser.getName(),
-                    timeout: 5000,
+                    setInterval: 5000,
                 });
                 console.log("Ping Passed");
             } else {
