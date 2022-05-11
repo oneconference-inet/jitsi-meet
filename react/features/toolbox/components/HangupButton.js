@@ -289,8 +289,8 @@ export async function _endJoin() {
                 }
             );
         } else if (service == "oneconference") {
-            setInterval(() => {
-                await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
+            await setInterval(() => {
+                    axios.post(interfaceConfig.DOMAIN + "/endJoin", {
                     user_id: userId,
                     meeting_id: meetingId,
                 });
