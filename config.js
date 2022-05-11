@@ -715,7 +715,7 @@ var config = {
     //   // The interval in milliseconds at which analytics events
     //   // with the measured RTT will be sent. Defaults to 60000, set
     //   // to <= 0 to disable.
-    //   analyticsInterval: 60000,
+      analyticsInterval: 60000,
       },
 
     // If set, will attempt to use the provided video input device label when
