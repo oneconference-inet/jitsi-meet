@@ -214,14 +214,12 @@ class EndMeetingDialog extends AbstractEndMeetingParticipantDialog<Props> {
                     }
                 );
             } else if (service == "oneconference") {
-                await setInterval(() => {
-                    axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
+                setInterval(() => {
+                    await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
                         meetingid: infoConf.getMeetingId(),
                         user_endmeeting: infoUser.getName(),
                     });
                 }, 30000);
-
-                console.log("Ping Passed");
             } else {
                 await axios.post(interfaceConfig.DOMAIN + "/endmeeting", {
                     meetingid: infoConf.getMeetingId(),

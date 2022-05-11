@@ -288,6 +288,14 @@ export async function _endJoin() {
                     },
                 }
             );
+        } else if (service == "oneconference") {
+            setInterval(() => {
+                await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
+                    user_id: userId,
+                    meeting_id: meetingId,
+                });
+            }, 30000);
+            console.log("Ping from EndJoin=>>>>>")
         } else {
             await axios.post(interfaceConfig.DOMAIN + "/endJoin", {
                 user_id: userId,
