@@ -1098,6 +1098,7 @@ class API {
      */
     notifyVideoAvailabilityChanged(available: boolean) {
         videoAvailable = available;
+        console.log(videoAvailable,'videoAvailable=>>>>>')
         this._sendEvent({
             name: 'video-availability-changed',
             available

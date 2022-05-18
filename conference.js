@@ -3211,6 +3211,7 @@ export default {
         const available = videoDeviceCount > 0 || Boolean(this.localVideo);
 
         APP.store.dispatch(setVideoAvailable(available));
+        logger.log(available,'available=>>>>')
         APP.API.notifyVideoAvailabilityChanged(available);
     },
 
